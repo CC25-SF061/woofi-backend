@@ -1,0 +1,44 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "npm install",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "schema-import": "kysely-codegen",
+    "migrate": "node scripts/migration.js",
+    "migrate:down": "node scripts/migration.js down",
+    "migrate:reset": "npm run migrate:down && npm run migrate",
+    "prod": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@hapi/hapi": "^21.3.12",
+    "@hapi/inert": "^7.1.0",
+    "@hapi/jwt": "^3.2.0",
+    "@hapi/vision": "^7.0.3",
+    "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "glob": "^11.0.1",
+    "google-auth-library": "^9.15.1",
+    "hapi-swagger": "^17.3.2",
+    "joi": "^17.13.3",
+    "js-sha256": "^0.11.0",
+    "kysely": "^0.27.5",
+    "nanoid": "^5.1.0",
+    "nodemailer": "^6.10.0",
+    "pg": "^8.13.3",
+    "pg-types": "^4.0.2"
+  },
+  "devDependencies": {
+    "kysely-codegen": "^0.17.0",
+    "nodemon": "^3.1.9"
+  }
+}
