@@ -61,6 +61,18 @@ export async function up(db) {
         )
         .addColumn('provider_name', 'varchar(25)', (col) => col.notNull())
         .execute();
+
+    await db.schema
+        .createTable('rbac')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+        .addColumn('ptype', 'varchar(50)')
+        .addColumn('v0', 'varchar(50)')
+        .addColumn('v1', 'varchar(50)')
+        .addColumn('v2', 'varchar(50)')
+        .addColumn('v3', 'varchar(50)')
+        .addColumn('v4', 'varchar(50)')
+        .addColumn('v5', 'varchar(50)')
+        .execute();
 }
 
 /**
@@ -72,5 +84,6 @@ export async function down(db) {
     await db.schema.dropTable('forget_password').execute();
     await db.schema.dropTable('token').execute();
     await db.schema.dropTable('oauth').execute();
+    await db.schema.dropTable('rbac').execute();
     await db.schema.dropTable('user').execute();
 }
