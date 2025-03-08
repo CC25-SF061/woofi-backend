@@ -9,6 +9,10 @@ import { badRequest } from '../util/errorHandler.js';
 import { verify } from '../../core/GoogleOauth.js';
 import { nanoid } from 'nanoid';
 import OauthProvider from '../../core/OauthProvider.js';
+import {
+    generateAccessToken,
+    generateRefreshToken,
+} from '../util/generateAuthToken.js';
 
 export class AuthController {
     constructor() {}
@@ -57,21 +61,8 @@ export class AuthController {
                 })
                 .returning(['id', 'is_verified'])
                 .executeTakeFirst();
-            const refreshToken = jwt.token.generate(
-                {
-                    id: result.insertId,
-                    iss: process.env.APP_URL,
-                },
-                {
-                    key: process.env.REFRESH_TOKEN_SECRET,
-                },
-                refreshTokenConfig
-            );
-            const accessToken = jwt.token.generate(
-                { id: result.id.toString(), iss: process.env.APP_URL },
-                { key: process.env.ACCESS_TOKEN_SECRET },
-                accessTokenConfig
-            );
+            const refreshToken = generateRefreshToken(result.id.toString());
+            const accessToken = generateAccessToken(result.id.toString());
 
             await db
                 .insertInto('token')
@@ -120,21 +111,8 @@ export class AuthController {
                     errCode: errorConstant.ERR_INVALID_LOGIN,
                 });
             }
-            const refreshToken = jwt.token.generate(
-                {
-                    id: user.id.toString(),
-                    iss: process.env.APP_URL,
-                },
-                {
-                    key: process.env.REFRESH_TOKEN_SECRET,
-                },
-                refreshTokenConfig
-            );
-            const accessToken = jwt.token.generate(
-                { id: user.id.toString(), iss: process.env.APP_URL },
-                { key: process.env.ACCESS_TOKEN_SECRET },
-                accessTokenConfig
-            );
+            const refreshToken = generateRefreshToken(user.id.toString());
+            const accessToken = generateAccessToken(user.id.toString());
             await db
                 .insertInto('token')
                 .values({
@@ -159,6 +137,38 @@ export class AuthController {
                     isVerified: user.is_verified,
                     token: accessToken,
                 },
+            });
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async refreshToken(request, h) {
+        try {
+            const data = request.state[COOKIE_DATA_NAME];
+            const refreshToken = data?.token;
+
+            const db = getDatabase();
+            const token = await db
+                .selectFrom('token')
+                .select('token.user_id')
+                .where('refresh_token', '=', refreshToken ?? '')
+                .executeTakeFirst();
+            if (!token) {
+                return badRequest(h, 'Invalid token', {
+                    errCode: errorConstant.ERR_INVALID_TOKEN,
+                });
+            }
+
+            const accessToken = generateAccessToken(token.user_id.toString());
+
+            return h.response({
+                token: accessToken,
             });
         } catch (e) {
             console.log(e);
@@ -218,21 +228,8 @@ export class AuthController {
                     .executeTakeFirst();
             }
 
-            const refreshToken = jwt.token.generate(
-                {
-                    id: user.id.toString(),
-                    iss: process.env.APP_URL,
-                },
-                {
-                    key: process.env.REFRESH_TOKEN_SECRET,
-                },
-                refreshTokenConfig
-            );
-            const accessToken = jwt.token.generate(
-                { id: user.id.toString(), iss: process.env.APP_URL },
-                { key: process.env.ACCESS_TOKEN_SECRET },
-                accessTokenConfig
-            );
+            const refreshToken = generateRefreshToken(user.id.toString());
+            const accessToken = generateAccessToken(user.id.toString());
             //prevent blocking process for each calling to database
             await Promise.all([
                 db
@@ -308,22 +305,8 @@ export class AuthController {
                 });
             }
 
-            const accessToken = jwt.token.generate(
-                { id: user.id.toString(), iss: process.env.APP_URL },
-                { key: process.env.ACCESS_TOKEN_SECRET },
-                accessTokenConfig
-            );
-
-            const refreshToken = jwt.token.generate(
-                {
-                    id: user.id.toString(),
-                    iss: process.env.APP_URL,
-                },
-                {
-                    key: process.env.REFRESH_TOKEN_SECRET,
-                },
-                refreshTokenConfig
-            );
+            const accessToken = generateAccessToken(user.id.toString());
+            const refreshToken = generateRefreshToken(user.id.toString());
             await db
                 .insertInto('token')
                 .values({

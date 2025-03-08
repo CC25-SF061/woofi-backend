@@ -7,12 +7,12 @@ import vision from '@hapi/vision';
 import auth from './app/routes/user-auth.js';
 import inert from '@hapi/inert';
 import hapiswagger from 'hapi-swagger';
+import cookieConfig, { COOKIE_DATA_NAME } from './config/cookie.js';
 
 const server = hapi.server({
     host: '0.0.0.0',
     port: 8070,
 });
-const authController = new AuthController();
 await server.register([
     jwt,
     inert,
@@ -51,7 +51,7 @@ server.auth.strategy('accessToken', 'jwt', {
         };
     },
 });
-
+server.state(COOKIE_DATA_NAME, cookieConfig);
 server.route(
     auth.concat([
         {

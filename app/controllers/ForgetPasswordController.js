@@ -5,6 +5,7 @@ import { transport } from '../../core/Mailer.js';
 import { generateOTP } from '../util/generateOTP.js';
 import { forgetPasswordConfig } from '../../config/otp.js';
 import { badRequest } from '../util/errorHandler.js';
+import { COOKIE_DATA_NAME } from '../../config/cookie.js';
 
 export class ForgetPasswordController {
     /**
@@ -140,17 +141,19 @@ export class ForgetPasswordController {
                 .where('user_id', '=', user.id)
                 .execute();
 
-            return h.response({
-                success: true,
-                message: 'Success Change password',
-                data: {
-                    id: user.id.toString(),
-                    username: user.username,
-                    email: user.email,
-                    name: user.name,
-                    isVerified: user.is_verified,
-                },
-            });
+            return h
+                .response({
+                    success: true,
+                    message: 'Success Change password',
+                    data: {
+                        id: user.id.toString(),
+                        username: user.username,
+                        email: user.email,
+                        name: user.name,
+                        isVerified: user.is_verified,
+                    },
+                })
+                .unstate(COOKIE_DATA_NAME);
         } catch (e) {
             console.log(e);
             return Boom.internal();

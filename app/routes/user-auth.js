@@ -12,6 +12,24 @@ const forgetPasswordController = new ForgetPasswordController();
  */
 export default [
     {
+        method: ['GET'],
+        path: '/api/auth/refreshToken',
+        options: {
+            tags: ['api', 'auth'],
+            state: {
+                parse: true,
+                failAction: 'error',
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    token: Joi.string(),
+                }),
+            },
+        },
+        handler: authController.refreshToken.bind(authController),
+    },
+    {
         method: ['POST'],
         path: '/api/auth/register',
         options: {
