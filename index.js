@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import './core/PgType.js';
 import hapi from '@hapi/hapi';
-import { AuthController } from './app/controllers/AuthController.js';
 import jwt from '@hapi/jwt';
 import vision from '@hapi/vision';
 import auth from './app/routes/user-auth.js';
 import inert from '@hapi/inert';
 import hapiswagger from 'hapi-swagger';
 import cookieConfig, { COOKIE_DATA_NAME } from './config/cookie.js';
+import geolocation from './app/routes/geolocation.js';
 
 const server = hapi.server({
     host: '0.0.0.0',
@@ -53,7 +53,7 @@ server.auth.strategy('accessToken', 'jwt', {
 });
 server.state(COOKIE_DATA_NAME, cookieConfig);
 server.route(
-    auth.concat([
+    [].concat(auth, geolocation, [
         {
             method: ['get'],
             path: '/',
