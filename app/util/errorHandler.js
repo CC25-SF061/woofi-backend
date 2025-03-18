@@ -50,3 +50,30 @@ export function badRequest(h, message, payload, header, body) {
 
     return h.response(badRequest).code(badRequest.statusCode);
 }
+
+/**
+ * @param {import('@hapi/hapi').ResponseToolkit} h
+ * @param {string} message
+ * @param {object} body
+ * @param {object} payload
+ * @returns {import('@hapi/hapi').ResponseObject}
+ */
+export function unauthorized(h, message, payload, header, body) {
+    const badRequest = Boom.unauthorized(message).output;
+
+    Object.assign(badRequest, {
+        success: false,
+        message: 'Bad Request',
+        payload: {
+            ...badRequest.payload,
+            ...payload,
+        },
+        header: {
+            ...badRequest.headers,
+            ...header,
+        },
+        ...body,
+    });
+
+    return h.response(badRequest).code(badRequest.statusCode);
+}

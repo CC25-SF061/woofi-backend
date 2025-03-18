@@ -1,7 +1,7 @@
 import { glob } from 'glob';
 import { pathToFileURL } from 'url';
 
-export class FileMigrationProvider {
+export class FileModulesProvider {
     /**
      * @type {string}
      */

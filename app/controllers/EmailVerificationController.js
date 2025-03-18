@@ -5,6 +5,7 @@ import { transport } from '../../core/Mailer.js';
 import { generateOTP } from '../util/generateOTP.js';
 import { emailVerificationConfig } from '../../config/otp.js';
 import { badRequest } from '../util/errorHandler.js';
+import { generateAccessToken } from '../util/generateAuthToken.js';
 
 export class EmailVerificationController {
     /**
@@ -108,6 +109,10 @@ export class EmailVerificationController {
                 success: true,
                 message: 'Success Verify Email',
                 data: {
+                    token: generateAccessToken(
+                        user.id.toString(),
+                        user.is_verified
+                    ),
                     id: user.id.toString(),
                     username: user.username,
                     email: user.email,

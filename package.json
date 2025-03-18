@@ -11,6 +11,7 @@
     "migrate": "node scripts/migration.js",
     "migrate:down": "node scripts/migration.js down",
     "migrate:reset": "npm run migrate:down && npm run migrate",
+    "seed": "",
     "prod": "node index.js",
     "dev": "nodemon index.js"
   },

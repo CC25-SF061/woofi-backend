@@ -8,6 +8,8 @@ import inert from '@hapi/inert';
 import hapiswagger from 'hapi-swagger';
 import cookieConfig, { COOKIE_DATA_NAME } from './config/cookie.js';
 import geolocation from './app/routes/geolocation.js';
+import contact from './app/routes/contact.js';
+import { getEnforcer, createStringUser } from './core/rbac/Casbin.js';
 
 const server = hapi.server({
     host: '0.0.0.0',
@@ -44,16 +46,16 @@ server.auth.strategy('accessToken', 'jwt', {
      * @param {import('@hapi/hapi').ResponseToolkit} h
      */
     validate: (artifact, request, h) => {
-        console.log('test');
         return {
             isValid: true,
             credentials: { ...artifact.decoded.payload },
         };
     },
 });
+
 server.state(COOKIE_DATA_NAME, cookieConfig);
 server.route(
-    [].concat(auth, geolocation, [
+    [].concat(auth, geolocation, contact, [
         {
             method: ['get'],
             path: '/',

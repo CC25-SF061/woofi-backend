@@ -1,5 +1,4 @@
 import { Kysely, sql } from 'kysely';
-import 'dotenv/config';
 
 /**
  * @param {Kysely<any>} db

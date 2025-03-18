@@ -3,7 +3,7 @@ import { dirname } from 'path';
 import pg from 'pg';
 import { Kysely, Migrator, PostgresDialect } from 'kysely';
 import { fileURLToPath } from 'url';
-import { FileMigrationProvider } from '../core/FileMigrationProvider.js';
+import { FileModulesProvider } from '../core/FileModulesProvider.js';
 
 const { Pool } = pg;
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -29,11 +29,13 @@ const db = new Kysely({
 });
 const migrator = new Migrator({
     db,
-    provider: new FileMigrationProvider('db/migrations/**/*.js'),
+    provider: new FileModulesProvider('db/migrations/**/*.js'),
+    allowUnorderedMigrations: true,
 });
 
+// migrator.getMigrations();
 async function migrateUp() {
-    const { error, results } = await migrator.migrateUp();
+    const { error, results } = await migrator.migrateToLatest();
 
     results?.forEach((it, i) => {
         console.log('it', i);
@@ -53,22 +55,26 @@ async function migrateUp() {
 }
 
 async function migrateDown() {
-    const { error, results } = await migrator.migrateDown();
+    for (let i = 0; i < (await migrator.getMigrations()).length; i++) {
+        const { error, results } = await migrator.migrateDown();
 
-    results?.forEach((it, i) => {
-        console.log('it', i);
-        if (it.status === 'Success') {
-            console.log(
-                `migration "${it.migrationName}" was executed successfully`
-            );
-        } else if (it.status === 'Error') {
-            console.error(`failed to execute migration "${it.migrationName}"`);
+        results?.forEach((it, i) => {
+            console.log('it', i);
+            if (it.status === 'Success') {
+                console.log(
+                    `migration "${it.migrationName}" was executed successfully`
+                );
+            } else if (it.status === 'Error') {
+                console.error(
+                    `failed to execute migration "${it.migrationName}"`
+                );
+            }
+        });
+
+        if (error) {
+            console.error('failed to migrate');
+            console.error(error);
         }
-    });
-
-    if (error) {
-        console.error('failed to migrate');
-        console.error(error);
     }
 }
 

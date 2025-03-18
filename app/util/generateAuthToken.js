@@ -5,9 +5,9 @@ import { accessTokenConfig, refreshTokenConfig } from '../../config/jwt.js';
  * @param {string | number} id
  * @returns {string}
  */
-export function generateAccessToken(id) {
+export function generateAccessToken(id, isVerified = false) {
     return jwt.token.generate(
-        { id: id, iss: process.env.APP_URL },
+        { id: id, iss: process.env.APP_URL, isVerified },
         { key: process.env.ACCESS_TOKEN_SECRET },
         accessTokenConfig
     );
