@@ -14,6 +14,11 @@ import { getEnforcer, createStringUser } from './core/rbac/Casbin.js';
 const server = hapi.server({
     host: '0.0.0.0',
     port: 8070,
+    routes: {
+        cors: {
+            origin: ['*'],
+        },
+    },
 });
 await server.register([
     jwt,
