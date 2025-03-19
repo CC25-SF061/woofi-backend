@@ -75,6 +75,22 @@ export default [
                 }),
                 failAction: invalidField,
             },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                    data: Joi.array().items({
+                        id: Joi.string(),
+                        message: Joi.string(),
+                        name: Joi.string(),
+                        email: Joi.string(),
+                        reason: Joi.string(),
+                        user_id: Joi.string(),
+                        created_at: Joi.string(),
+                    }),
+                }),
+            },
             pre: [{ method: isAdmin }],
         },
         handler: controller.getContacts.bind(controller),

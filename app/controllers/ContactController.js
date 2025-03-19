@@ -118,15 +118,21 @@ export class ContactController {
                 contacts = contacts.where('reason', '=', query.reason);
             }
             contacts = await contacts.execute();
-            console.log(contacts);
             return h
                 .response(
-                    JSON.stringify(contacts, (_, value) => {
-                        if (typeof value == 'bigint') {
-                            return value.toString();
+                    JSON.stringify(
+                        {
+                            success: true,
+                            message: 'Success getting data',
+                            data: contacts,
+                        },
+                        (_, value) => {
+                            if (typeof value == 'bigint') {
+                                return value.toString();
+                            }
+                            return value;
                         }
-                        return value;
-                    })
+                    )
                 )
                 .type('application/json');
         } catch (e) {
