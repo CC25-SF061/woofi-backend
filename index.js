@@ -9,7 +9,7 @@ import hapiswagger from 'hapi-swagger';
 import cookieConfig, { COOKIE_DATA_NAME } from './config/cookie.js';
 import geolocation from './app/routes/geolocation.js';
 import contact from './app/routes/contact.js';
-import { getEnforcer, createStringUser } from './core/rbac/Casbin.js';
+import destination from './app/routes/destination.js';
 
 const server = hapi.server({
     host: '0.0.0.0',
@@ -60,7 +60,7 @@ server.auth.strategy('accessToken', 'jwt', {
 
 server.state(COOKIE_DATA_NAME, cookieConfig);
 server.route(
-    [].concat(auth, geolocation, contact, [
+    [].concat(auth, geolocation, contact, destination, [
         {
             method: ['get'],
             path: '/',

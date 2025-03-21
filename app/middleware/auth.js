@@ -27,3 +27,25 @@ export async function isAdmin(request, h) {
 
     return request.pre;
 }
+
+/**
+ * @param {import("@hapi/hapi").Request} request
+ * @param {import("@hapi/hapi").ResponseToolkit} h
+ * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+ */
+export async function isWritter(request, h) {
+    const { credentials } = request.auth;
+    const enforcer = getEnforcer();
+    const hasRole = await enforcer.hasRoleForUser(
+        createStringUser(credentials.id),
+        createStringRole('writter')
+    );
+
+    if (!hasRole) {
+        return unauthorized(h, 'User is not writter', {
+            errCode: ErrorConstant.ERR_NOT_WRITTER,
+        }).takeover();
+    }
+
+    return request.pre;
+}
