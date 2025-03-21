@@ -13,7 +13,7 @@ const forgetPasswordController = new ForgetPasswordController();
 export default [
     {
         method: ['GET'],
-        path: '/api/auth/refreshToken',
+        path: '/api/auth/refresh-token',
         options: {
             tags: ['api', 'auth'],
             state: {

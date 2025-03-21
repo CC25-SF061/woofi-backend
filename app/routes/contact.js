@@ -40,7 +40,7 @@ export default [
     },
     {
         method: ['POST'],
-        path: '/api/contact/requestRoleWritter',
+        path: '/api/contact/request-role-writter',
         options: {
             tags: ['api', 'contact'],
             auth: 'accessToken',
