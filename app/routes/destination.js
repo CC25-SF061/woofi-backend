@@ -19,24 +19,21 @@ export default [
                 allow: 'multipart/form-data',
                 multipart: true,
                 maxBytes: 1048576 * 4,
+                output: 'stream',
             },
             tags: ['api', 'destination'],
             validate: {
                 payload: Joi.object({
                     image: Joi.required()
-                        .custom(async (value, h) => {
-                            const fileType = await fileTypeFromBuffer(value);
+                        .custom((value, h) => {
+                            const fileType = value.hapi.headers['content-type'];
                             if (
-                                !['image/jpeg', 'image/png'].includes(
-                                    fileType.mime
-                                )
+                                !['image/jpeg', 'image/png'].includes(fileType)
                             ) {
                                 return h.error('any.invalid');
                             }
                             return value;
                         }, 'mime-type')
-
-                        .required()
                         .messages({
                             'any.invalid': 'Invalid image must be png or jpeg',
                         })
@@ -45,6 +42,9 @@ export default [
                             errors[0].local.value = 'REDACTED';
                             return errors;
                         }),
+                    name: Joi.string().required().max(50),
+                    location: Joi.string().required().max(50),
+                    detail: Joi.string().required(),
                 }),
                 failAction: invalidField,
             },
@@ -59,5 +59,62 @@ export default [
         },
 
         handler: controller.addPost.bind(controller),
+    },
+    {
+        method: ['GET'],
+        path: '/api/destination/{postId}',
+        options: {
+            tags: ['api', 'destination'],
+            validate: {
+                params: Joi.object({
+                    postId: Joi.number().required(),
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                    data: Joi.object({
+                        rating: Joi.number(),
+                        id: Joi.number(),
+                        created_at: Joi.date(),
+                        detail: Joi.string(),
+                        image: Joi.string(),
+                        location: Joi.string(),
+                        user_id: Joi.string(),
+                    }),
+                }),
+            },
+        },
+
+        handler: controller.getPost.bind(controller),
+    },
+    {
+        method: ['POST'],
+        path: '/api/destination/rating/{postId}',
+        options: {
+            auth: 'accessToken',
+            tags: ['api', 'destination'],
+            validate: {
+                payload: Joi.object({
+                    score: Joi.number(),
+                }),
+                params: Joi.object({
+                    postId: Joi.number(),
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+        },
+
+        handler: controller.addRating.bind(controller),
     },
 ];

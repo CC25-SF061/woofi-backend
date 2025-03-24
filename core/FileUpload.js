@@ -45,8 +45,9 @@ export async function upload(name, stream, mimetype = 'image/jpeg') {
         Bucket: process.env.FILE_UPLOAD_BUCKET,
         Body: stream,
         Key: name,
+        CacheControl: 'max-age=15724800',
+
         ContentType: mimetype,
     });
-
-    await client.send(command);
+    const result = await client.send(command);
 }

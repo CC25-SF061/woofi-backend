@@ -27,7 +27,7 @@ export async function up(db) {
         .createTable('token')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
         .addColumn('user_id', 'bigint', (col) =>
-            col.references('user.id').onDelete('cascade').notNull()
+            col.references('user.id').notNull()
         )
         .addColumn('refresh_token', 'varchar(255)', (col) => col.notNull())
         .addColumn('expired_at', 'timestamptz', (col) => col.notNull())
@@ -37,7 +37,7 @@ export async function up(db) {
         .createTable('email_verification')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
         .addColumn('user_id', 'bigint', (col) =>
-            col.references('user.id').onDelete('cascade').notNull()
+            col.references('user.id').notNull()
         )
         .addColumn('otp', 'char(6)', (col) => col.notNull())
         .addColumn('expired_at', 'timestamptz', (col) => col.notNull())
@@ -46,7 +46,7 @@ export async function up(db) {
         .createTable('forget_password')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
         .addColumn('user_id', 'bigint', (col) =>
-            col.references('user.id').onDelete('cascade').notNull()
+            col.references('user.id').notNull()
         )
         .addColumn('otp', 'integer', (col) => col.notNull())
         .addColumn('expired_at', 'timestamptz', (col) => col.notNull())
@@ -56,7 +56,7 @@ export async function up(db) {
         .createTable('oauth')
         .addColumn('provider_user_id', 'varchar(100)', (col) => col.notNull())
         .addColumn('user_id', 'bigint', (col) =>
-            col.references('user.id').onDelete('cascade').notNull()
+            col.references('user.id').notNull()
         )
         .addColumn('provider_name', 'varchar(25)', (col) => col.notNull())
         .execute();

@@ -16,6 +16,7 @@ const server = hapi.server({
     port: 8070,
     routes: {
         cors: {
+            credentials: true,
             origin: ['*'],
         },
     },
