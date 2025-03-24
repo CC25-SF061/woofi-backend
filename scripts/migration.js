@@ -6,20 +6,9 @@ import { fileURLToPath } from 'url';
 import { FileModulesProvider } from '../core/FileModulesProvider.js';
 
 const { Pool } = pg;
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
-let pool;
-if (process.env.APP_ENV === 'development') {
-    pool = new Pool({
-        user: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        database: process.env.DB_DATABASE,
-    });
-} else if (process.env.APP_ENV === 'production') {
-    pool = new Pool({ connectionString: process.env.DATABASE_URL });
-}
+let pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
 /**@type  {Kysely<import('kysely-codegen').DB>}*/
 const db = new Kysely({
     log(event) {
@@ -33,7 +22,6 @@ const migrator = new Migrator({
     allowUnorderedMigrations: true,
 });
 
-// migrator.getMigrations();
 async function migrateUp() {
     const { error, results } = await migrator.migrateToLatest();
 
