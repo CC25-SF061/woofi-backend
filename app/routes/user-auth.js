@@ -105,7 +105,7 @@ export default [
             tags: ['api', 'auth'],
             validate: {
                 payload: Joi.object({
-                    tokenId: Joi.string().required(),
+                    token: Joi.string().required(),
                 }).options({ abortEarly: false, stripUnknown: true }),
                 failAction: invalidField,
             },
@@ -134,7 +134,7 @@ export default [
             tags: ['api', 'auth'],
             validate: {
                 payload: Joi.object({
-                    tokenId: Joi.string().required(),
+                    token: Joi.string().required(),
                 }).options({ abortEarly: false, stripUnknown: true }),
                 failAction: invalidField,
             },

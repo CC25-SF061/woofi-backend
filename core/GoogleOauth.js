@@ -1,14 +1,18 @@
+import axios from 'axios';
 import { OAuth2Client } from 'google-auth-library';
 
-const client = new OAuth2Client();
+const client = new OAuth2Client(
+    process.env.GOOGLE_WEB_CLIENT_ID,
+    process.env.GOOGLE_WEB_SECRET,
+    'postmessage'
+);
 
-export async function verify(token) {
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_WEB_CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
+export async function verify(code) {
+    const payload = (
+        await axios.get(
+            `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${code}`
+        )
+    ).data;
     const userId = payload['sub'];
     const email = payload.email;
 

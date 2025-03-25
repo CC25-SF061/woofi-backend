@@ -184,7 +184,7 @@ export class AuthController {
     async googleRegister(request, h) {
         try {
             const { payload } = request;
-            const googleUser = await verify(payload.tokenId);
+            const googleUser = await verify(payload.token);
             if (!googleUser.email) {
                 return badRequest(h, 'Email scope must be provided', {
                     errCode: errorConstant.ERR_GOOGLE_INVALID_SCOPE,
@@ -194,7 +194,7 @@ export class AuthController {
             const db = getDatabase();
             let user = await db
                 .selectFrom('user')
-                .leftJoin('oauth', (join) =>
+                .innerJoin('oauth', (join) =>
                     join
                         .onRef('oauth.user_id', '=', 'user.id')
                         .on('oauth.provider_name', '=', OauthProvider.GOOGLE)
@@ -224,6 +224,7 @@ export class AuthController {
                         name: username,
                         username: username,
                     })
+                    .where('id', '=', tempUser.id)
                     .returningAll()
                     .executeTakeFirst();
             }
@@ -280,7 +281,7 @@ export class AuthController {
     async googleLogin(request, h) {
         try {
             const { payload } = request;
-            const googleUser = await verify(payload.tokenId);
+            const googleUser = await verify(payload.token);
 
             if (!googleUser.email) {
                 return badRequest(h, 'Email scope must be provided', {
