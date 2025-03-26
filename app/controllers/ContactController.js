@@ -26,7 +26,7 @@ export class ContactController {
                     email: payload.email,
                     message: payload.message,
                     reason: payload.reason,
-                    user_id: credentials.id,
+                    user_id: credentials?.id,
                 })
                 .execute();
 

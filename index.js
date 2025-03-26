@@ -20,6 +20,8 @@ const server = hapi.server({
         cors: {
             credentials: true,
             origin: ['*'],
+            // headers: ['*'],
+            // exposedHeaders: ['set-cookie'],
         },
     },
 });
@@ -62,6 +64,7 @@ server.auth.strategy('accessToken', 'jwt', {
 });
 
 server.state(COOKIE_DATA_NAME, cookieConfig);
+
 server.route(
     [].concat(auth, geolocation, contact, destination, wishlist, profile, [
         {

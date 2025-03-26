@@ -5,8 +5,10 @@ export default {
     ttl: 60 * 60 * 24 * 15,
     isHttpOnly: true,
     encoding: 'base64json',
-    clearInvalid: true,
-    strictHeader: true,
+    clearInvalid: false,
+    isSecure: true,
+    path: '/',
+    // strictHeader: false,
     isSameSite: 'None',
 };
 
