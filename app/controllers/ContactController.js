@@ -1,14 +1,6 @@
 import Boom from '@hapi/boom';
 import { getDatabase } from '../../core/Database.js';
 import { reason } from '../../core/ContactConstant.js';
-
-import {
-    createStringRole,
-    createStringUser,
-    getEnforcer,
-} from '../../core/rbac/Casbin.js';
-import { unauthorized } from '../util/errorHandler.js';
-import ErrorConstant from '../../core/ErrorConstant.js';
 export class ContactController {
     /**@type {ReturnType<typeof getDatabase>} */
     db;
@@ -25,6 +17,7 @@ export class ContactController {
         try {
             const db = this.db;
             const { payload } = request;
+            const { credentials } = request.auth;
 
             await db
                 .insertInto('contact')
@@ -33,6 +26,7 @@ export class ContactController {
                     email: payload.email,
                     message: payload.message,
                     reason: payload.reason,
+                    user_id: credentials.id,
                 })
                 .execute();
 

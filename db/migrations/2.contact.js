@@ -13,7 +13,7 @@ export async function up(db) {
         .addColumn('email', 'varchar(255)', (col) => col.notNull())
         .addColumn('reason', 'varchar(100)', (col) => col.notNull())
         .addColumn('user_id', 'bigint', (col) =>
-            col.references('user.id').onDelete('cascade')
+            col.references('user.id').onDelete('set null')
         )
         .addColumn('created_at', 'timestamptz', (col) =>
             col.defaultTo(sql`now()`).notNull()

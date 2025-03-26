@@ -65,6 +65,10 @@ export default [
         path: '/api/destination/{postId}',
         options: {
             tags: ['api', 'destination'],
+            auth: {
+                mode: 'optional',
+                strategy: 'accessToken',
+            },
             validate: {
                 params: Joi.object({
                     postId: Joi.number().required(),
@@ -77,6 +81,8 @@ export default [
                     message: Joi.string(),
                     success: Joi.boolean(),
                     data: Joi.object({
+                        personalRating: Joi.number(),
+                        wishlistId: Joi.number(),
                         rating: Joi.number(),
                         id: Joi.number(),
                         created_at: Joi.date(),

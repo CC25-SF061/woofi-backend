@@ -10,6 +10,8 @@ import cookieConfig, { COOKIE_DATA_NAME } from './config/cookie.js';
 import geolocation from './app/routes/geolocation.js';
 import contact from './app/routes/contact.js';
 import destination from './app/routes/destination.js';
+import wishlist from './app/routes/wishlist.js';
+import profile from './app/routes/profile.js';
 
 const server = hapi.server({
     host: '0.0.0.0',
@@ -61,7 +63,7 @@ server.auth.strategy('accessToken', 'jwt', {
 
 server.state(COOKIE_DATA_NAME, cookieConfig);
 server.route(
-    [].concat(auth, geolocation, contact, destination, [
+    [].concat(auth, geolocation, contact, destination, wishlist, profile, [
         {
             method: ['get'],
             path: '/',

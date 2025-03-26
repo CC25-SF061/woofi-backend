@@ -33,6 +33,17 @@ export async function up(db) {
         )
         .addColumn('score', 'double precision', (col) => col.notNull())
         .execute();
+
+    await db.schema
+        .createTable('whislist')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+        .addColumn('user_id', 'bigint', (col) =>
+            col.references('user.id').notNull()
+        )
+        .addColumn('destination_id', 'bigint', (col) =>
+            col.references('destination.id').notNull()
+        )
+        .execute();
 }
 
 /**
@@ -40,6 +51,8 @@ export async function up(db) {
  * @returns {Promise<void>}
  */
 export async function down(db) {
+    await db.schema.dropTable('whislist').execute();
+
     await db.schema.dropTable('rating_destination').execute();
     await db.schema.dropTable('destination').execute();
 }

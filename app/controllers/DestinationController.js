@@ -77,17 +77,51 @@ export class DestinationController {
         try {
             const { params } = request;
             const postId = parseInt(params.postId);
+            const { credentials } = request.auth;
             const db = getDatabase();
 
-            const destination = await db
+            let destination = db
                 .selectFrom('destination')
                 .leftJoin(
                     'rating_destination',
                     'rating_destination.destination_id',
                     'destination.id'
                 )
+                .leftJoin(
+                    (eb) =>
+                        eb
+                            .selectFrom('whislist')
+                            .select([
+                                'whislist.id',
+                                'whislist.user_id',
+                                'whislist.destination_id',
+                                'rating_destination.score as personalRating',
+                            ])
+                            .leftJoin('rating_destination', (join) =>
+                                join
+                                    .onRef(
+                                        'rating_destination.destination_id',
+                                        '=',
+                                        'whislist.destination_id'
+                                    )
+                                    .onRef(
+                                        'rating_destination.user_id',
+                                        '=',
+                                        'rating_destination.user_id'
+                                    )
+                            )
+                            .where('whislist.user_id', '=', credentials.id)
+                            .as('w'),
+                    (join) =>
+                        join.onRef('w.destination_id', '=', 'destination.id')
+                )
                 .select(({ eb }) => [
-                    eb.fn.avg('rating_destination.score').as('rating'),
+                    eb.fn
+                        .avg('rating_destination.score')
+                        .over((ob) => ob.partitionBy('destination.id'))
+                        .as('rating'),
+                    'w.personalRating',
+                    'w.id as wishListId',
                     'destination.id',
                     'destination.created_at',
                     'destination.detail',
@@ -95,9 +129,16 @@ export class DestinationController {
                     'destination.location',
                     'destination.user_id',
                 ])
-                .where('destination.id', '=', postId)
-                .groupBy('destination.id')
-                .executeTakeFirst();
+                .where('destination.id', '=', postId);
+
+            if (credentials?.id) {
+                destination = destination.where(
+                    'w.user_id',
+                    '=',
+                    parseInt(credentials.id)
+                );
+            }
+            destination = await destination.executeTakeFirst();
             if (!destination) {
                 return h.response({
                     ...Boom.notFound().output,

@@ -14,18 +14,25 @@ export default [
         path: '/api/contact/add',
         options: {
             tags: ['api', 'contact'],
+            auth: {
+                strategy: 'accessToken',
+                mode: 'optional',
+            },
             validate: {
                 payload: Joi.object({
-                    name: Joi.string().required(),
-                    email: Joi.string().email().required(),
-                    message: Joi.string().required(),
-                    reason: Joi.string()
-                        .required()
-                        .valid(reason.CONTACT_REASON_CONTACT)
-                        .messages({
-                            'any.only': `invalid constant reason. Reason must be ${reason.CONTACT_REASON_CONTACT}`,
-                        }),
-                }).required(),
+                    name: Joi.string().required().messages({
+                        'any.required': 'Name is required',
+                    }),
+                    email: Joi.string().email().required().messages({
+                        'any.required': 'email is required',
+                    }),
+                    message: Joi.string().required().messages({
+                        'any.required': 'message is required',
+                    }),
+                    reason: Joi.string().required().messages({
+                        'any.required': 'reason is required',
+                    }),
+                }).options({ abortEarly: false, stripUnknown: true }),
                 failAction: invalidField,
             },
             response: {

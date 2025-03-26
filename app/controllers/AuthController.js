@@ -194,10 +194,16 @@ export class AuthController {
             const db = getDatabase();
             let user = await db
                 .selectFrom('user')
-                .innerJoin('oauth', (join) =>
+                .leftJoin('oauth', (join) =>
                     join
                         .onRef('oauth.user_id', '=', 'user.id')
                         .on('oauth.provider_name', '=', OauthProvider.GOOGLE)
+                )
+                .where((eb) =>
+                    eb.or([
+                        eb('oauth.provider_user_id', '=', googleUser.userId),
+                        eb('user.email', '=', googleUser.email),
+                    ])
                 )
                 .selectAll()
                 .executeTakeFirst();
