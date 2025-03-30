@@ -59,7 +59,7 @@ export class AuthController {
                         parseInt(process.env.BCRYPT_HASH_ROUND)
                     ),
                 })
-                .returning(['id', 'is_verified'])
+                .returning(['id', 'is_verified', 'profile_image'])
                 .executeTakeFirst();
             const refreshToken = generateRefreshToken(result.id.toString());
             const accessToken = generateAccessToken(result.id.toString());
@@ -80,6 +80,7 @@ export class AuthController {
                 message: 'Success creating user',
                 data: {
                     ...insertUserObj,
+                    profileImage: result.profile_image,
                     isVerified: result.is_verified,
                     id: result.id.toString(),
                     token: accessToken,
@@ -130,6 +131,7 @@ export class AuthController {
                 message: 'Success Login user',
                 success: true,
                 data: {
+                    profileImage: user.profile_image,
                     id: user.id.toString(),
                     username: user.username,
                     email: user.email,
@@ -265,6 +267,7 @@ export class AuthController {
                 message: 'Success Register user',
                 success: true,
                 data: {
+                    profileImage: user.profile_image,
                     id: user.id.toString(),
                     username: user.username,
                     email: user.email,
@@ -303,6 +306,7 @@ export class AuthController {
                         .onRef('user.id', '=', 'oauth.user_id')
                         .on('oauth.provider_name', '=', OauthProvider.GOOGLE)
                 )
+                .where('oauth.provider_user_id', '=', googleUser.userId)
                 .selectAll()
                 .executeTakeFirst();
 
@@ -331,6 +335,7 @@ export class AuthController {
                 success: true,
                 data: {
                     id: user.id.toString(),
+                    profileImage: user.profile_image,
                     username: user.username,
                     email: user.email,
                     name: user.name,

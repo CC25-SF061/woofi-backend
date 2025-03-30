@@ -228,6 +228,9 @@ export default [
                 schema: Joi.object({
                     message: Joi.string(),
                     success: Joi.boolean(),
+                    data: {
+                        hash: Joi.string(),
+                    },
                 }),
             },
         },
@@ -242,7 +245,7 @@ export default [
             tags: ['api', 'reset-password'],
             validate: {
                 payload: Joi.object({
-                    email: Joi.string().email().required(),
+                    hash: Joi.string().required(),
                     otp: Joi.string().required(),
                 }).options({ abortEarly: false, stripUnknown: true }),
                 failAction: invalidField,
@@ -266,12 +269,12 @@ export default [
             tags: ['api', 'reset-password'],
             validate: {
                 payload: Joi.object({
-                    email: Joi.string().email().required(),
-                    otp: Joi.string().required(),
+                    otp: Joi.string(),
+                    hash: Joi.string(),
                     password: Joi.string().min(8).required(),
                     passwordConfirmation: Joi.string()
                         .required()
-                        .equal(Joi.ref('password'))
+                        .valid(Joi.ref('password'))
                         .messages({
                             'any.only': 'Password must be same',
                         }),

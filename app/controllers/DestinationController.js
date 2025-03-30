@@ -1,8 +1,10 @@
+import { sql } from 'kysely';
 import { getDatabase } from '../../core/Database.js';
 import ErrorConstant from '../../core/ErrorConstant.js';
 import { createPath, upload } from '../../core/FileUpload.js';
 import Boom from '@hapi/boom';
 import mime from 'mime';
+import { JSONToString } from '../util/json.js';
 
 export class DestinationController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -52,6 +54,7 @@ export class DestinationController {
                     detail: payload.detail,
                     location: payload.location,
                     image: pathImage,
+                    province: payload.province,
                 })
                 .returning(['id'])
                 .executeTakeFirst();
@@ -73,9 +76,8 @@ export class DestinationController {
      * @param {import("@hapi/hapi").ResponseToolkit} h
      * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
      */
-    async getPost(request, h) {
+    async getDetailPost(request, h) {
         try {
-            const { params } = request;
             const postId = parseInt(params.postId);
             const { credentials } = request.auth;
             const db = getDatabase();
@@ -87,41 +89,29 @@ export class DestinationController {
                     'rating_destination.destination_id',
                     'destination.id'
                 )
-                .leftJoin(
-                    (eb) =>
-                        eb
-                            .selectFrom('whislist')
-                            .select([
-                                'whislist.id',
-                                'whislist.user_id',
-                                'whislist.destination_id',
-                                'rating_destination.score as personalRating',
-                            ])
-                            .leftJoin('rating_destination', (join) =>
-                                join
-                                    .onRef(
-                                        'rating_destination.destination_id',
-                                        '=',
-                                        'whislist.destination_id'
-                                    )
-                                    .onRef(
-                                        'rating_destination.user_id',
-                                        '=',
-                                        'rating_destination.user_id'
-                                    )
-                            )
-                            .where('whislist.user_id', '=', credentials.id)
-                            .as('w'),
-                    (join) =>
-                        join.onRef('w.destination_id', '=', 'destination.id')
+                .leftJoin('whislist as w', (join) =>
+                    join
+                        .onRef('w.destination_id', '=', 'destination.id')
+                        .on('w.user_id', '=', credentials.id)
+                )
+                .leftJoin('rating_destination as rd2', (join) =>
+                    join
+                        .onRef('rd2.destination_id', '=', 'destination.id')
+                        .on('rd2.user_id', '=', credentials.id)
                 )
                 .select(({ eb }) => [
                     eb.fn
                         .avg('rating_destination.score')
                         .over((ob) => ob.partitionBy('destination.id'))
                         .as('rating'),
-                    'w.personalRating',
-                    'w.id as wishListId',
+                    'rd2.score as personalRating',
+                    eb
+                        .case()
+                        .when(sql`w.id IS NOT NULL`)
+                        .then('true')
+                        .else(false)
+                        .end()
+                        .as('isWishlisted'),
                     'destination.id',
                     'destination.created_at',
                     'destination.detail',
@@ -130,15 +120,8 @@ export class DestinationController {
                     'destination.user_id',
                 ])
                 .where('destination.id', '=', postId);
+            // .executeTakeFirst();
 
-            if (credentials?.id) {
-                destination = destination.where(
-                    'w.user_id',
-                    '=',
-                    parseInt(credentials.id)
-                );
-            }
-            destination = await destination.executeTakeFirst();
             if (!destination) {
                 return h.response({
                     ...Boom.notFound().output,
@@ -147,21 +130,82 @@ export class DestinationController {
             }
             return h
                 .response(
-                    JSON.stringify(
-                        Object.assign(
-                            {
-                                success: true,
-                                message: 'Success get destination',
-                            },
-                            { data: destination }
-                        ),
-                        (_, value) => {
-                            if (typeof value === 'bigint') {
-                                return value.toString();
-                            }
-                            return value;
-                        }
-                    )
+                    JSONToString({
+                        success: true,
+                        message: 'Success get destination',
+                        data: destination,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getPosts(request, h) {
+        try {
+            const { query } = request;
+            const db = getDatabase();
+            const { credentials } = request.auth;
+            let destination = db
+                .selectFrom('destination')
+                .leftJoin('rating_destination as rd', (join) =>
+                    join.onRef('rd.destination_id', '=', 'destination.id')
+                )
+                .leftJoin('whislist as w', (join) =>
+                    join
+                        .onRef('w.destination_id', '=', 'destination.id')
+                        .on('w.user_id', '=', credentials?.id)
+                )
+                .select((eb) => [
+                    'destination.id',
+                    'destination.detail',
+                    'destination.image',
+                    eb.fn
+                        .avg('rd.score')
+                        .over((ob) => ob.partitionBy('destination.id'))
+                        .as('rating'),
+                    eb
+                        .case()
+                        .when(sql`w.id IS NOT NULL`)
+                        .then(true)
+                        .else(false)
+                        .end()
+                        .as('isWishlisted'),
+                ])
+                .distinct();
+            if (query.province) {
+                destination = destination.where(
+                    'destination.province',
+                    '=',
+                    query.province
+                );
+            }
+            if (query.name) {
+                destination = destination.where(
+                    'destination.name',
+                    'like',
+                    `${query.name}%`
+                );
+            }
+            const limit = 30;
+            destination = await destination
+                .offset(query.page * limit)
+                .limit(30)
+                .execute();
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'Success getting list of destination',
+                        data: destination,
+                    })
                 )
                 .type('application/json');
         } catch (e) {

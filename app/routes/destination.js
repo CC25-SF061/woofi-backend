@@ -45,6 +45,7 @@ export default [
                     name: Joi.string().required().max(50),
                     location: Joi.string().required().max(50),
                     detail: Joi.string().required(),
+                    province: Joi.string(),
                 }),
                 failAction: invalidField,
             },
@@ -66,7 +67,7 @@ export default [
         options: {
             tags: ['api', 'destination'],
             auth: {
-                mode: 'optional',
+                mode: 'try',
                 strategy: 'accessToken',
             },
             validate: {
@@ -82,7 +83,7 @@ export default [
                     success: Joi.boolean(),
                     data: Joi.object({
                         personalRating: Joi.number(),
-                        wishlistId: Joi.number(),
+                        isWishlisted: Joi.boolean(),
                         rating: Joi.number(),
                         id: Joi.number(),
                         created_at: Joi.date(),
@@ -90,12 +91,52 @@ export default [
                         image: Joi.string(),
                         location: Joi.string(),
                         user_id: Joi.string(),
+                        province: Joi.string(),
                     }),
                 }),
             },
         },
 
-        handler: controller.getPost.bind(controller),
+        handler: controller.getDetailPost.bind(controller),
+    },
+    {
+        method: ['GET'],
+        path: '/api/destinations',
+        options: {
+            tags: ['api', 'destination'],
+            auth: {
+                mode: 'try',
+                strategy: 'accessToken',
+            },
+            validate: {
+                query: Joi.object({
+                    page: Joi.number().default(0),
+                    province: Joi.string(),
+                    name: Joi.string(),
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                    data: Joi.array().items(
+                        Joi.object({
+                            id: Joi.number(),
+                            detail: Joi.string(),
+                            image: Joi.string(),
+                            rating: Joi.number(),
+                            isWishlisted: Joi.boolean(),
+                            province: Joi.string(),
+                        })
+                    ),
+                }),
+            },
+        },
+
+        handler: controller.getPosts.bind(controller),
     },
     {
         method: ['POST'],

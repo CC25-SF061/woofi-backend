@@ -21,6 +21,7 @@ export async function up(db) {
         .addColumn('is_verified', 'boolean', (col) =>
             col.defaultTo(sql`false`).notNull()
         )
+        .addColumn('profile_image', 'varchar(255)')
         .execute();
 
     await db.schema
@@ -48,6 +49,7 @@ export async function up(db) {
         .addColumn('user_id', 'bigint', (col) =>
             col.references('user.id').notNull()
         )
+        .addColumn('hash', 'varchar(255)', (col) => col.notNull())
         .addColumn('otp', 'integer', (col) => col.notNull())
         .addColumn('expired_at', 'timestamptz', (col) => col.notNull())
         .execute();

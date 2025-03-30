@@ -6,6 +6,8 @@ import { generateOTP } from '../util/generateOTP.js';
 import { forgetPasswordConfig } from '../../config/otp.js';
 import { badRequest } from '../util/errorHandler.js';
 import { COOKIE_DATA_NAME } from '../../config/cookie.js';
+import { sha256 } from 'js-sha256';
+import bcrypt from 'bcrypt';
 
 export class ForgetPasswordController {
     /**
@@ -24,10 +26,13 @@ export class ForgetPasswordController {
                 .select(['id', 'email'])
                 .where('email', '=', payload.email)
                 .executeTakeFirst();
-
+            const hash = sha256.hmac(process.env.APP_KEY, payload.email);
             const successResponse = h.response({
                 success: true,
                 message: 'Success sending OTP',
+                data: {
+                    hash,
+                },
             });
             if (!user) {
                 return successResponse;
@@ -44,14 +49,15 @@ export class ForgetPasswordController {
                 .values({
                     otp: otp,
                     user_id: user.id,
+                    hash: hash,
                     expired_at: new Date(
                         Date.now() + forgetPasswordConfig.ttl * 1000
                     ),
                 })
                 .execute();
 
-            await transporter.sendMail({
-                from: '"Tourism" <no-reply@example.com>',
+            transporter.sendMail({
+                from: '"Woofi" <no-reply@example.com>',
                 to: payload.email,
                 text: `Your OTP CODE:  ${otp}`,
                 subject: 'Password Reset Code',
@@ -77,7 +83,7 @@ export class ForgetPasswordController {
                 .selectFrom('forget_password')
                 .innerJoin('user', 'user.id', 'forget_password.user_id')
                 .where('otp', '=', payload.otp)
-                .where('user.email', '=', payload.email)
+                .where('forget_password.hash', '=', payload.hash)
                 .select(['expired_at', 'user_id'])
                 .executeTakeFirst();
 
@@ -105,6 +111,55 @@ export class ForgetPasswordController {
      * @param {import("@hapi/hapi").ResponseToolkit} h
      * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
      */
+    async resendOTP(request, h) {
+        try {
+            const { payload } = request;
+
+            const db = getDatabase();
+
+            const forgetPassword = await db
+                .selectFrom('forget_password')
+                .select(['id'])
+                .selectAll()
+                .where('hash', '=', payload.hash)
+                .executeTakeFirst();
+            const successResponse = h.response({
+                success: true,
+                message: 'Success sending OTP',
+            });
+            if (!forgetPassword) {
+                return successResponse;
+            }
+            const otp = generateOTP();
+            const transporter = transport();
+
+            await db
+                .updateTable('forget_password')
+                .set({
+                    expired_at: Date.now() + forgetPasswordConfig.ttl * 1000,
+                    otp: otp,
+                })
+                .where('forget_password.id', '=', forgetPassword.id)
+                .execute();
+
+            transporter.sendMail({
+                from: '"Woofi" <no-reply@example.com>',
+                to: payload.email,
+                text: `Your OTP CODE:  ${otp}`,
+                subject: 'Password Reset Code',
+            });
+
+            return successResponse;
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
     async resetPassword(request, h) {
         try {
             const { payload } = request;
@@ -113,13 +168,12 @@ export class ForgetPasswordController {
             const resetPasswordOTP = await db
                 .selectFrom('forget_password')
                 .innerJoin('user', 'user.id', 'forget_password.user_id')
-                .where('otp', '=', payload.otp)
-                .where('user.email', '=', payload.email)
-                .select(['expired_at', 'user_id'])
+                .where('forget_password.hash', '=', payload?.hash)
+                .select(['expired_at', 'user_id', 'otp'])
                 .executeTakeFirst();
-
             if (
                 !resetPasswordOTP ||
+                resetPasswordOTP.otp.toString() !== payload.otp ||
                 resetPasswordOTP.expired_at.getTime() < Date.now()
             ) {
                 return badRequest(h, 'Invalid OTP', {
@@ -130,10 +184,20 @@ export class ForgetPasswordController {
             const user = await db
                 .updateTable('user')
                 .set({
-                    password: payload.password,
+                    password: await bcrypt.hash(
+                        payload.password,
+                        parseInt(process.env.BCRYPT_HASH_ROUND)
+                    ),
                 })
                 .where('id', '=', resetPasswordOTP.user_id)
-                .returning(['id', 'username', 'email', 'name', 'is_verified'])
+                .returning([
+                    'id',
+                    'username',
+                    'email',
+                    'name',
+                    'is_verified',
+                    'profile_image',
+                ])
                 .executeTakeFirst();
 
             await db
@@ -145,13 +209,6 @@ export class ForgetPasswordController {
                 .response({
                     success: true,
                     message: 'Success Change password',
-                    data: {
-                        id: user.id.toString(),
-                        username: user.username,
-                        email: user.email,
-                        name: user.name,
-                        isVerified: user.is_verified,
-                    },
                 })
                 .unstate(COOKIE_DATA_NAME);
         } catch (e) {
