@@ -78,11 +78,12 @@ export class DestinationController {
      */
     async getDetailPost(request, h) {
         try {
+            const { params } = request;
             const postId = parseInt(params.postId);
             const { credentials } = request.auth;
             const db = getDatabase();
 
-            let destination = db
+            let destination = await db
                 .selectFrom('destination')
                 .leftJoin(
                     'rating_destination',
@@ -119,9 +120,9 @@ export class DestinationController {
                     'destination.location',
                     'destination.user_id',
                 ])
-                .where('destination.id', '=', postId);
-            // .executeTakeFirst();
-
+                .where('destination.id', '=', postId)
+                .executeTakeFirst();
+            console.log(destination);
             if (!destination) {
                 return h.response({
                     ...Boom.notFound().output,
