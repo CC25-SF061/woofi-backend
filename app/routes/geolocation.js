@@ -9,24 +9,22 @@ const controller = new GeoLocationController();
 export default [
     {
         method: ['GET'],
-        path: '/api/geolocation/search',
+        path: '/api/geolocation/provinces',
         options: {
             tags: ['api', 'geolocation'],
-            validate: {
-                query: Joi.object({
-                    q: Joi.string(),
-                }),
-                failAction: invalidField,
-            },
+
             response: {
                 failAction: 'log',
                 schema: Joi.object({
                     message: Joi.string(),
                     success: Joi.boolean(),
-                    data: Joi.object({
-                        totalResult: Joi.number().integer(),
-                        location: Joi.array().items(Joi.string()),
-                    }),
+                    data: Joi.array().items(
+                        Joi.object({
+                            name: Joi.string(),
+                            lat: Joi.number(),
+                            long: Joi.number(),
+                        })
+                    ),
                 }),
             },
         },

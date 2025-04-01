@@ -16,6 +16,33 @@ import {
 
 export class AuthController {
     constructor() {}
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async logout(request, h) {
+        const db = getDatabase();
+        const { credentials } = request.auth;
+        await db
+            .deleteFrom('token')
+            .where('token.user_id', '=', credentials.id)
+            .where(
+                'token.refresh_token',
+                '=',
+                request.state[COOKIE_DATA_NAME].token
+            )
+            .execute();
+
+        return h
+            .response({
+                success: true,
+                message: 'Success logout user',
+            })
+            .unstate(COOKIE_DATA_NAME);
+    }
+
     /**
      * @param {import("@hapi/hapi").Request} request
      * @param {import("@hapi/hapi").ResponseToolkit} h
@@ -170,7 +197,11 @@ export class AuthController {
             const accessToken = generateAccessToken(token.user_id.toString());
 
             return h.response({
-                token: accessToken,
+                success: true,
+                message: 'Success creating token',
+                data: {
+                    token: accessToken,
+                },
             });
         } catch (e) {
             console.log(e);

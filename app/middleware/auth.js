@@ -36,9 +36,10 @@ export async function isAdmin(request, h) {
 export async function isWritter(request, h) {
     const { credentials } = request.auth;
     const enforcer = getEnforcer();
-    const hasRole = await enforcer.hasRoleForUser(
+    const hasRole = await enforcer.enforce(
         createStringUser(credentials.id),
-        createStringRole('writter')
+        '*',
+        'create'
     );
 
     if (!hasRole) {

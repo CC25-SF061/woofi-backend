@@ -1,5 +1,5 @@
 import Boom from '@hapi/boom';
-import { searchLocation } from '../../core/GeoLocation.js';
+import { getProvince } from '../../core/GeoLocation.js';
 
 export class GeoLocationController {
     constructor() {}
@@ -11,12 +11,10 @@ export class GeoLocationController {
      */
     async getLocation(request, h) {
         try {
-            const { q } = request.query;
-
-            const location = await searchLocation(q);
+            const location = await getProvince();
             return h.response({
                 success: true,
-                message: 'success retrieve data',
+                message: 'success retrieve province',
                 data: location,
             });
         } catch (e) {

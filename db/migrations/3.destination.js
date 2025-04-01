@@ -27,11 +27,12 @@ export async function up(db) {
         .createTable('rating_destination')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
         .addColumn('user_id', 'bigint', (col) =>
-            col.references('user.id').notNull().unique()
+            col.references('user.id').notNull()
         )
         .addColumn('destination_id', 'bigint', (col) =>
             col.references('destination.id').notNull()
         )
+        .addUniqueConstraint('unique_rating', ['destination_id', 'user_id'])
         .addColumn('score', 'double precision', (col) => col.notNull())
         .execute();
 
@@ -45,6 +46,14 @@ export async function up(db) {
             col.references('destination.id').notNull()
         )
         .execute();
+    await db.schema
+        .createTable('province')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+
+        .addColumn('name', 'varchar(30)', (col) => col.notNull())
+        .addColumn('lat', 'double precision', (col) => col.notNull())
+        .addColumn('long', 'double precision', (col) => col.notNull())
+        .execute();
 }
 
 /**
@@ -52,6 +61,7 @@ export async function up(db) {
  * @returns {Promise<void>}
  */
 export async function down(db) {
+    await db.schema.dropTable('province').execute();
     await db.schema.dropTable('whislist').execute();
 
     await db.schema.dropTable('rating_destination').execute();

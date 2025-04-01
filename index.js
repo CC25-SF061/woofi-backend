@@ -12,6 +12,7 @@ import contact from './app/routes/contact.js';
 import destination from './app/routes/destination.js';
 import wishlist from './app/routes/wishlist.js';
 import profile from './app/routes/profile.js';
+import Joi from 'joi';
 
 const server = hapi.server({
     host: '0.0.0.0',

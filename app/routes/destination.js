@@ -92,6 +92,8 @@ export default [
                         location: Joi.string(),
                         user_id: Joi.string(),
                         province: Joi.string(),
+                        name: Joi.string(),
+                        ratingCount: Joi.string(),
                     }),
                 }),
             },

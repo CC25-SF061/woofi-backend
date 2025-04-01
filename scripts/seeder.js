@@ -6,8 +6,10 @@ const modules = await new FileModulesProvider(
     'db/seeders/**/*.js'
 ).getMigrations();
 const db = getDatabase();
+const targetName = process.argv[2] || 'all';
 for (const moduleName in modules) {
-    await modules[moduleName].seed(db);
+    if (targetName === 'all' || moduleName === targetName)
+        await modules[moduleName].seed(db);
 }
 
 process.exit(0);

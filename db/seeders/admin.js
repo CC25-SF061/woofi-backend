@@ -27,7 +27,6 @@ export async function seed(db) {
 
     const enforcer = getEnforcer();
 
-    await enforcer.addPermissionForUser(createStringRole('admin'), '*', '*');
     await enforcer.addRoleForUser(
         createStringUser(user.id),
         createStringRole('admin')

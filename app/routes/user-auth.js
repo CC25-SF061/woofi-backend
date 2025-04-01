@@ -12,6 +12,26 @@ const forgetPasswordController = new ForgetPasswordController();
  */
 export default [
     {
+        method: ['POST'],
+        path: '/api/auth/logout',
+        options: {
+            auth: 'accessToken',
+            tags: ['api', 'auth'],
+            state: {
+                parse: true,
+                failAction: 'error',
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
+        },
+        handler: authController.logout.bind(authController),
+    },
+    {
         method: ['GET'],
         path: '/api/auth/refresh-token',
         options: {
@@ -23,7 +43,11 @@ export default [
             response: {
                 failAction: 'log',
                 schema: Joi.object({
-                    token: Joi.string(),
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                    data: Joi.object({
+                        token: Joi.string(),
+                    }),
                 }),
             },
         },
@@ -36,7 +60,14 @@ export default [
             tags: ['api', 'auth'],
             validate: {
                 payload: Joi.object({
-                    username: Joi.string().min(1).required(),
+                    username: Joi.string()
+                        .min(1)
+                        .pattern(/^[\w_\.\-]*$/)
+                        .required()
+                        .messages({
+                            'string.pattern.base':
+                                '{#label} can only contain alphanumeric character, underscore, hypen, or underscore',
+                        }),
                     name: Joi.string().min(1).required(),
                     email: Joi.string().email().required(),
                     password: Joi.string().min(8).required(),
@@ -46,7 +77,11 @@ export default [
                         .messages({
                             'any.only': 'Password must be same',
                         }),
-                }).options({ abortEarly: false, stripUnknown: true }),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
                 failAction: invalidField,
             },
             response: {

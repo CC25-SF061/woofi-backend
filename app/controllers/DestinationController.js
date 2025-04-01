@@ -105,6 +105,10 @@ export class DestinationController {
                         .avg('rating_destination.score')
                         .over((ob) => ob.partitionBy('destination.id'))
                         .as('rating'),
+                    eb.fn
+                        .count('rating_destination.score')
+                        .over((ob) => ob.partitionBy('destination.id'))
+                        .as('ratingCount'),
                     'rd2.score as personalRating',
                     eb
                         .case()
@@ -113,6 +117,7 @@ export class DestinationController {
                         .else(false)
                         .end()
                         .as('isWishlisted'),
+                    'destination.name',
                     'destination.id',
                     'destination.created_at',
                     'destination.detail',
@@ -228,8 +233,8 @@ export class DestinationController {
             const destination = await db
                 .selectFrom('destination')
                 .where('id', '=', params.postId)
+                .selectAll()
                 .executeTakeFirst();
-
             if (!destination) {
                 return h.response({
                     ...Boom.notFound().output,
@@ -244,7 +249,7 @@ export class DestinationController {
                     score: payload.score,
                 })
                 .onConflict((oc) =>
-                    oc.column('user_id').doUpdateSet({
+                    oc.constraint('unique_rating').doUpdateSet({
                         score: payload.score,
                     })
                 )
