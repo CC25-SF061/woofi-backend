@@ -137,7 +137,9 @@ export class ForgetPasswordController {
             await db
                 .updateTable('forget_password')
                 .set({
-                    expired_at: Date.now() + forgetPasswordConfig.ttl * 1000,
+                    expired_at: new Date(
+                        Date.now() + forgetPasswordConfig.ttl * 1000
+                    ),
                     otp: otp,
                 })
                 .where('forget_password.id', '=', forgetPassword.id)
@@ -145,7 +147,7 @@ export class ForgetPasswordController {
 
             transporter.sendMail({
                 from: '"Woofi" <no-reply@woofi.com',
-                to: payload.email,
+                to: forgetPassword.email,
                 text: `Your OTP CODE:  ${otp}`,
                 subject: 'Password Reset Code',
             });

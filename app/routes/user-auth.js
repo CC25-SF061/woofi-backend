@@ -272,6 +272,29 @@ export default [
     },
     {
         method: ['POST'],
+        path: '/api/auth/resend-otp',
+        handler: forgetPasswordController.resendOTP.bind(
+            forgetPasswordController
+        ),
+        options: {
+            tags: ['api', 'reset-password'],
+            validate: {
+                payload: Joi.object({
+                    hash: Joi.string().required(),
+                }).options({ abortEarly: false, stripUnknown: true }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+        },
+    },
+    {
+        method: ['POST'],
         path: '/api/auth/verify-forget-password',
         handler: forgetPasswordController.verifyForgetPassword.bind(
             forgetPasswordController

@@ -31,7 +31,7 @@ export default [
     },
     {
         method: ['GET'],
-        path: '/api/user/profile/whislists',
+        path: '/api/user/profile/wishlists',
         options: {
             tags: ['api', 'profile'],
             auth: 'accessToken',
@@ -54,7 +54,7 @@ export default [
                 }),
             },
         },
-        handler: controller.getWhislists.bind(controller),
+        handler: controller.getWishlist.bind(controller),
     },
     {
         method: ['PATCH'],

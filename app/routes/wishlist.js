@@ -1,8 +1,8 @@
 import Joi from 'joi';
 import { invalidField } from '../util/errorHandler.js';
-import { WhislistController } from '../controllers/WhislistController.js';
+import { WishlistController } from '../controllers/WishlistController.js';
 
-const controller = new WhislistController();
+const controller = new WishlistController();
 /**
  * @type {import("@hapi/hapi").ServerRoute[]}
  */
@@ -27,7 +27,7 @@ export default [
                 }),
             },
         },
-        handler: controller.whislist.bind(controller),
+        handler: controller.wishlist.bind(controller),
     },
     {
         method: ['DELETE'],
@@ -49,6 +49,6 @@ export default [
                 }),
             },
         },
-        handler: controller.deleteWhislist.bind(controller),
+        handler: controller.deletewishlist.bind(controller),
     },
 ];

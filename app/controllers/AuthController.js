@@ -181,7 +181,6 @@ export class AuthController {
         try {
             const data = request.state[COOKIE_DATA_NAME];
             const refreshToken = data?.token;
-
             const db = getDatabase();
             const token = await db
                 .selectFrom('token')

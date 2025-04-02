@@ -2,7 +2,7 @@ import { getDatabase } from '../../core/Database.js';
 import Boom from '@hapi/boom';
 import ErrorConstant from '../../core/ErrorConstant.js';
 import { badRequest } from '../util/errorHandler.js';
-export class WhislistController {
+export class WishlistController {
     /**@type {ReturnType<typeof getDatabase>} */
     db;
     constructor() {
@@ -14,19 +14,19 @@ export class WhislistController {
      * @param {import("@hapi/hapi").ResponseToolkit} h
      * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
      */
-    async whislist(request, h) {
+    async wishlist(request, h) {
         try {
             const { credentials } = request.auth;
             const { params } = request;
             const db = this.db;
             const postId = params.postId;
-            const [post, whislist] = await Promise.all([
+            const [post, wishlist] = await Promise.all([
                 db
                     .selectFrom('destination')
                     .where('id', '=', postId)
                     .executeTakeFirst(),
                 db
-                    .selectFrom('whislist')
+                    .selectFrom('wishlist')
                     .where('user_id', '=', credentials.id)
                     .where('destination_id', '=', postId)
                     .executeTakeFirst(),
@@ -38,14 +38,14 @@ export class WhislistController {
                     errCode: ErrorConstant.ERR_NOT_FOUND,
                 });
             }
-            if (whislist) {
-                return badRequest(h, 'Whislist already exist', {
-                    errCode: ErrorConstant.ERR_WHISLIST_ALREADY_EXIST,
+            if (wishlist) {
+                return badRequest(h, 'wishlist already exist', {
+                    errCode: ErrorConstant.ERR_WISHLIST_ALREADY_EXIST,
                 });
             }
 
             await db
-                .insertInto('whislist')
+                .insertInto('wishlist')
                 .values({
                     user_id: credentials.id,
                     destination_id: postId,
@@ -69,27 +69,27 @@ export class WhislistController {
      * @param {import("@hapi/hapi").ResponseToolkit} h
      * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
      */
-    async deleteWhislist(request, h) {
+    async deletewishlist(request, h) {
         try {
             const { credentials } = request.auth;
             const { params } = request;
             const db = this.db;
             const postId = params.postId;
-            const whislist = await db
-                .selectFrom('whislist')
+            const wishlist = await db
+                .selectFrom('wishlist')
                 .where('user_id', '=', credentials.id)
                 .where('destination_id', '=', postId)
                 .executeTakeFirst();
 
-            if (!whislist) {
+            if (!wishlist) {
                 return h.response({
-                    ...Boom.notFound('whislist not found').output,
+                    ...Boom.notFound('wishlist not found').output,
                     errCode: ErrorConstant.ERR_NOT_FOUND,
                 });
             }
 
             await db
-                .deleteFrom('whislist')
+                .deleteFrom('wishlist')
                 .where('user_id', '=', credentials.id)
                 .where('destination_id', '=', postId)
                 .execute();

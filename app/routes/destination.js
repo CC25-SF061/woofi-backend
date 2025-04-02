@@ -1,7 +1,6 @@
 import { DestinationController } from '../controllers/DestinationController.js';
 import Joi from 'joi';
 import { invalidField } from '../util/errorHandler.js';
-import { fileTypeFromBuffer } from 'file-type';
 import { isWritter } from '../middleware/auth.js';
 const controller = new DestinationController();
 
@@ -56,7 +55,6 @@ export default [
                     success: Joi.boolean(),
                 }),
             },
-            pre: [{ method: isWritter }],
         },
 
         handler: controller.addPost.bind(controller),
@@ -85,6 +83,7 @@ export default [
                         personalRating: Joi.number(),
                         isWishlisted: Joi.boolean(),
                         rating: Joi.number(),
+                        writer: Joi.string(),
                         id: Joi.number(),
                         created_at: Joi.date(),
                         detail: Joi.string(),

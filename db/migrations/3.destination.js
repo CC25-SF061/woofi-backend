@@ -37,7 +37,7 @@ export async function up(db) {
         .execute();
 
     await db.schema
-        .createTable('whislist')
+        .createTable('wishlist')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
         .addColumn('user_id', 'bigint', (col) =>
             col.references('user.id').notNull()
@@ -62,7 +62,7 @@ export async function up(db) {
  */
 export async function down(db) {
     await db.schema.dropTable('province').execute();
-    await db.schema.dropTable('whislist').execute();
+    await db.schema.dropTable('wishlist').execute();
 
     await db.schema.dropTable('rating_destination').execute();
     await db.schema.dropTable('destination').execute();

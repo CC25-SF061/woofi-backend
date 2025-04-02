@@ -90,7 +90,7 @@ export class DestinationController {
                     'rating_destination.destination_id',
                     'destination.id'
                 )
-                .leftJoin('whislist as w', (join) =>
+                .leftJoin('wishlist as w', (join) =>
                     join
                         .onRef('w.destination_id', '=', 'destination.id')
                         .on('w.user_id', '=', credentials.id)
@@ -100,6 +100,7 @@ export class DestinationController {
                         .onRef('rd2.destination_id', '=', 'destination.id')
                         .on('rd2.user_id', '=', credentials.id)
                 )
+                .leftJoin('user', 'user.id', 'destination.user_id')
                 .select(({ eb }) => [
                     eb.fn
                         .avg('rating_destination.score')
@@ -123,16 +124,17 @@ export class DestinationController {
                     'destination.detail',
                     'destination.image',
                     'destination.location',
-                    'destination.user_id',
+                    'user.name as writer',
                 ])
                 .where('destination.id', '=', postId)
                 .executeTakeFirst();
-            console.log(destination);
             if (!destination) {
-                return h.response({
-                    ...Boom.notFound().output,
-                    errCode: ErrorConstant.ERR_NOT_FOUND,
-                });
+                return h
+                    .response({
+                        ...Boom.notFound().output,
+                        errCode: ErrorConstant.ERR_NOT_FOUND,
+                    })
+                    .code(404);
             }
             return h
                 .response(
@@ -164,7 +166,7 @@ export class DestinationController {
                 .leftJoin('rating_destination as rd', (join) =>
                     join.onRef('rd.destination_id', '=', 'destination.id')
                 )
-                .leftJoin('whislist as w', (join) =>
+                .leftJoin('wishlist as w', (join) =>
                     join
                         .onRef('w.destination_id', '=', 'destination.id')
                         .on('w.user_id', '=', credentials?.id)
@@ -236,10 +238,12 @@ export class DestinationController {
                 .selectAll()
                 .executeTakeFirst();
             if (!destination) {
-                return h.response({
-                    ...Boom.notFound().output,
-                    errCode: ErrorConstant.ERR_NOT_FOUND,
-                });
+                return h
+                    .response({
+                        ...Boom.notFound().output,
+                        errCode: ErrorConstant.ERR_NOT_FOUND,
+                    })
+                    .code(404);
             }
             await db
                 .insertInto('rating_destination')

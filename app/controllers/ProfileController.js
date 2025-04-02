@@ -65,12 +65,12 @@ export class ProfileController {
      * @param {import("@hapi/hapi").ResponseToolkit} h
      * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
      */
-    async getWhislists(request, h) {
+    async getWishlist(request, h) {
         try {
             const { credentials } = request.auth;
             const db = this.db;
             let destination = await db
-                .selectFrom('whislist as w')
+                .selectFrom('wishlist as w')
                 .leftJoin('destination as d', 'd.id', 'w.destination_id')
                 .leftJoin(
                     'rating_destination as rd',
@@ -96,7 +96,7 @@ export class ProfileController {
                 .response(
                     JSONToString({
                         success: true,
-                        message: 'Success retrieve whislist',
+                        message: 'Success retrieve wishlist',
                         data: destination,
                     })
                 )
