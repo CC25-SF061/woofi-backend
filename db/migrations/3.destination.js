@@ -54,6 +54,12 @@ export async function up(db) {
         .addColumn('lat', 'double precision', (col) => col.notNull())
         .addColumn('long', 'double precision', (col) => col.notNull())
         .execute();
+
+    await db.schema
+        .createTable('dangling_image')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+        .addColumn('image', 'varchar(255)', (col) => col.notNull())
+        .execute();
 }
 
 /**
@@ -66,4 +72,6 @@ export async function down(db) {
 
     await db.schema.dropTable('rating_destination').execute();
     await db.schema.dropTable('destination').execute();
+
+    await db.schema.dropTable('dangling_image').execute();
 }

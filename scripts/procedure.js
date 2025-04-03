@@ -7,7 +7,7 @@ const modules = await new FileModulesProvider(
 ).getMigrations();
 const db = getDatabase();
 for (const moduleName in modules) {
-    await modules[moduleName].up(db);
+    await modules[moduleName].create(db);
 }
 
 process.exit(0);

@@ -1,7 +1,11 @@
 import { nanoid } from 'nanoid';
 import { URL } from 'url';
 import path from 'path';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+    S3Client,
+    PutObjectCommand,
+    DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 
 const client = new S3Client({
     endpoint: process.env.FILE_UPLOAD_ENDPOINT,
@@ -46,8 +50,17 @@ export async function upload(name, stream, mimetype = 'image/jpeg') {
         Body: stream,
         Key: name,
         CacheControl: 'max-age=15724800',
-
         ContentType: mimetype,
     });
     const result = await client.send(command);
+
+    console.log(result);
+}
+
+export async function deleteObject(name) {
+    const command = new DeleteObjectCommand({
+        Bucket: process.env.FILE_UPLOAD_BUCKET,
+        Key: name,
+    });
+    await client.send(command);
 }
