@@ -1,7 +1,11 @@
 import { DestinationController } from '../controllers/DestinationController.js';
 import Joi from 'joi';
 import { invalidField } from '../util/errorHandler.js';
-import { isWritter } from '../middleware/auth.js';
+import {
+    canDeleteDestination,
+    canEditDestination,
+    isWritter,
+} from '../middleware/auth.js';
 const controller = new DestinationController();
 
 /**
@@ -58,6 +62,62 @@ export default [
         },
 
         handler: controller.addPost.bind(controller),
+    },
+    {
+        method: ['PUT'],
+        path: '/api/destination/{postId}',
+        options: {
+            auth: 'accessToken',
+            payload: {
+                parse: true,
+                allow: 'multipart/form-data',
+                multipart: true,
+                maxBytes: 1048576 * 4,
+                output: 'stream',
+            },
+            tags: ['api', 'destination'],
+            validate: {
+                payload: Joi.object({
+                    image: Joi.custom((value, h) => {
+                        const fileType = value.hapi.headers['content-type'];
+                        if (!['image/jpeg', 'image/png'].includes(fileType)) {
+                            return h.error('any.invalid');
+                        }
+                        return value;
+                    }, 'mime-type')
+                        .messages({
+                            'any.invalid': 'Invalid image must be png or jpeg',
+                        })
+                        .error((errors) => {
+                            errors[0].value = 'REDACTED';
+                            errors[0].local.value = 'REDACTED';
+                            return errors;
+                        }),
+                    name: Joi.string().max(50),
+                    location: Joi.string().max(50),
+                    detail: Joi.string(),
+                    province: Joi.string(),
+                }).options({
+                    stripUnknown: true,
+                    abortEarly: false,
+                }),
+                failAction: invalidField,
+            },
+            pre: [
+                {
+                    method: canEditDestination,
+                },
+            ],
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+        },
+
+        handler: controller.editDestination.bind(controller),
     },
     {
         method: ['GET'],
@@ -164,5 +224,29 @@ export default [
         },
 
         handler: controller.addRating.bind(controller),
+    },
+    {
+        method: ['DELETE'],
+        path: '/api/destination/{postId}',
+        options: {
+            auth: 'accessToken',
+            tags: ['api', 'destination'],
+            validate: {
+                params: Joi.object({
+                    postId: Joi.number(),
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            pre: [{ method: canDeleteDestination }],
+        },
+
+        handler: controller.deleteDestination.bind(controller),
     },
 ];
