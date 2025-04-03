@@ -1,10 +1,16 @@
 import { sql } from 'kysely';
 import { getDatabase } from '../../core/Database.js';
 import ErrorConstant from '../../core/ErrorConstant.js';
-import { createPath, upload } from '../../core/FileUpload.js';
+import { createPath, deleteObject, upload } from '../../core/FileUpload.js';
 import Boom from '@hapi/boom';
 import mime from 'mime';
 import { JSONToString } from '../util/json.js';
+import {
+    createStringResource,
+    createStringUser,
+    getEnforcer,
+} from '../../core/rbac/Casbin.js';
+import { permission, resource } from '../../core/RoleConstant.js';
 
 export class DestinationController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -44,7 +50,7 @@ export class DestinationController {
                     stream.destroy();
                 });
             });
-            upload(pathImage, await readImage);
+            const enforcer = getEnforcer();
 
             const destination = await db
                 .insertInto('destination')
@@ -58,6 +64,20 @@ export class DestinationController {
                 })
                 .returning(['id'])
                 .executeTakeFirst();
+
+            upload(pathImage, await readImage);
+            await enforcer.addPolicies([
+                [
+                    createStringUser(credentials.id),
+                    createStringResource(resource.DESTINATION, destination.id),
+                    permission.EDIT,
+                ],
+                [
+                    createStringUser(credentials.id),
+                    createStringResource(resource.DESTINATION, destination.id),
+                    permission.DELETE,
+                ],
+            ]);
             return h.response({
                 success: true,
                 message: 'Success creating destination',
@@ -175,6 +195,7 @@ export class DestinationController {
                     'destination.id',
                     'destination.detail',
                     'destination.image',
+                    'destination.name',
                     eb.fn
                         .avg('rd.score')
                         .over((ob) => ob.partitionBy('destination.id'))
@@ -198,8 +219,8 @@ export class DestinationController {
             if (query.name) {
                 destination = destination.where(
                     'destination.name',
-                    'like',
-                    `${query.name}%`
+                    'ilike',
+                    `${query.name.toLowerCase()}%`
                 );
             }
             const limit = 30;
@@ -268,6 +289,107 @@ export class DestinationController {
         } catch (e) {
             console.log(e);
             return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async editDestination(request, h) {
+        try {
+            const { payload, params } = request;
+            const db = this.db;
+            let pathImage, readImage;
+            if (payload.image) {
+                pathImage = createPath(
+                    mime.getExtension(
+                        payload.image.hapi.headers['content-type']
+                    ),
+                    'images'
+                );
+                readImage = new Promise((resolve, reject) => {
+                    const buffer = [];
+
+                    const stream = payload.image;
+                    stream.on('data', (data) => {
+                        buffer.push(data);
+                    });
+                    stream.on('error', (err) => {
+                        reject(err);
+                    });
+                    stream.on('end', () => {
+                        resolve(Buffer.concat(buffer));
+                        stream.destroy();
+                    });
+                });
+
+                upload(pathImage, await readImage);
+            }
+
+            await db
+                .updateTable('destination')
+                .where('destination.id', '=', params.postId)
+                .set({
+                    name: payload.name,
+                    detail: payload.detail,
+                    location: payload.location,
+                    image: pathImage,
+                    province: payload.province,
+                })
+                .execute();
+
+            return h.response({
+                success: true,
+                message: 'Success updating destination',
+            });
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async deleteDestination(request, h) {
+        try {
+            const { params } = request;
+            const db = this.db;
+            await Promise.all([
+                db
+                    .deleteFrom('rating_destination')
+                    .where('destination_id', '=', params.postId)
+                    .execute(),
+                db
+                    .deleteFrom('wishlist')
+                    .where('wishlist.destination_id', '=', params.postId)
+                    .execute(),
+                db
+                    .deleteFrom('rbac')
+                    .where(
+                        'rbac.v1',
+                        '=',
+                        createStringResource(
+                            resource.DESTINATION,
+                            params.postId
+                        )
+                    )
+                    .execute(),
+            ]);
+
+            await db
+                .deleteFrom('destination')
+                .where('destination.id', '=', params.postId)
+                .returning(['image'])
+                .executeTakeFirst();
+
+            return h.response().code(204);
+        } catch (e) {
+            console.log(e);
         }
     }
 }
