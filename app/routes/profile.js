@@ -48,7 +48,7 @@ export default [
                             detail: Joi.string(),
                             image: Joi.string(),
                             location: Joi.string(),
-                            user_id: Joi.string(),
+                            name: Joi.string(),
                         })
                     ),
                 }),
@@ -94,6 +94,15 @@ export default [
                 failAction: invalidField,
             },
             handler: controller.editUsername.bind(controller),
+        },
+    },
+    {
+        method: ['GET'],
+        path: '/api/user/profile/destinations',
+        options: {
+            tags: ['api', 'profile', 'user'],
+            auth: 'accessToken',
+            handler: controller.getDestinations.bind(controller),
         },
     },
 ];

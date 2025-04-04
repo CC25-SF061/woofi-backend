@@ -3,6 +3,7 @@ import { getDatabase } from '../../core/Database.js';
 import { JSONToString } from '../util/json.js';
 import { badRequest } from '../util/errorHandler.js';
 import ErrorConstant from '../../core/ErrorConstant.js';
+import { sql } from 'kysely';
 
 export class ProfileController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -88,7 +89,7 @@ export class ProfileController {
                     'd.detail',
                     'd.image',
                     'd.location',
-                    'd.user_id',
+                    'd.name',
                 ])
                 .distinct()
                 .execute();
@@ -186,6 +187,60 @@ export class ProfileController {
                 .code(200);
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getDestinations(request, h) {
+        try {
+            const db = this.db;
+            const { credentials } = request.auth;
+            const destination = await db
+                .selectFrom('destination')
+                .leftJoin('rating_destination as rd', (join) =>
+                    join.onRef('rd.destination_id', '=', 'destination.id')
+                )
+                .leftJoin('wishlist as w', (join) =>
+                    join
+                        .onRef('w.destination_id', '=', 'destination.id')
+                        .on('w.user_id', '=', credentials?.id)
+                )
+                .select((eb) => [
+                    'destination.id',
+                    'destination.detail',
+                    'destination.image',
+                    'destination.name',
+                    eb.fn
+                        .avg('rd.score')
+                        .over((ob) => ob.partitionBy('destination.id'))
+                        .as('rating'),
+                    eb
+                        .case()
+                        .when(sql`w.id IS NOT NULL`)
+                        .then(true)
+                        .else(false)
+                        .end()
+                        .as('isWishlisted'),
+                ])
+                .distinct()
+                .where('destination.id', '=', credentials.id)
+                .execute();
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'Success retrieve destination',
+                        data: destination,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
         }
     }
 }
