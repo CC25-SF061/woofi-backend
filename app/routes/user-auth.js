@@ -68,7 +68,7 @@ export default [
                             'string.pattern.base':
                                 '{#label} can only contain alphanumeric character, underscore, hypen, or underscore',
                         }),
-                    name: Joi.string().min(1).required(),
+                    name: Joi.string().min(1).max(20).required(),
                     email: Joi.string().email().required(),
                     password: Joi.string().min(8).required(),
                     passwordConfirmation: Joi.string()

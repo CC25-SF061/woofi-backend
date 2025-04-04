@@ -94,6 +94,39 @@ export default [
                 failAction: invalidField,
             },
             handler: controller.editUsername.bind(controller),
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
+        },
+    },
+    {
+        method: ['PATCH'],
+        path: '/api/user/edit/name',
+        options: {
+            tags: ['api', 'profile', 'user'],
+            auth: 'accessToken',
+            validate: {
+                payload: Joi.object({
+                    name: Joi.string().required().min(1).max(20),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                failAction: invalidField,
+            },
+            handler: controller.editName.bind(controller),
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
         },
     },
     {

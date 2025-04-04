@@ -339,7 +339,6 @@ export class AuthController {
                 .where('oauth.provider_user_id', '=', googleUser.userId)
                 .selectAll()
                 .executeTakeFirst();
-
             if (!user) {
                 return badRequest(h, 'Invalid token id', {
                     errCode: errorConstant.ERR_USER_NOT_FOUND,

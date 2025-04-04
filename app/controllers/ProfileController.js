@@ -123,7 +123,6 @@ export class ProfileController {
                 .where('user.email', '=', payload.email)
                 .select('id')
                 .executeTakeFirst();
-
             if (email) {
                 return badRequest(h, 'Email already used', {
                     errCode: ErrorConstant.ERR_EMAIL_ALREADY_USED,
@@ -146,6 +145,37 @@ export class ProfileController {
                 .code(200);
         } catch (e) {
             console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async editName(request, h) {
+        try {
+            const { credentials } = request.auth;
+            const { payload } = request;
+            const db = this.db;
+            await db
+                .updateTable('user')
+                .set({
+                    name: payload.name,
+                })
+                .where('user.id', '=', credentials.id)
+                .execute();
+
+            return h
+                .response({
+                    success: true,
+                    message: 'Success Update name',
+                })
+                .code(200);
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
         }
     }
 
@@ -161,10 +191,9 @@ export class ProfileController {
             const db = this.db;
             const username = await db
                 .selectFrom('user')
-                .where('user.name', '=', payload.username)
+                .where('user.username', '=', payload.username)
                 .select('id')
                 .executeTakeFirst();
-
             if (username) {
                 return badRequest(h, 'Username already exist', {
                     errCode: ErrorConstant.ERR_USERNAME_ALREADY_USED,
@@ -173,8 +202,7 @@ export class ProfileController {
             await db
                 .updateTable('user')
                 .set({
-                    email: payload.email,
-                    is_verified: false,
+                    username: payload.username,
                 })
                 .where('user.id', '=', credentials.id)
                 .execute();
@@ -182,7 +210,7 @@ export class ProfileController {
             return h
                 .response({
                     success: true,
-                    message: 'Success Update email',
+                    message: 'Success Update username',
                 })
                 .code(200);
         } catch (e) {
