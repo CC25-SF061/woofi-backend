@@ -11,6 +11,7 @@ import {
     getEnforcer,
 } from '../../core/rbac/Casbin.js';
 import { permission, resource } from '../../core/RoleConstant.js';
+import { mapFilter } from '../../core/DestinationFilter.js';
 
 export class DestinationController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -145,6 +146,7 @@ export class DestinationController {
                     'destination.image',
                     'destination.location',
                     'user.name as writer',
+                    'destination.province',
                 ])
                 .where('destination.id', '=', postId)
                 .executeTakeFirst();
@@ -181,46 +183,80 @@ export class DestinationController {
             const { query } = request;
             const db = getDatabase();
             const { credentials } = request.auth;
+            const filter = mapFilter(query.filter);
             let destination = db
-                .selectFrom('destination')
-                .leftJoin('rating_destination as rd', (join) =>
-                    join.onRef('rd.destination_id', '=', 'destination.id')
-                )
-                .leftJoin('wishlist as w', (join) =>
-                    join
-                        .onRef('w.destination_id', '=', 'destination.id')
-                        .on('w.user_id', '=', credentials?.id)
-                )
-                .select((eb) => [
-                    'destination.id',
-                    'destination.detail',
-                    'destination.image',
-                    'destination.name',
-                    eb.fn
-                        .avg('rd.score')
-                        .over((ob) => ob.partitionBy('destination.id'))
-                        .as('rating'),
+                .selectFrom((eb) =>
                     eb
-                        .case()
-                        .when(sql`w.id IS NOT NULL`)
-                        .then(true)
-                        .else(false)
-                        .end()
-                        .as('isWishlisted'),
-                ])
-                .distinct();
+                        .selectFrom('destination')
+                        .leftJoin('rating_destination as rd', (join) =>
+                            join.onRef(
+                                'rd.destination_id',
+                                '=',
+                                'destination.id'
+                            )
+                        )
+                        .leftJoin('wishlist as w', (join) =>
+                            join
+                                .onRef(
+                                    'w.destination_id',
+                                    '=',
+                                    'destination.id'
+                                )
+                                .on('w.user_id', '=', credentials?.id)
+                        )
+                        .select((eb) => [
+                            'destination.id',
+                            'destination.detail',
+                            'destination.created_at',
+                            'destination.image',
+                            'destination.name',
+                            'destination.province',
+                            'destination.user_id',
+                            eb.fn
+                                .avg('rd.score')
+                                .over((ob) => ob.partitionBy('destination.id'))
+                                .as('rating'),
+                            eb
+                                .case()
+                                .when(sql`w.id IS NOT NULL`)
+                                .then(true)
+                                .else(false)
+                                .end()
+                                .as('isWishlisted'),
+                        ])
+                        .distinct()
+                        .as('result')
+                )
+                .selectAll();
             if (query.province) {
                 destination = destination.where(
-                    'destination.province',
+                    'result.province',
                     '=',
                     query.province
                 );
             }
             if (query.name) {
                 destination = destination.where(
-                    'destination.name',
+                    'result.name',
                     'ilike',
                     `${query.name.toLowerCase()}%`
+                );
+            }
+            if (filter.HIGHEST_RATING) {
+                destination = destination.orderBy('result.rating', 'desc');
+            }
+            if (filter.NEWEST) {
+                destination = destination.orderBy('result.created_at', 'desc');
+            }
+            if (filter.OLDEST) {
+                destination = destination.orderBy('result.created_at', 'asc');
+            }
+            if (filter.WRITTEN_BY_YOU) {
+                console.log(credentials?.id);
+                destination = destination.where(
+                    'result.user_id',
+                    '=',
+                    credentials?.id
                 );
             }
             const limit = 30;

@@ -152,6 +152,7 @@ export default [
                         user_id: Joi.string(),
                         province: Joi.string(),
                         name: Joi.string(),
+                        province: Joi.string(),
                         ratingCount: Joi.string(),
                     }),
                 }),
@@ -174,6 +175,9 @@ export default [
                     page: Joi.number().default(0),
                     province: Joi.string(),
                     name: Joi.string(),
+                    filter: Joi.alternatives()
+                        .try(Joi.array().items(Joi.string()), Joi.string())
+                        .optional(),
                 }),
                 failAction: invalidField,
             },
@@ -191,6 +195,7 @@ export default [
                             rating: Joi.number(),
                             isWishlisted: Joi.boolean(),
                             province: Joi.string(),
+                            created_at: Joi.date(),
                         })
                     ),
                 }),
