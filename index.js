@@ -65,7 +65,9 @@ server.auth.strategy('accessToken', 'jwt', {
 });
 
 server.state(COOKIE_DATA_NAME, cookieConfig);
-
+server.listener.setTimeout(1000 * 10);
+server.listener.keepAliveTimeout = 1000 * 10;
+server.listener.headersTimeout = 1000 * 10;
 server.route(
     [].concat(auth, geolocation, contact, destination, wishlist, profile, [
         {

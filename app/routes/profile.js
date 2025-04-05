@@ -136,6 +136,25 @@ export default [
             tags: ['api', 'profile', 'user'],
             auth: 'accessToken',
             handler: controller.getDestinations.bind(controller),
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                    data: Joi.array().items(
+                        Joi.object({
+                            id: Joi.number(),
+                            detail: Joi.string(),
+                            image: Joi.string(),
+                            name: Joi.string(),
+                            province: Joi.string(),
+                            location: Joi.string(),
+                            rating: Joi.number(),
+                            isWishlisted: Joi.boolean(),
+                        })
+                    ),
+                }),
+            },
         },
     },
 ];

@@ -242,6 +242,8 @@ export class ProfileController {
                     'destination.detail',
                     'destination.image',
                     'destination.name',
+                    'destination.province',
+                    'destination.location',
                     eb.fn
                         .avg('rd.score')
                         .over((ob) => ob.partitionBy('destination.id'))
@@ -255,7 +257,7 @@ export class ProfileController {
                         .as('isWishlisted'),
                 ])
                 .distinct()
-                .where('destination.id', '=', credentials.id)
+                .where('destination.user_id', '=', credentials.id)
                 .execute();
             return h
                 .response(

@@ -4,7 +4,6 @@ import { invalidField } from '../util/errorHandler.js';
 import {
     canDeleteDestination,
     canEditDestination,
-    isWritter,
 } from '../middleware/auth.js';
 const controller = new DestinationController();
 
@@ -21,7 +20,8 @@ export default [
                 parse: true,
                 allow: 'multipart/form-data',
                 multipart: true,
-                maxBytes: 1048576 * 4,
+                timeout: 1000 * 10,
+                maxBytes: 1048576 * 10,
                 output: 'stream',
             },
             tags: ['api', 'destination'],
@@ -29,9 +29,14 @@ export default [
                 payload: Joi.object({
                     image: Joi.required()
                         .custom((value, h) => {
-                            const fileType = value.hapi.headers['content-type'];
+                            const fileType =
+                                value?.hapi?.headers?.['content-type'];
                             if (
-                                !['image/jpeg', 'image/png'].includes(fileType)
+                                ![
+                                    'image/jpeg',
+                                    'image/png',
+                                    'image/webp',
+                                ].includes(fileType)
                             ) {
                                 return h.error('any.invalid');
                             }
@@ -47,8 +52,12 @@ export default [
                         }),
                     name: Joi.string().required().max(50),
                     location: Joi.string().required().max(50),
-                    detail: Joi.string().required(),
+                    detail: Joi.string().required().label('description'),
                     province: Joi.string(),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
                 }),
                 failAction: invalidField,
             },
@@ -57,6 +66,9 @@ export default [
                 schema: Joi.object({
                     message: Joi.string(),
                     success: Joi.boolean(),
+                    data: Joi.object({
+                        postId: Joi.number(),
+                    }),
                 }),
             },
         },
@@ -72,14 +84,14 @@ export default [
                 parse: true,
                 allow: 'multipart/form-data',
                 multipart: true,
-                maxBytes: 1048576 * 4,
+                maxBytes: 1048576 * 10,
                 output: 'stream',
             },
             tags: ['api', 'destination'],
             validate: {
                 payload: Joi.object({
                     image: Joi.custom((value, h) => {
-                        const fileType = value.hapi.headers['content-type'];
+                        const fileType = value?.hapi?.headers?.['content-type'];
                         if (!['image/jpeg', 'image/png'].includes(fileType)) {
                             return h.error('any.invalid');
                         }

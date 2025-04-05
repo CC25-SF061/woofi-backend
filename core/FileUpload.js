@@ -45,16 +45,20 @@ export function getFullPath(path) {
  * @returns
  */
 export async function upload(name, stream, mimetype = 'image/jpeg') {
-    const command = new PutObjectCommand({
-        Bucket: process.env.FILE_UPLOAD_BUCKET,
-        Body: stream,
-        Key: name,
-        CacheControl: 'max-age=15724800',
-        ContentType: mimetype,
-    });
-    const result = await client.send(command);
+    try {
+        const command = new PutObjectCommand({
+            Bucket: process.env.FILE_UPLOAD_BUCKET,
+            Body: stream,
+            Key: name,
+            CacheControl: 'max-age=15724800',
+            ContentType: mimetype,
+        });
+        const result = await client.send(command);
+    } catch (e) {
+        console.log(e);
+    }
 
-    console.log(result);
+    // console.log(result);
 }
 
 export async function deleteObject(name) {
