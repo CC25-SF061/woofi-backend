@@ -6,6 +6,7 @@ import {
     PutObjectCommand,
     DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 
 const client = new S3Client({
     endpoint: process.env.FILE_UPLOAD_ENDPOINT,
@@ -46,14 +47,18 @@ export function getFullPath(path) {
  */
 export async function upload(name, stream, mimetype = 'image/jpeg') {
     try {
-        const command = new PutObjectCommand({
-            Bucket: process.env.FILE_UPLOAD_BUCKET,
-            Body: stream,
-            Key: name,
-            CacheControl: 'max-age=15724800',
-            ContentType: mimetype,
+        const upload = new Upload({
+            client: client,
+            params: {
+                Bucket: process.env.FILE_UPLOAD_BUCKET,
+                Body: stream,
+                Key: name,
+                CacheControl: 'max-age=15724800',
+                ContentType: mimetype,
+            },
         });
-        const result = await client.send(command);
+
+        await upload.done();
     } catch (e) {
         console.log(e);
     }

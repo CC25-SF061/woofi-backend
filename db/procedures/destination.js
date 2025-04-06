@@ -12,10 +12,11 @@ export async function create(db) {
 	BEGIN 
 		IF (TG_OP = 'UPDATE') THEN
 			INSERT INTO dangling_image(image) VALUES (OLD.image);
+			RETURN NEW;
 		ELSEIF (TG_OP = 'DELETE') THEN
 			INSERT INTO dangling_image(image) VALUES (OLD.image);
+			RETURN OLD;
 		END IF;
-		RETURN NEW;
 	END
 	$$ LANGUAGE plpgsql
 			`.execute(db);

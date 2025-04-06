@@ -4,6 +4,10 @@ import { JSONToString } from '../util/json.js';
 import { badRequest } from '../util/errorHandler.js';
 import ErrorConstant from '../../core/ErrorConstant.js';
 import { sql } from 'kysely';
+import { createPath, upload } from '../../core/FileUpload.js';
+import mime from 'mime';
+import bcrypt from 'bcrypt';
+import { transport } from '../../core/Mailer.js';
 
 export class ProfileController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -218,6 +222,102 @@ export class ProfileController {
         }
     }
 
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async editProfilePicture(request, h) {
+        try {
+            const { credentials } = request.auth;
+            const { payload } = request;
+            const db = this.db;
+
+            const pathImage = createPath(
+                mime.getExtension(payload.image.hapi.headers['content-type']),
+                'profile'
+            );
+            await db
+                .updateTable('user')
+                .set({
+                    profile_image: pathImage,
+                })
+                .where('user.id', '=', credentials.id)
+                .execute();
+
+            await upload(
+                pathImage,
+                payload.image,
+                mime.getExtension(payload.image.hapi.headers['content-type'])
+            );
+            return h
+                .response({
+                    success: true,
+                    message: 'Success Update profile picture',
+                    data: {
+                        image: pathImage,
+                    },
+                })
+                .code(200);
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async editPassword(request, h) {
+        try {
+            const { credentials } = request.auth;
+            const { payload } = request;
+            const db = this.db;
+            const transporter = transport();
+            const user = await db
+                .selectFrom('user')
+                .where('user.id', '=', credentials.id)
+                .select(['user.password', 'user.email'])
+                .executeTakeFirst();
+
+            if (
+                !user ||
+                !bcrypt.compareSync(payload.oldPassword, user.password)
+            ) {
+                return badRequest(h, 'Invalid password', {
+                    errCode: ErrorConstant.ERR_PASSWORD_INVALID,
+                });
+            }
+            await db
+                .updateTable('user')
+                .set({
+                    password: await bcrypt.hash(
+                        payload.newPassword,
+                        parseInt(process.env.BCRYPT_HASH_ROUND)
+                    ),
+                })
+                .where('user.id', '=', credentials.id)
+                .execute();
+
+            transporter.sendMail({
+                from: '"Woofi" <no-reply@woofi.com>',
+                to: user.email,
+                subject: 'Password Changed',
+                text: 'Your password has changed recetly',
+            });
+            return h
+                .response({
+                    success: true,
+                    message: 'Success Update password',
+                })
+                .code(200);
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
     /**
      * @param {import("@hapi/hapi").Request} request
      * @param {import("@hapi/hapi").ResponseToolkit} h

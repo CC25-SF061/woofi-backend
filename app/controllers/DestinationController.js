@@ -36,21 +36,7 @@ export class DestinationController {
                 mime.getExtension(payload.image.hapi.headers['content-type']),
                 'images'
             );
-            const readImage = new Promise((resolve, reject) => {
-                const buffer = [];
 
-                const stream = payload.image;
-                stream.on('data', (data) => {
-                    buffer.push(data);
-                });
-                stream.on('error', (err) => {
-                    reject(err);
-                });
-                stream.on('end', () => {
-                    resolve(Buffer.concat(buffer));
-                    stream.destroy();
-                });
-            });
             const enforcer = getEnforcer();
 
             const destination = await db
@@ -66,7 +52,7 @@ export class DestinationController {
                 .returning(['id'])
                 .executeTakeFirst();
 
-            upload(pathImage, await readImage);
+            await upload(pathImage, payload.image);
             await enforcer.addPolicies([
                 [
                     createStringUser(credentials.id),
@@ -337,7 +323,7 @@ export class DestinationController {
         try {
             const { payload, params } = request;
             const db = this.db;
-            let pathImage, readImage;
+            let pathImage;
             if (payload.image) {
                 pathImage = createPath(
                     mime.getExtension(
@@ -345,23 +331,8 @@ export class DestinationController {
                     ),
                     'images'
                 );
-                readImage = new Promise((resolve, reject) => {
-                    const buffer = [];
 
-                    const stream = payload.image;
-                    stream.on('data', (data) => {
-                        buffer.push(data);
-                    });
-                    stream.on('error', (err) => {
-                        reject(err);
-                    });
-                    stream.on('end', () => {
-                        resolve(Buffer.concat(buffer));
-                        stream.destroy();
-                    });
-                });
-
-                upload(pathImage, await readImage);
+                await upload(pathImage, payload.image);
             }
 
             await db
@@ -393,6 +364,8 @@ export class DestinationController {
      */
     async deleteDestination(request, h) {
         try {
+            const enforcer = getEnforcer();
+            const { credentials } = request.auth;
             const { params } = request;
             const db = this.db;
             await Promise.all([
@@ -415,12 +388,28 @@ export class DestinationController {
                         )
                     )
                     .execute(),
+                enforcer.removePolicies([
+                    [
+                        createStringUser(credentials.id),
+                        createStringResource(
+                            resource.DESTINATION,
+                            params.postId
+                        ),
+                        permission.DELETE,
+                    ],
+                    [
+                        createStringUser(credentials.id),
+                        createStringResource(
+                            resource.DESTINATION,
+                            params.postId
+                        ),
+                        permission.EDIT,
+                    ],
+                ]),
             ]);
-
             await db
                 .deleteFrom('destination')
                 .where('destination.id', '=', params.postId)
-                .returning(['image'])
                 .executeTakeFirst();
 
             return h.response().code(204);

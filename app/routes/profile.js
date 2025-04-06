@@ -65,10 +65,55 @@ export default [
             validate: {
                 payload: Joi.object({
                     email: Joi.string().email().required(),
-                }).options({ abortEarly: false, stripUnknown: true }),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
                 failAction: invalidField,
             },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
             handler: controller.editEmail.bind(controller),
+        },
+    },
+    {
+        method: ['PATCH'],
+        path: '/api/user/edit/password',
+        options: {
+            tags: ['api', 'profile', 'user'],
+            auth: 'accessToken',
+            validate: {
+                payload: Joi.object({
+                    oldPassword: Joi.string().required().label('old password'),
+                    newPassword: Joi.string().required().label('new password'),
+                    confirmationPassword: Joi.string()
+                        .required()
+                        .equal(Joi.ref('newPassword'))
+                        .messages({
+                            'any.only': 'password confirmation must be equal',
+                        }),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
+            handler: controller.editPassword.bind(controller),
         },
     },
     {
@@ -125,6 +170,66 @@ export default [
                 schema: Joi.object({
                     success: Joi.boolean(),
                     message: Joi.string(),
+                }),
+            },
+        },
+    },
+    {
+        method: ['PATCH'],
+        path: '/api/user/edit/profile-picture',
+        options: {
+            tags: ['api', 'profile', 'user'],
+            auth: 'accessToken',
+            payload: {
+                parse: true,
+                allow: 'multipart/form-data',
+                multipart: true,
+                timeout: false,
+                maxBytes: 1048576 * 10,
+                output: 'stream',
+            },
+            timeout: {
+                socket: 1000 * 10,
+            },
+            validate: {
+                payload: Joi.object({
+                    image: Joi.required()
+                        .custom((value, h) => {
+                            const fileType =
+                                value?.hapi?.headers?.['content-type'];
+                            if (
+                                ![
+                                    'image/jpeg',
+                                    'image/png',
+                                    'image/webp',
+                                ].includes(fileType)
+                            ) {
+                                return h.error('any.invalid');
+                            }
+                            return value;
+                        }, 'mime-type')
+                        .messages({
+                            'any.invalid': 'Invalid image must be png or jpeg',
+                        })
+                        .error((errors) => {
+                            errors[0].value = 'REDACTED';
+                            errors[0].local.value = 'REDACTED';
+                            return errors;
+                        }),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                failAction: invalidField,
+            },
+            handler: controller.editProfilePicture.bind(controller),
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                    data: Joi.object({ image: Joi.string() }),
                 }),
             },
         },

@@ -12,11 +12,11 @@ import contact from './app/routes/contact.js';
 import destination from './app/routes/destination.js';
 import wishlist from './app/routes/wishlist.js';
 import profile from './app/routes/profile.js';
-import Joi from 'joi';
 
 const server = hapi.server({
     host: '0.0.0.0',
     port: 8070,
+
     routes: {
         cors: {
             credentials: true,
@@ -65,9 +65,8 @@ server.auth.strategy('accessToken', 'jwt', {
 });
 
 server.state(COOKIE_DATA_NAME, cookieConfig);
-server.listener.setTimeout(1000 * 10);
-server.listener.keepAliveTimeout = 1000 * 10;
-server.listener.headersTimeout = 1000 * 10;
+server.keepAliveTimeout = 60 * 1000 + 1000;
+server.headersTimeout = 60 * 1000 + 2000;
 server.route(
     [].concat(auth, geolocation, contact, destination, wishlist, profile, [
         {
@@ -79,6 +78,11 @@ server.route(
         },
     ])
 );
-await server.start();
+
+await server.start((err) => {
+    if (err) {
+        console.log(err);
+    }
+});
 
 export default server;

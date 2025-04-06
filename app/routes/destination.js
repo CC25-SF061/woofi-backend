@@ -20,9 +20,12 @@ export default [
                 parse: true,
                 allow: 'multipart/form-data',
                 multipart: true,
-                timeout: 1000 * 10,
+                timeout: false,
                 maxBytes: 1048576 * 10,
                 output: 'stream',
+            },
+            timeout: {
+                socket: 1000 * 10,
             },
             tags: ['api', 'destination'],
             validate: {
@@ -107,11 +110,16 @@ export default [
                         }),
                     name: Joi.string().max(50),
                     location: Joi.string().max(50),
-                    detail: Joi.string(),
+                    detail: Joi.string().label('description'),
                     province: Joi.string(),
                 }).options({
                     stripUnknown: true,
                     abortEarly: false,
+                    errors: {
+                        wrap: {
+                            label: false,
+                        },
+                    },
                 }),
                 failAction: invalidField,
             },

@@ -31,7 +31,7 @@ export class AuthController {
             .where(
                 'token.refresh_token',
                 '=',
-                request.state[COOKIE_DATA_NAME].token
+                request?.state?.[COOKIE_DATA_NAME]?.token
             )
             .execute();
 

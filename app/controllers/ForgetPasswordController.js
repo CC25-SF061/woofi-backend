@@ -57,7 +57,7 @@ export class ForgetPasswordController {
                 .execute();
 
             transporter.sendMail({
-                from: '"Woofi" <no-reply@example.com>',
+                from: '"Woofi" <no-reply@woofi.com>',
                 to: payload.email,
                 text: `Your OTP CODE:  ${otp}`,
                 subject: 'Password Reset Code',
