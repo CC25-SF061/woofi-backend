@@ -6,7 +6,7 @@ import {
     createStringResource,
 } from '../../core/rbac/Casbin.js';
 import { permission, resource } from '../../core/RoleConstant.js';
-import { unauthorized } from '../util/errorHandler.js';
+import { forbidden } from '../util/errorHandler.js';
 
 /**
  * @param {import("@hapi/hapi").Request} request
@@ -22,7 +22,7 @@ export async function isAdmin(request, h) {
     );
 
     if (!hasRole) {
-        return unauthorized(h, 'User is not admin', {
+        return forbidden(h, 'User is not admin', {
             errCode: ErrorConstant.ERR_NOT_ADMIN,
         }).takeover();
     }
@@ -47,7 +47,7 @@ export async function canDeleteDestination(request, h) {
     );
 
     if (!canDelete) {
-        return unauthorized(h, 'Can not delete destination', {
+        return forbidden(h, 'Can not delete destination', {
             errCode: ErrorConstant.ERR_USER_IS_NOT_OWNER,
         }).takeover();
     }
@@ -72,7 +72,7 @@ export async function canEditDestination(request, h) {
     );
 
     if (!canEdit) {
-        return unauthorized(h, 'Can not delete destination', {
+        return forbidden(h, 'Can not delete destination', {
             errCode: ErrorConstant.ERR_USER_IS_NOT_OWNER,
         }).takeover();
     }
@@ -95,7 +95,7 @@ export async function isWritter(request, h) {
     );
 
     if (!hasRole) {
-        return unauthorized(h, 'User is not writter', {
+        return forbidden(h, 'User is not writter', {
             errCode: ErrorConstant.ERR_NOT_WRITTER,
         }).takeover();
     }

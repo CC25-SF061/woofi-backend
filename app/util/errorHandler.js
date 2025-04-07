@@ -58,8 +58,8 @@ export function badRequest(h, message, payload, header, body) {
  * @param {object} payload
  * @returns {import('@hapi/hapi').ResponseObject}
  */
-export function unauthorized(h, message, payload, header, body) {
-    const badRequest = Boom.unauthorized(message).output;
+export function forbidden(h, message, payload, header, body) {
+    const badRequest = Boom.forbidden(message).output;
 
     Object.assign(badRequest, {
         success: false,

@@ -90,7 +90,6 @@ export class AuthController {
                 .executeTakeFirst();
             const refreshToken = generateRefreshToken(result.id.toString());
             const accessToken = generateAccessToken(result.id.toString());
-
             await db
                 .insertInto('token')
                 .values({
@@ -101,6 +100,7 @@ export class AuthController {
                     ).toISOString(),
                 })
                 .executeTakeFirst();
+            h.unstate(COOKIE_DATA_NAME);
             h.state(COOKIE_DATA_NAME, { token: refreshToken }, cookieConfig);
             return h.response({
                 success: true,
@@ -151,7 +151,7 @@ export class AuthController {
                     ).toISOString(),
                 })
                 .executeTakeFirst();
-
+            h.unstate(COOKIE_DATA_NAME);
             h.state(COOKIE_DATA_NAME, { token: refreshToken }, cookieConfig);
 
             return h.response({
@@ -181,11 +181,20 @@ export class AuthController {
         try {
             const data = request.state[COOKIE_DATA_NAME];
             const refreshToken = data?.token;
+            let tokenData;
+            try {
+                tokenData = jwt.token.decode(refreshToken ?? '').decoded
+                    .payload;
+            } catch (e) {
+                return Boom.badData('Invalid token structure');
+            }
+
             const db = getDatabase();
             const token = await db
                 .selectFrom('token')
                 .select('token.user_id')
-                .where('refresh_token', '=', refreshToken ?? '')
+                .where('user_id', '=', tokenData.id)
+                .where('refresh_token', '=', refreshToken)
                 .executeTakeFirst();
             if (!token) {
                 return badRequest(h, 'Invalid token', {
@@ -203,6 +212,7 @@ export class AuthController {
                 },
             });
         } catch (e) {
+            if (Boom.isBoom(e)) return e;
             console.log(e);
             return Boom.internal();
         }
@@ -291,6 +301,7 @@ export class AuthController {
                     .executeTakeFirst(),
             ]);
 
+            h.unstate(COOKIE_DATA_NAME);
             h.state(COOKIE_DATA_NAME, { token: refreshToken }, cookieConfig);
 
             return h.response({
@@ -357,6 +368,7 @@ export class AuthController {
                     refresh_token: refreshToken,
                 })
                 .executeTakeFirst();
+            h.unstate(COOKIE_DATA_NAME);
             h.state(COOKIE_DATA_NAME, { token: refreshToken }, cookieConfig);
 
             return h.response({

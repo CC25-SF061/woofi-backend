@@ -229,7 +229,10 @@ export class DestinationController {
                 );
             }
             if (filter.HIGHEST_RATING) {
-                destination = destination.orderBy('result.rating', 'desc');
+                destination = destination.orderBy(
+                    'result.rating',
+                    sql`desc nulls last`
+                );
             }
             if (filter.NEWEST) {
                 destination = destination.orderBy('result.created_at', 'desc');
@@ -238,7 +241,6 @@ export class DestinationController {
                 destination = destination.orderBy('result.created_at', 'asc');
             }
             if (filter.WRITTEN_BY_YOU) {
-                console.log(credentials?.id);
                 destination = destination.where(
                     'result.user_id',
                     '=',
