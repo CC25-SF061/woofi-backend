@@ -132,7 +132,7 @@ export class AdminController {
      * @param {import("@hapi/hapi").ResponseToolkit} h
      * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
      */
-    async getPost(request, h) {
+    async getDestinations(request, h) {
         try {
             const { page = 0, name, status } = request.query;
             const limit = 30;
@@ -150,19 +150,27 @@ export class AdminController {
                     eb
                         .case()
                         .when('destination.deleted_at', 'is', null)
-                        .then(false)
-                        .else(true)
+                        .then('posted')
+                        .else('deleted')
                         .end()
                         .as('status'),
                 ]);
             if (status === 'deleted') {
-                resource = resource.where('deleted_at', 'is not', null);
+                resource = resource.where(
+                    'destination.deleted_at',
+                    'is not',
+                    null
+                );
             }
             if (status === 'posted') {
-                resource = resource.where('deleted_at', 'is', null);
+                resource = resource.where('destination.deleted_at', 'is', null);
             }
             if (name) {
-                resource = resource.where('name', 'ilike', `${name}%`);
+                resource = resource.where(
+                    'destination.name',
+                    'ilike',
+                    `${name}%`
+                );
             }
 
             resource = await resource
@@ -173,7 +181,63 @@ export class AdminController {
                 .response(
                     JSONToString({
                         success: true,
-                        message: 'Success getting resources count',
+                        message: 'Success getting destinations',
+                        data: resource,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async restoreDestination(request, h) {
+        try {
+            const { postId } = request.params;
+            const db = getDatabase();
+            const destination = await db
+                .selectFrom('destination')
+                .where('id', '=', postId)
+                .select('id')
+                .executeTakeFirst();
+            if (!destination) {
+                return h
+                    .response({
+                        ...Boom.notFound().output,
+                        errCode: ErrorConstant.ERR_NOT_FOUND,
+                    })
+                    .code(404);
+            }
+            const resource = await db
+                .with('d', (db) =>
+                    db
+                        .updateTable('destination')
+                        .set({ deleted_at: null })
+                        .where('id', '=', postId)
+                        .returning(['id', 'name', 'image', 'user_id'])
+                )
+                .selectFrom('d')
+                .innerJoin('user', 'user.id', 'd.user_id')
+                .select([
+                    'd.name',
+                    'd.id',
+                    'd.image',
+                    'user.username',
+                    'user.email',
+                    sql`'posted'`.as('status'),
+                ])
+                .executeTakeFirst();
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'Success restoring destination',
                         data: resource,
                     })
                 )
