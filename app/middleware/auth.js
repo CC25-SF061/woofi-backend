@@ -1,4 +1,5 @@
 import ErrorConstant from '../../core/ErrorConstant.js';
+import Boom from '@hapi/boom';
 import {
     getEnforcer,
     createStringUser,
@@ -76,6 +77,34 @@ export async function canEditDestination(request, h) {
         return forbidden(h, 'Can not delete destination', {
             errCode: ErrorConstant.ERR_USER_IS_NOT_OWNER,
         }).takeover();
+    }
+
+    return request.pre;
+}
+
+/**
+ * @param {number | string} id
+ * @returns
+ */
+export async function isBanned(id) {
+    const enforcer = getEnforcer();
+
+    return await enforcer.hasRoleForUser(
+        createStringUser(id),
+        createStringRole('banned')
+    );
+}
+
+/**
+ * @param {import("@hapi/hapi").Request} request
+ * @param {import("@hapi/hapi").ResponseToolkit} h
+ * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+ */
+export async function isBannedRequest(request, h) {
+    const { credentials } = request.auth;
+    const banned = await isBanned(credentials.id);
+    if (banned) {
+        return Boom.unauthorized('Account is suspended');
     }
 
     return request.pre;

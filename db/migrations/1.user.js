@@ -75,10 +75,11 @@ export async function up(db) {
         .addColumn('v5', 'varchar(50)')
         .execute();
 
+    await db.schema.createIndex('idx_rbac').on('rbac').column('v0').execute();
     await db.schema
-        .createIndex('idx_rbac')
-        .on('rbac')
-        .expression(sql`('user::' || "v0")`)
+        .createIndex('user_concat_string')
+        .on('user')
+        .expression(sql`('user::'|| "user"."id")`)
         .execute();
 }
 
@@ -87,6 +88,7 @@ export async function up(db) {
  * @returns {Promise<void>}
  */
 export async function down(db) {
+    await db.schema.dropIndex('user_concat_string').execute();
     await db.schema.dropIndex('idx_rbac').execute();
     await db.schema.dropTable('email_verification').execute();
     await db.schema.dropTable('forget_password').execute();

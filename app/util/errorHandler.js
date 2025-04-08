@@ -77,3 +77,19 @@ export function forbidden(h, message, payload, header, body) {
 
     return h.response(badRequest).code(badRequest.statusCode);
 }
+
+export function notFound(h) {
+    return h
+        .response({
+            ...Boom.notFound().output,
+            errCode: errorConstant.ERR_NOT_FOUND,
+        })
+        .code(404);
+}
+/**
+ * @param {import('@hapi/hapi').ResponseToolkit} h
+ * @returns {import('@hapi/hapi').ResponseObject}
+ */
+export function unauthorized(message) {
+    return Boom.unauthorized(message);
+}

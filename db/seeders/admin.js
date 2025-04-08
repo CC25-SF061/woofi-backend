@@ -29,6 +29,6 @@ export async function seed(db) {
 
     await enforcer.addRoleForUser(
         createStringUser(user.id),
-        createStringRole('admin')
+        createStringRole('super_admin')
     );
 }

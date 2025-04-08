@@ -7,6 +7,12 @@ import { permission } from '../../core/RoleConstant.js';
  */
 export async function seed(db) {
     const enforcer = getEnforcer();
+    await enforcer.addPermissionForUser(
+        createStringRole('banned'),
+        '*',
+        '*',
+        'deny'
+    );
     await enforcer.addPermissionForUser(createStringRole('admin'), '*', '*');
     await enforcer.addPermissionForUser(
         createStringRole('admin'),

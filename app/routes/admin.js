@@ -103,7 +103,7 @@ export default [
         method: ['get'],
         path: '/api/admin/destinations',
         options: {
-            tags: ['api', 'admin', 'destination'],
+            tags: ['api', 'admin', 'destinations'],
             auth: {
                 strategy: 'accessToken',
             },
@@ -167,5 +167,77 @@ export default [
             // pre: [{ method: isAdmin }],
         },
         handler: controller.restoreDestination.bind(controller),
+    },
+    {
+        method: ['GET'],
+        path: '/api/admin/users',
+        options: {
+            tags: ['api', 'admin', 'users'],
+            auth: {
+                strategy: 'accessToken',
+            },
+            validate: {
+                query: Joi.object({
+                    page: Joi.number().default(0),
+                    name: Joi.string(),
+                    email: Joi.string(),
+                    role: Joi.string().valid('admin', 'banned', 'user'),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.getUsers.bind(controller),
+    },
+    {
+        method: ['PATCH'],
+        path: '/api/admin/user/{userId}/ban',
+        options: {
+            tags: ['api', 'admin', 'users'],
+            auth: {
+                strategy: 'accessToken',
+            },
+
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.banUser.bind(controller),
+    },
+    {
+        method: ['PATCH'],
+        path: '/api/admin/user/{userId}/unban',
+        options: {
+            tags: ['api', 'admin', 'users'],
+            auth: {
+                strategy: 'accessToken',
+            },
+
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.unbanUser.bind(controller),
     },
 ];

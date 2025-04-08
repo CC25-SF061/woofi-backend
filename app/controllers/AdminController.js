@@ -1,7 +1,14 @@
 import { sql } from 'kysely';
 import { getDatabase } from '../../core/Database.js';
-import Boom from '@hapi/boom';
+import Boom, { badRequest } from '@hapi/boom';
 import { JSONToString } from '../util/json.js';
+import {
+    createStringRole,
+    createStringUser,
+    getEnforcer,
+} from '../../core/rbac/Casbin.js';
+import { notFound } from '../util/errorHandler.js';
+import ErrorConstant from '../../core/ErrorConstant.js';
 
 export class AdminController {
     constructor() {}
@@ -78,7 +85,7 @@ export class AdminController {
                 .response(
                     JSONToString({
                         success: true,
-                        message: 'Success getting resources count',
+                        message: 'Success getting destinations count',
                         data: resource,
                     })
                 )
@@ -116,7 +123,7 @@ export class AdminController {
                 .response(
                     JSONToString({
                         success: true,
-                        message: 'Success getting resources count',
+                        message: 'Success getting users count',
                         data: resource,
                     })
                 )
@@ -207,12 +214,7 @@ export class AdminController {
                 .select('id')
                 .executeTakeFirst();
             if (!destination) {
-                return h
-                    .response({
-                        ...Boom.notFound().output,
-                        errCode: ErrorConstant.ERR_NOT_FOUND,
-                    })
-                    .code(404);
+                return notFound(h);
             }
             const resource = await db
                 .with('d', (db) =>
@@ -246,5 +248,226 @@ export class AdminController {
             console.log(e);
             return Boom.internal();
         }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getUsers(request, h) {
+        try {
+            const { page = 0, q, role } = request.query;
+            const limit = 30;
+            const db = getDatabase();
+
+            let resource = db
+                .selectFrom((eb) =>
+                    eb
+                        .selectFrom('user as u')
+                        .leftJoin('rbac as r', (join) =>
+                            join.onRef(sql`'user::' || u.id`, '=', 'r.v0')
+                        )
+                        .select((eb) => [
+                            eb
+                                .case()
+                                .when('r.v1', '=', createStringRole('admin'))
+                                .then('admin')
+                                .when(
+                                    'r.v1',
+                                    '=',
+                                    createStringRole('super_admin')
+                                )
+                                .then(`super_admin`)
+                                .when('r.v1', '=', createStringRole('banned'))
+                                .then('banned')
+                                .else('user')
+                                .end()
+                                .as('role'),
+                            'u.id',
+                            'u.username',
+                            'u.email',
+                            'u.profile_image',
+                        ])
+                        .as('result')
+                )
+                .selectAll();
+
+            if (q) {
+                resource = resource.where(({ or, eb }) =>
+                    or([
+                        eb('result.username', 'ilike', `${q}%`),
+                        eb('result.email', 'ilike', `${q}%`),
+                    ])
+                );
+            }
+            if (role) {
+                resource = resource.where('result.role', '=', role);
+            }
+            resource = await resource
+                .limit(limit)
+                .offset(page * limit)
+                .execute();
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'Success restoring destination',
+                        data: resource,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async promoteToAdmin(request, h) {
+        const { userId } = request.params;
+        const db = getDatabase();
+        const user = await db
+            .selectFrom('user')
+            .where('id', '=', userId)
+            .select('id')
+            .executeTakeFirst();
+        if (!user) {
+            return notFound(h);
+        }
+
+        const enforcer = getEnforcer();
+        if (
+            await enforcer.hasRoleForUser(
+                createStringUser(userId),
+                createStringRole('super_admin')
+            )
+        ) {
+            return badRequest(h, 'Can not demote super admin', {
+                errCode: ErrorConstant.ERR_USER_IS_SUPER_ADMIN,
+            }).takeover();
+        }
+        await enforcer.addRoleForUser(
+            createStringUser(userId),
+            createStringRole('admin')
+        );
+
+        return h.response({
+            success: true,
+            message: 'Success promoting user to admin',
+        });
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async demoteToUser(request, h) {
+        const { userId } = request.params;
+        const db = getDatabase();
+        const user = await db
+            .selectFrom('user')
+            .where('id', '=', userId)
+            .select('id')
+            .executeTakeFirst();
+        if (!user) {
+            return notFound(h);
+        }
+
+        const enforcer = getEnforcer();
+        if (
+            await enforcer.hasRoleForUser(
+                createStringUser(userId),
+                createStringRole('super_admin')
+            )
+        ) {
+            return badRequest(h, 'Can not demote super admin', {
+                errCode: ErrorConstant.ERR_USER_IS_SUPER_ADMIN,
+            }).takeover();
+        }
+        await enforcer.deleteRoleForUser(
+            createStringUser(userId),
+            createStringRole('admin')
+        );
+
+        return h.response({
+            success: true,
+            message: 'Success demoting user',
+        });
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async banUser(request, h) {
+        const { userId } = request.params;
+        const db = getDatabase();
+        const user = await db
+            .selectFrom('user')
+            .where('id', '=', userId)
+            .select('id')
+            .executeTakeFirst();
+        if (!user) {
+            return notFound(h);
+        }
+
+        const enforcer = getEnforcer();
+        if (
+            await enforcer.hasRoleForUser(
+                createStringUser(userId),
+                createStringRole('super_admin')
+            )
+        ) {
+            return badRequest(h, 'Can not ban super admin', {
+                errCode: ErrorConstant.ERR_USER_IS_SUPER_ADMIN,
+            }).takeover();
+        }
+
+        await enforcer.addRoleForUser(
+            createStringUser(userId),
+            createStringRole('banned')
+        );
+
+        return h.response({
+            success: true,
+            message: 'Success ban user',
+        });
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async unbanUser(request, h) {
+        const { userId } = request.params;
+        const db = getDatabase();
+        const user = await db
+            .selectFrom('user')
+            .where('id', '=', userId)
+            .select('id')
+            .executeTakeFirst();
+        if (!user) {
+            return notFound(h);
+        }
+
+        const enforcer = getEnforcer();
+
+        await enforcer.deleteRoleForUser(
+            createStringUser(userId),
+            createStringRole('banned')
+        );
+
+        return h.response({
+            success: true,
+            message: 'Success unban user',
+        });
     }
 }
