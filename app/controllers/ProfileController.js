@@ -76,7 +76,10 @@ export class ProfileController {
             const db = this.db;
             let destination = await db
                 .selectFrom('wishlist as w')
-                .leftJoin('destination as d', 'd.id', 'w.destination_id')
+                .innerJoin('destination as d', (join) =>
+                    join.onRef('w.destination_id', '=', 'd.id')
+                )
+                .where('d.deleted_at', 'is', null)
                 .leftJoin(
                     'rating_destination as rd',
                     'd.id',
@@ -329,6 +332,7 @@ export class ProfileController {
             const { credentials } = request.auth;
             const destination = await db
                 .selectFrom('destination')
+                .where('destination.deleted_at', 'is', null)
                 .leftJoin('rating_destination as rd', (join) =>
                     join.onRef('rd.destination_id', '=', 'destination.id')
                 )

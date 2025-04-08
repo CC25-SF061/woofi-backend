@@ -192,11 +192,13 @@ export class AuthController {
             const db = getDatabase();
             const token = await db
                 .selectFrom('token')
-                .select('token.user_id')
                 .where('user_id', '=', tokenData.id)
                 .where('refresh_token', '=', refreshToken)
+                .select(['token.user_id', 'expired_at'])
+
                 .executeTakeFirst();
-            if (!token) {
+
+            if (!token || token.expired_at.getTime() < Date.now()) {
                 return badRequest(h, 'Invalid token', {
                     errCode: errorConstant.ERR_INVALID_TOKEN,
                 });

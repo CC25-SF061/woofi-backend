@@ -16,9 +16,10 @@ import { forbidden } from '../util/errorHandler.js';
 export async function isAdmin(request, h) {
     const { credentials } = request.auth;
     const enforcer = getEnforcer();
-    const hasRole = await enforcer.hasRoleForUser(
+    const hasRole = await enforcer.enforce(
         createStringUser(credentials.id),
-        createStringRole('admin')
+        '*',
+        permission.ADMIN
     );
 
     if (!hasRole) {

@@ -24,6 +24,7 @@ export class WishlistController {
                 db
                     .selectFrom('destination')
                     .where('id', '=', postId)
+                    .where('destination.deleted_at', 'is', null)
                     .executeTakeFirst(),
                 db
                     .selectFrom('wishlist')
@@ -31,12 +32,13 @@ export class WishlistController {
                     .where('destination_id', '=', postId)
                     .executeTakeFirst(),
             ]);
-
             if (!post) {
-                return h.response({
-                    ...Boom.notFound('Destination not found').output,
-                    errCode: ErrorConstant.ERR_NOT_FOUND,
-                });
+                return h
+                    .response({
+                        ...Boom.notFound('Destination not found').output,
+                        errCode: ErrorConstant.ERR_NOT_FOUND,
+                    })
+                    .code(404);
             }
             if (wishlist) {
                 return badRequest(h, 'wishlist already exist', {
@@ -77,15 +79,22 @@ export class WishlistController {
             const postId = params.postId;
             const wishlist = await db
                 .selectFrom('wishlist')
-                .where('user_id', '=', credentials.id)
+                .where('wishlist.user_id', '=', credentials.id)
                 .where('destination_id', '=', postId)
+                .innerJoin(
+                    'destination',
+                    'destination.id',
+                    'wishlist.destination_id'
+                )
+                .where('destination.deleted_at', 'is', null)
                 .executeTakeFirst();
-
             if (!wishlist) {
-                return h.response({
-                    ...Boom.notFound('wishlist not found').output,
-                    errCode: ErrorConstant.ERR_NOT_FOUND,
-                });
+                return h
+                    .response({
+                        ...Boom.notFound('wishlist not found').output,
+                        errCode: ErrorConstant.ERR_NOT_FOUND,
+                    })
+                    .code(404);
             }
 
             await db

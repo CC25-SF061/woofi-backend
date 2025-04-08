@@ -12,6 +12,7 @@ import contact from './app/routes/contact.js';
 import destination from './app/routes/destination.js';
 import wishlist from './app/routes/wishlist.js';
 import profile from './app/routes/profile.js';
+import admin from './app/routes/admin.js';
 
 const server = hapi.server({
     host: '0.0.0.0',
@@ -68,15 +69,24 @@ server.state(COOKIE_DATA_NAME, cookieConfig);
 server.keepAliveTimeout = 60 * 1000 + 1000;
 server.headersTimeout = 60 * 1000 + 2000;
 server.route(
-    [].concat(auth, geolocation, contact, destination, wishlist, profile, [
-        {
-            method: ['get'],
-            path: '/',
-            handler: () => {
-                return 'Hello world!';
+    [].concat(
+        auth,
+        geolocation,
+        contact,
+        destination,
+        wishlist,
+        profile,
+        admin,
+        [
+            {
+                method: ['get'],
+                path: '/',
+                handler: () => {
+                    return 'Hello world!';
+                },
             },
-        },
-    ])
+        ]
+    )
 );
 
 await server.start((err) => {

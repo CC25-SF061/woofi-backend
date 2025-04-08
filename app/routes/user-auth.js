@@ -112,7 +112,11 @@ export default [
                 payload: Joi.object({
                     email: Joi.string().email().required(),
                     password: Joi.string().min(1).required(),
-                }).options({ abortEarly: false, stripUnknown: true }),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
                 failAction: invalidField,
             },
             response: {

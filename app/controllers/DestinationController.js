@@ -92,6 +92,7 @@ export class DestinationController {
 
             let destination = await db
                 .selectFrom('destination')
+                .where('deleted_at', 'is', null)
                 .leftJoin(
                     'rating_destination',
                     'rating_destination.destination_id',
@@ -174,6 +175,7 @@ export class DestinationController {
                 .selectFrom((eb) =>
                     eb
                         .selectFrom('destination')
+                        .where('deleted_at', 'is', null)
                         .leftJoin('rating_destination as rd', (join) =>
                             join.onRef(
                                 'rd.destination_id',
@@ -279,6 +281,7 @@ export class DestinationController {
             const db = this.db;
             const destination = await db
                 .selectFrom('destination')
+                .where('deleted_at', 'is', null)
                 .where('id', '=', params.postId)
                 .selectAll()
                 .executeTakeFirst();
@@ -339,6 +342,7 @@ export class DestinationController {
 
             await db
                 .updateTable('destination')
+                .where('destination.deleted_at', 'is', null)
                 .where('destination.id', '=', params.postId)
                 .set({
                     name: payload.name,
@@ -366,51 +370,13 @@ export class DestinationController {
      */
     async deleteDestination(request, h) {
         try {
-            const enforcer = getEnforcer();
-            const { credentials } = request.auth;
             const { params } = request;
             const db = this.db;
-            await Promise.all([
-                db
-                    .deleteFrom('rating_destination')
-                    .where('destination_id', '=', params.postId)
-                    .execute(),
-                db
-                    .deleteFrom('wishlist')
-                    .where('wishlist.destination_id', '=', params.postId)
-                    .execute(),
-                db
-                    .deleteFrom('rbac')
-                    .where(
-                        'rbac.v1',
-                        '=',
-                        createStringResource(
-                            resource.DESTINATION,
-                            params.postId
-                        )
-                    )
-                    .execute(),
-                enforcer.removePolicies([
-                    [
-                        createStringUser(credentials.id),
-                        createStringResource(
-                            resource.DESTINATION,
-                            params.postId
-                        ),
-                        permission.DELETE,
-                    ],
-                    [
-                        createStringUser(credentials.id),
-                        createStringResource(
-                            resource.DESTINATION,
-                            params.postId
-                        ),
-                        permission.EDIT,
-                    ],
-                ]),
-            ]);
             await db
-                .deleteFrom('destination')
+                .updateTable('destination')
+                .set({
+                    deleted_at: new Date(),
+                })
                 .where('destination.id', '=', params.postId)
                 .executeTakeFirst();
 
