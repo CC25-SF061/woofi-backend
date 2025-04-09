@@ -15,6 +15,19 @@ export async function up(db) {
         .addColumn('user_id', 'bigint', (col) =>
             col.references('user.id').onDelete('set null')
         )
+        .addColumn('user_id')
+        .addColumn('created_at', 'timestamptz', (col) =>
+            col.defaultTo(sql`now()`).notNull()
+        )
+        .execute();
+
+    await db.schema
+        .createTable('contact_reply')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+        .addColumn('contact_id', 'bigint', (col) =>
+            col.references('contact.id').notNull()
+        )
+        .addColumn('message', 'text', (col) => col.notNull())
         .addColumn('created_at', 'timestamptz', (col) =>
             col.defaultTo(sql`now()`).notNull()
         )

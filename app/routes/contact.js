@@ -16,7 +16,7 @@ export default [
             tags: ['api', 'contact'],
             auth: {
                 strategy: 'accessToken',
-                mode: 'optional',
+                mode: 'try',
             },
             validate: {
                 payload: Joi.object({

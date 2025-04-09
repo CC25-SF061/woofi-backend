@@ -470,4 +470,56 @@ export class AdminController {
             message: 'Success unban user',
         });
     }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getContacts(request, h) {
+        try {
+            const db = getDatabase();
+            const { q, status } = request.query;
+
+            let contact = db
+                .selectFrom('contact as c')
+                .leftJoin('user as u', 'u.id', 'c.user_id')
+                .select([
+                    'c.email',
+                    'c.name',
+                    'c.message',
+                    'c.reason',
+                    'c.replied_at',
+                    'u.profile_image',
+                ]);
+
+            if (q) {
+                contact = contact.where(({ or, eb }) =>
+                    or([
+                        eb('c.name', 'ilike', `${q}%`),
+                        eb('c.email', 'ilike', `${q}%`),
+                    ])
+                );
+            }
+
+            if (status === 'replied') {
+                contact = contact.where('c.replied_at', 'is not', null);
+            }
+            if (status === 'unreplied') {
+                contact = contact.where('c.replied_at', 'is', null);
+            }
+
+            contact = await contact
+                .orderBy('c.replied_at', sql`asc nulls first`)
+                .execute();
+            return h.response({
+                success: true,
+                message: 'success getting contact',
+                data: contact,
+            });
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
 }

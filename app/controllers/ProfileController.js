@@ -248,7 +248,7 @@ export class ProfileController {
                 .where('user.id', '=', credentials.id)
                 .execute();
 
-            await upload(
+            upload(
                 pathImage,
                 payload.image,
                 mime.getExtension(payload.image.hapi.headers['content-type'])
@@ -261,7 +261,7 @@ export class ProfileController {
                         image: pathImage,
                     },
                 })
-                .code(200);
+                .code(202);
         } catch (e) {
             console.log(e);
             return Boom.internal();

@@ -172,7 +172,7 @@ export default [
         method: ['GET'],
         path: '/api/admin/users',
         options: {
-            tags: ['api', 'admin', 'users'],
+            tags: ['api', 'admin', 'user'],
             auth: {
                 strategy: 'accessToken',
             },
@@ -204,7 +204,7 @@ export default [
         method: ['PATCH'],
         path: '/api/admin/user/{userId}/ban',
         options: {
-            tags: ['api', 'admin', 'users'],
+            tags: ['api', 'admin', 'user'],
             auth: {
                 strategy: 'accessToken',
             },
@@ -224,7 +224,7 @@ export default [
         method: ['PATCH'],
         path: '/api/admin/user/{userId}/unban',
         options: {
-            tags: ['api', 'admin', 'users'],
+            tags: ['api', 'admin', 'user'],
             auth: {
                 strategy: 'accessToken',
             },
@@ -239,5 +239,25 @@ export default [
             // pre: [{ method: isAdmin }],
         },
         handler: controller.unbanUser.bind(controller),
+    },
+    {
+        method: ['GET'],
+        path: '/api/admin/contacts',
+        options: {
+            tags: ['api', 'admin', 'user'],
+            auth: {
+                strategy: 'accessToken',
+            },
+
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.getContacts.bind(controller),
     },
 ];
