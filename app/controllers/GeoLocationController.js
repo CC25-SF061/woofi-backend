@@ -11,7 +11,7 @@ export class GeoLocationController {
      */
     async getLocation(request, h) {
         try {
-            const location = await getProvince();
+            const location = getProvince();
             return h.response({
                 success: true,
                 message: 'success retrieve province',

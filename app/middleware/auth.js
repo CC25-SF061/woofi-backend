@@ -8,6 +8,7 @@ import {
 } from '../../core/rbac/Casbin.js';
 import { permission, resource } from '../../core/RoleConstant.js';
 import { forbidden } from '../util/errorHandler.js';
+import { getProvince } from '../../core/GeoLocation.js';
 
 /**
  * @param {import("@hapi/hapi").Request} request
@@ -66,13 +67,11 @@ export async function canEditDestination(request, h) {
     const { credentials } = request.auth;
     const { params } = request;
     const enforcer = getEnforcer();
-
     const canEdit = await enforcer.enforce(
         createStringUser(credentials.id),
         createStringResource(resource.DESTINATION, params.postId),
         permission.EDIT
     );
-
     if (!canEdit) {
         return forbidden(h, 'Can not delete destination', {
             errCode: ErrorConstant.ERR_USER_IS_NOT_OWNER,

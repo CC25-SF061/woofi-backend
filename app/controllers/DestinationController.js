@@ -52,7 +52,7 @@ export class DestinationController {
                 .returning(['id'])
                 .executeTakeFirst();
 
-            await upload(pathImage, payload.image);
+            upload(pathImage, payload.image);
             await enforcer.addPolicies([
                 [
                     createStringUser(credentials.id),
@@ -337,10 +337,10 @@ export class DestinationController {
                     'images'
                 );
 
-                await upload(pathImage, payload.image);
+                upload(pathImage, payload.image);
             }
 
-            await db
+            const destination = await db
                 .updateTable('destination')
                 .where('destination.deleted_at', 'is', null)
                 .where('destination.id', '=', params.postId)
@@ -350,13 +350,27 @@ export class DestinationController {
                     location: payload.location,
                     image: pathImage,
                     province: payload.province,
+                    updated_at: new Date(),
                 })
-                .execute();
+                .returning([
+                    'destination.name',
+                    'destination.id',
+                    'destination.location',
+                    'destination.province',
+                    'destination.detail',
+                    'destination.image',
+                ])
+                .executeTakeFirst();
 
-            return h.response({
-                success: true,
-                message: 'Success updating destination',
-            });
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'Success updating destination',
+                        data: destination,
+                    })
+                )
+                .type('application/json');
         } catch (e) {
             console.log(e);
             return Boom.internal();

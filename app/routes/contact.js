@@ -16,7 +16,7 @@ export default [
             tags: ['api', 'contact'],
             auth: {
                 strategy: 'accessToken',
-                mode: 'try',
+                mode: 'optional',
             },
             validate: {
                 payload: Joi.object({
@@ -32,6 +32,8 @@ export default [
                     reason: Joi.string().required().messages({
                         'any.required': 'reason is required',
                     }),
+                    type: Joi.string(),
+                    reply_id: Joi.number(),
                 }).options({ abortEarly: false, stripUnknown: true }),
                 failAction: invalidField,
             },

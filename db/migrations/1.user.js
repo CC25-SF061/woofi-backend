@@ -21,9 +21,40 @@ export async function up(db) {
         .addColumn('is_verified', 'boolean', (col) =>
             col.defaultTo(sql`false`).notNull()
         )
+        .addColumn('is_new_user', 'boolean', (col) =>
+            col.defaultTo(sql`true`).notNull()
+        )
         .addColumn('profile_image', 'varchar(255)')
         .execute();
 
+    await db.schema
+        .createTable('personal_data')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+        .addColumn('gender', 'varchar(10)')
+        .addColumn('user_id', 'bigint', (col) =>
+            col.references('user.id').notNull()
+        )
+        .addColumn('birth_date', 'timestamptz')
+        .execute();
+
+    await db.schema
+        .createTable('personal_interest')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+        .addColumn('user_id', 'bigint', (col) =>
+            col.notNull().references('user.id')
+        )
+        .addColumn('interest', 'varchar(50)', (col) => col.notNull())
+        .execute();
+    await db.schema
+        .createTable('destination_search')
+        .addColumn('id', 'bigserial', (col) => col.primaryKey())
+        .addColumn('user_id', 'bigint', (col) =>
+            col.notNull().references('user.id')
+        )
+        .addColumn('count', 'bigint', (col) => col.defaultTo(0))
+        .addColumn('name', 'varchar(50)', (col) => col.notNull())
+        .addUniqueConstraint('destination_unique', ['user_id', 'name'])
+        .execute();
     await db.schema
         .createTable('token')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
@@ -90,6 +121,9 @@ export async function up(db) {
 export async function down(db) {
     await db.schema.dropIndex('user_concat_string').execute();
     await db.schema.dropIndex('idx_rbac').execute();
+    await db.schema.dropTable('personal_interest').execute();
+    await db.schema.dropTable('personal_data').execute();
+    await db.schema.dropTable('destination_search').execute();
     await db.schema.dropTable('email_verification').execute();
     await db.schema.dropTable('forget_password').execute();
     await db.schema.dropTable('token').execute();

@@ -15,10 +15,12 @@ export async function up(db) {
         .addColumn('user_id', 'bigint', (col) =>
             col.references('user.id').onDelete('set null')
         )
-        .addColumn('user_id')
         .addColumn('created_at', 'timestamptz', (col) =>
             col.defaultTo(sql`now()`).notNull()
         )
+        // .addColumn('reply_id', 'timestamptz', (col) =>
+        //     col.references('contact_reply.id').onDelete('set null')
+        // )
         .execute();
 
     await db.schema
@@ -32,6 +34,13 @@ export async function up(db) {
             col.defaultTo(sql`now()`).notNull()
         )
         .execute();
+
+    await db.schema
+        .alterTable('contact')
+        .addColumn('reply_id', 'bigint', (col) =>
+            col.references('contact_reply.id').onDelete('set null')
+        )
+        .execute();
 }
 
 /**
@@ -39,5 +48,7 @@ export async function up(db) {
  * @returns {Promise<void>}
  */
 export async function down(db) {
+    await db.schema.alterTable('contact').dropColumn('reply_id').execute();
+    await db.schema.dropTable('contact_reply').execute();
     await db.schema.dropTable('contact').execute();
 }

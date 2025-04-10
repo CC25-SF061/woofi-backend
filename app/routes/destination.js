@@ -5,6 +5,7 @@ import {
     canDeleteDestination,
     canEditDestination,
 } from '../middleware/auth.js';
+import { getProvince } from '../../core/GeoLocation.js';
 const controller = new DestinationController();
 
 /**
@@ -56,7 +57,11 @@ export default [
                     name: Joi.string().required().max(50),
                     location: Joi.string().required().max(50),
                     detail: Joi.string().required().label('description'),
-                    province: Joi.string(),
+                    province: Joi.string()
+                        .valid(...getProvince().map((e) => e.name))
+                        .messages({
+                            'any.only': 'Invalid province',
+                        }),
                 }).options({
                     abortEarly: false,
                     stripUnknown: true,
@@ -111,7 +116,11 @@ export default [
                     name: Joi.string().max(50),
                     location: Joi.string().max(50),
                     detail: Joi.string().label('description'),
-                    province: Joi.string(),
+                    province: Joi.string()
+                        .valid(...getProvince().map((e) => e.name))
+                        .messages({
+                            'any.only': 'Invalid province',
+                        }),
                 }).options({
                     stripUnknown: true,
                     abortEarly: false,
@@ -170,7 +179,6 @@ export default [
                         image: Joi.string(),
                         location: Joi.string(),
                         user_id: Joi.string(),
-                        province: Joi.string(),
                         name: Joi.string(),
                         province: Joi.string(),
                         ratingCount: Joi.string(),
@@ -193,7 +201,11 @@ export default [
             validate: {
                 query: Joi.object({
                     page: Joi.number().default(0),
-                    province: Joi.string(),
+                    province: Joi.any()
+                        .allow(...getProvince().map((e) => e.name))
+                        .messages({
+                            'any.only': 'Invalid province',
+                        }),
                     name: Joi.string(),
                     filter: Joi.alternatives()
                         .try(Joi.array().items(Joi.string()), Joi.string())
@@ -244,6 +256,14 @@ export default [
                 schema: Joi.object({
                     message: Joi.string(),
                     success: Joi.boolean(),
+                    data: Joi.object({
+                        id: Joi.number(),
+                        name: Joi.string(),
+                        detail: Joi.string(),
+                        location: Joi.string(),
+                        image: Joi.string(),
+                        province: Joi.string(),
+                    }),
                 }),
             },
         },
@@ -260,6 +280,7 @@ export default [
                 params: Joi.object({
                     postId: Joi.number(),
                 }),
+
                 failAction: invalidField,
             },
             response: {

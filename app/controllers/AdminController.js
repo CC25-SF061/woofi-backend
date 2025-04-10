@@ -1,14 +1,15 @@
 import { sql } from 'kysely';
 import { getDatabase } from '../../core/Database.js';
-import Boom, { badRequest } from '@hapi/boom';
+import Boom from '@hapi/boom';
 import { JSONToString } from '../util/json.js';
 import {
     createStringRole,
     createStringUser,
     getEnforcer,
 } from '../../core/rbac/Casbin.js';
-import { notFound } from '../util/errorHandler.js';
+import { notFound, badRequest } from '../util/errorHandler.js';
 import ErrorConstant from '../../core/ErrorConstant.js';
+import { transport } from '../../core/Mailer.js';
 
 export class AdminController {
     constructor() {}
@@ -142,7 +143,7 @@ export class AdminController {
     async getDestinations(request, h) {
         try {
             const { page = 0, name, status } = request.query;
-            const limit = 30;
+            const limit = 15;
 
             const db = getDatabase();
             let resource = db
@@ -152,6 +153,10 @@ export class AdminController {
                     'destination.name',
                     'destination.id',
                     'destination.image',
+                    'destination.detail',
+                    'destination.location',
+                    'destination.province',
+
                     'user.username',
                     'user.email',
                     eb
@@ -208,6 +213,7 @@ export class AdminController {
         try {
             const { postId } = request.params;
             const db = getDatabase();
+            console.log(postId);
             const destination = await db
                 .selectFrom('destination')
                 .where('id', '=', postId)
@@ -260,39 +266,103 @@ export class AdminController {
             const { page = 0, q, role } = request.query;
             const limit = 30;
             const db = getDatabase();
-
             let resource = db
                 .selectFrom((eb) =>
                     eb
-                        .selectFrom('user as u')
-                        .leftJoin('rbac as r', (join) =>
-                            join.onRef(sql`'user::' || u.id`, '=', 'r.v0')
-                        )
-                        .select((eb) => [
+                        .selectFrom((eb) =>
                             eb
-                                .case()
-                                .when('r.v1', '=', createStringRole('admin'))
-                                .then('admin')
-                                .when(
-                                    'r.v1',
-                                    '=',
-                                    createStringRole('super_admin')
+                                .selectFrom('user as u')
+                                .leftJoin('rbac as r', (join) =>
+                                    join.onRef(
+                                        sql`'user::' || u.id`,
+                                        '=',
+                                        'r.v0'
+                                    )
                                 )
-                                .then(`super_admin`)
-                                .when('r.v1', '=', createStringRole('banned'))
-                                .then('banned')
-                                .else('user')
-                                .end()
-                                .as('role'),
-                            'u.id',
-                            'u.username',
-                            'u.email',
-                            'u.profile_image',
-                        ])
+                                .select((eb) => [
+                                    eb
+                                        .case()
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('admin')
+                                        )
+                                        .then('admin')
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('super_admin')
+                                        )
+                                        .then(`super_admin`)
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('banned')
+                                        )
+                                        .then('banned')
+                                        .else('user')
+                                        .end()
+                                        .as('role'),
+                                    eb
+                                        .case()
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('admin')
+                                        )
+                                        .then(2)
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('super_admin')
+                                        )
+                                        .then(1)
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('banned')
+                                        )
+                                        .then(0)
+                                        .else(3)
+                                        .end()
+                                        .as('role_priority'),
+                                    eb
+                                        .case()
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('admin')
+                                        )
+                                        .then(1)
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('super_admin')
+                                        )
+                                        .then(0)
+                                        .when(
+                                            'r.v1',
+                                            '=',
+                                            createStringRole('banned')
+                                        )
+                                        .then(1)
+                                        .else(2)
+                                        .end()
+                                        .as('role_priority2'),
+                                    'u.id',
+                                    'u.username',
+                                    'u.email',
+                                    'u.profile_image',
+                                ])
+                                .orderBy('role_priority')
+                                .as('result')
+                        )
+                        .distinctOn('result.id')
+                        .selectAll()
                         .as('result')
                 )
-                .selectAll();
-
+                .selectAll()
+                .orderBy('result.role_priority2');
             if (q) {
                 resource = resource.where(({ or, eb }) =>
                     or([
@@ -312,7 +382,7 @@ export class AdminController {
                 .response(
                     JSONToString({
                         success: true,
-                        message: 'Success restoring destination',
+                        message: 'Success getting users',
                         data: resource,
                     })
                 )
@@ -408,16 +478,17 @@ export class AdminController {
      */
     async banUser(request, h) {
         const { userId } = request.params;
+        const { payload } = request;
         const db = getDatabase();
         const user = await db
             .selectFrom('user')
             .where('id', '=', userId)
-            .select('id')
+            .select(['id', 'email'])
             .executeTakeFirst();
         if (!user) {
             return notFound(h);
         }
-
+        const transporter = transport();
         const enforcer = getEnforcer();
         if (
             await enforcer.hasRoleForUser(
@@ -427,7 +498,7 @@ export class AdminController {
         ) {
             return badRequest(h, 'Can not ban super admin', {
                 errCode: ErrorConstant.ERR_USER_IS_SUPER_ADMIN,
-            }).takeover();
+            });
         }
 
         await enforcer.addRoleForUser(
@@ -435,6 +506,12 @@ export class AdminController {
             createStringRole('banned')
         );
 
+        transporter.sendMail({
+            to: user.email,
+            subject: 'You have been banned',
+            from: '"Woofi" <no-reply@woofi.com',
+            html: `Your account has been suspended. Reason : ${payload.reason}`,
+        });
         return h.response({
             success: true,
             message: 'Success ban user',
@@ -449,10 +526,11 @@ export class AdminController {
     async unbanUser(request, h) {
         const { userId } = request.params;
         const db = getDatabase();
+        const transporter = transport();
         const user = await db
             .selectFrom('user')
             .where('id', '=', userId)
-            .select('id')
+            .select(['id', 'email'])
             .executeTakeFirst();
         if (!user) {
             return notFound(h);
@@ -465,6 +543,12 @@ export class AdminController {
             createStringRole('banned')
         );
 
+        transporter.sendMail({
+            to: user.email,
+            subject: 'You have been unbanned',
+            from: '"Woofi" <no-reply@woofi.com',
+            html: `Your account has been Unbaned.`,
+        });
         return h.response({
             success: true,
             message: 'Success unban user',
@@ -482,40 +566,174 @@ export class AdminController {
             const { q, status } = request.query;
 
             let contact = db
-                .selectFrom('contact as c')
-                .leftJoin('user as u', 'u.id', 'c.user_id')
-                .select([
-                    'c.email',
-                    'c.name',
-                    'c.message',
-                    'c.reason',
-                    'c.replied_at',
-                    'u.profile_image',
-                ]);
+                .selectFrom((eb) =>
+                    eb
+                        .selectFrom('contact as c')
+                        .leftJoin('user as u', 'u.id', 'c.user_id')
+
+                        .leftJoin(
+                            'contact_reply as cr',
+                            'cr.contact_id',
+                            'c.id'
+                        )
+                        .select((eb) => [
+                            'c.id',
+                            'c.reply_id',
+                            'c.email',
+                            'c.name',
+                            'c.message',
+                            'c.reason',
+                            'u.profile_image',
+                            eb
+                                .case()
+                                .when('cr.id', 'is', null)
+                                .then(false)
+                                .else(true)
+                                .end()
+                                .as('replied'),
+                        ])
+                        .distinct()
+                        .as('result')
+                )
+                .selectAll();
+            // .select([
+            //     'result.id',
+            //     'result.email',
+            //     'result.name',
+            //     'result.profile_image',
+            //     'result.replied',
+            //     'result.reason',
+            //     'result.message',
+            //     'result.reply_id',
+            // ]);
 
             if (q) {
                 contact = contact.where(({ or, eb }) =>
                     or([
-                        eb('c.name', 'ilike', `${q}%`),
-                        eb('c.email', 'ilike', `${q}%`),
+                        eb('result.name', 'ilike', `${q}%`),
+                        eb('result.email', 'ilike', `${q}%`),
                     ])
                 );
             }
 
             if (status === 'replied') {
-                contact = contact.where('c.replied_at', 'is not', null);
+                contact = contact.where('result.replied', '=', true);
             }
             if (status === 'unreplied') {
-                contact = contact.where('c.replied_at', 'is', null);
+                contact = contact.where('result.replied', '=', false);
             }
 
             contact = await contact
-                .orderBy('c.replied_at', sql`asc nulls first`)
+                // .orderBy('cr.id', sql`asc nulls first`)
                 .execute();
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'success getting contact',
+                        data: contact,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async reply(request, h) {
+        try {
+            const db = getDatabase();
+            const { payload } = request;
+            const { params } = request;
+
+            const contact = await db
+                .selectFrom('contact')
+                .where('id', '=', params.contactId)
+                .selectAll()
+                .executeTakeFirst();
+            if (!contact) {
+                return notFound();
+            }
+            const reply = await db
+                .insertInto('contact_reply')
+                .values({
+                    contact_id: params.contactId,
+                    message: payload.message,
+                })
+                .returning(['id'])
+                .executeTakeFirst();
+
+            const transporter = transport();
+
+            const replyURL = new URL(process.env.FRONT_END_CONTACT_URL);
+
+            replyURL.searchParams.append('reply_id', reply.id);
+            replyURL.searchParams.append('type', 'reply');
+            replyURL.searchParams.append('reason', 'REPLY CONTACT');
+            transporter.sendMail({
+                from: '"Woofi" <no-reply@woofi.com',
+                to: contact.email,
+                subject: `RE: ${contact.reason}`,
+                html: `
+                ${payload.message.replace('\n', '<br />')} 
+                <br /> ======================== <br />
+                <p>
+                    Follow this <a href="${
+                        replyURL.href
+                    }"> to reply this message </a>
+                </p>
+                `,
+            });
+
             return h.response({
                 success: true,
-                message: 'success getting contact',
-                data: contact,
+                message: 'success send contact',
+            });
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async createDeleteNotification(request, h) {
+        try {
+            const db = getDatabase();
+            const { payload, params } = request;
+            const destination = await db
+                .selectFrom('destination')
+                .where('destination.id', '=', params.postId)
+                .where('deleted_at', 'is', null)
+                .leftJoin('user', 'user.id', 'destination.user_id')
+                .select(['user_id'])
+
+                .executeTakeFirst();
+            console.log(destination);
+            if (!destination) {
+                return notFound(h);
+            }
+            await db
+                .insertInto('notification_user')
+                .values({
+                    detail: payload.reason,
+                    from: 'Admin',
+                    user_id: destination.user_id,
+                })
+                .execute();
+
+            return h.response({
+                success: true,
+                message: 'success creating notification',
             });
         } catch (e) {
             console.log(e);

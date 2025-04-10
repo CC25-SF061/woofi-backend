@@ -18,6 +18,22 @@ export class ContactController {
             const db = this.db;
             const { payload } = request;
             const { credentials } = request.auth;
+            const tempObj = {};
+            let reply;
+            console.log(payload.type);
+            if (payload.type === 'reply') {
+                payload.reason = 'REPLY CONTACT';
+                tempObj.reply = payload.reply;
+                reply = await db
+                    .selectFrom('contact_reply')
+                    .select(['id'])
+                    .where('id', '=', payload.reply_id)
+                    .executeTakeFirst();
+            }
+
+            if (reply) {
+                tempObj.reply_id = payload.reply_id;
+            }
 
             await db
                 .insertInto('contact')
@@ -26,6 +42,7 @@ export class ContactController {
                     email: payload.email,
                     message: payload.message,
                     reason: payload.reason,
+                    reply_id: tempObj.reply_id,
                     user_id: credentials?.id,
                 })
                 .execute();

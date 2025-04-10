@@ -141,6 +141,38 @@ export default [
         handler: controller.getDestinations.bind(controller),
     },
     {
+        method: ['POST'],
+        path: '/api/admin/destination/{postId}/notification-delete',
+        options: {
+            tags: ['api', 'admin', 'destinations'],
+            auth: {
+                strategy: 'accessToken',
+            },
+            validate: {
+                payload: Joi.object({
+                    reason: Joi.string().required(),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                params: Joi.object({
+                    postId: Joi.number().required(),
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.createDeleteNotification.bind(controller),
+    },
+    {
         method: ['PATCH'],
         path: '/api/admin/destination/{postId}/restore',
         options: {
@@ -148,7 +180,12 @@ export default [
             auth: {
                 strategy: 'accessToken',
             },
-
+            validate: {
+                params: Joi.object({
+                    postId: Joi.number().required(),
+                }),
+                failAction: invalidField,
+            },
             response: {
                 failAction: 'log',
                 schema: Joi.object({
@@ -179,9 +216,13 @@ export default [
             validate: {
                 query: Joi.object({
                     page: Joi.number().default(0),
-                    name: Joi.string(),
-                    email: Joi.string(),
-                    role: Joi.string().valid('admin', 'banned', 'user'),
+                    q: Joi.string(),
+                    role: Joi.string().valid(
+                        'admin',
+                        'banned',
+                        'user',
+                        'super_admin'
+                    ),
                 }).options({
                     abortEarly: false,
                     stripUnknown: true,
@@ -201,14 +242,23 @@ export default [
         handler: controller.getUsers.bind(controller),
     },
     {
-        method: ['PATCH'],
+        method: ['POST'],
         path: '/api/admin/user/{userId}/ban',
         options: {
             tags: ['api', 'admin', 'user'],
             auth: {
                 strategy: 'accessToken',
             },
-
+            validate: {
+                payload: Joi.object({
+                    reason: Joi.string().required(),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                failAction: invalidField,
+            },
             response: {
                 failAction: 'log',
                 schema: Joi.object({
@@ -221,7 +271,39 @@ export default [
         handler: controller.banUser.bind(controller),
     },
     {
-        method: ['PATCH'],
+        method: ['POST'],
+        path: '/api/admin/contact/{contactId}/reply',
+        options: {
+            tags: ['api', 'admin', 'contact'],
+            auth: {
+                strategy: 'accessToken',
+            },
+            validate: {
+                params: Joi.object({
+                    contactId: Joi.number().required(),
+                }),
+                payload: Joi.object({
+                    message: Joi.string().required(),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.reply.bind(controller),
+    },
+    {
+        method: ['POST'],
         path: '/api/admin/user/{userId}/unban',
         options: {
             tags: ['api', 'admin', 'user'],
@@ -244,7 +326,7 @@ export default [
         method: ['GET'],
         path: '/api/admin/contacts',
         options: {
-            tags: ['api', 'admin', 'user'],
+            tags: ['api', 'admin', 'contact'],
             auth: {
                 strategy: 'accessToken',
             },
@@ -259,5 +341,45 @@ export default [
             // pre: [{ method: isAdmin }],
         },
         handler: controller.getContacts.bind(controller),
+    },
+    {
+        method: ['POST'],
+        path: '/api/admin/user/{userId}/promote',
+        options: {
+            tags: ['api', 'admin', 'user'],
+            auth: {
+                strategy: 'accessToken',
+            },
+
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.promoteToAdmin.bind(controller),
+    },
+    {
+        method: ['POST'],
+        path: '/api/admin/user/{userId}/demote',
+        options: {
+            tags: ['api', 'admin', 'contact'],
+            auth: {
+                strategy: 'accessToken',
+            },
+
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.demoteToUser.bind(controller),
     },
 ];
