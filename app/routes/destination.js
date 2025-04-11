@@ -5,7 +5,7 @@ import {
     canDeleteDestination,
     canEditDestination,
 } from '../middleware/auth.js';
-import { getProvince } from '../../core/GeoLocation.js';
+import { getCategory, getProvince } from '../../core/GeoLocation.js';
 const controller = new DestinationController();
 
 /**
@@ -61,6 +61,12 @@ export default [
                         .valid(...getProvince().map((e) => e.name))
                         .messages({
                             'any.only': 'Invalid province',
+                        }),
+                    category: Joi.string()
+                        .required()
+                        .valid(...getCategory())
+                        .messages({
+                            'any.only': 'Invalid Category',
                         }),
                 }).options({
                     abortEarly: false,
@@ -120,6 +126,12 @@ export default [
                         .valid(...getProvince().map((e) => e.name))
                         .messages({
                             'any.only': 'Invalid province',
+                        }),
+                    category: Joi.string()
+                        .required()
+                        .valid(...getCategory())
+                        .messages({
+                            'any.only': 'Invalid Category',
                         }),
                 }).options({
                     stripUnknown: true,

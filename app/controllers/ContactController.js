@@ -20,7 +20,6 @@ export class ContactController {
             const { credentials } = request.auth;
             const tempObj = {};
             let reply;
-            console.log(payload.type);
             if (payload.type === 'reply') {
                 payload.reason = 'REPLY CONTACT';
                 tempObj.reply = payload.reply;
@@ -35,6 +34,14 @@ export class ContactController {
                 tempObj.reply_id = payload.reply_id;
             }
 
+            await db
+                .insertInto('notification_admin')
+                .values({
+                    expired_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                    from: 'System',
+                    detail: `You have new message from ${payload.name}`,
+                })
+                .execute();
             await db
                 .insertInto('contact')
                 .values({

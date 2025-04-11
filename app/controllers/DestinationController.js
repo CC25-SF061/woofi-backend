@@ -48,6 +48,7 @@ export class DestinationController {
                     location: payload.location,
                     image: pathImage,
                     province: payload.province,
+                    category: payload.category,
                 })
                 .returning(['id'])
                 .executeTakeFirst();
@@ -133,6 +134,7 @@ export class DestinationController {
                     'destination.image',
                     'destination.location',
                     'user.name as writer',
+                    'destination.category',
                     'destination.province',
                 ])
                 .where('destination.id', '=', postId)
@@ -200,6 +202,7 @@ export class DestinationController {
                             'destination.name',
                             'destination.province',
                             'destination.user_id',
+                            'destination.category',
                             eb.fn
                                 .avg('rd.score')
                                 .over((ob) => ob.partitionBy('destination.id'))

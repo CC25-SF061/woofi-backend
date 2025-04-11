@@ -19,6 +19,7 @@ export async function up(db) {
         .addColumn('updated_at', 'timestamptz', (col) =>
             col.defaultTo(sql`now()`).notNull()
         )
+        .addColumn('category', 'varchar(50)', (col) => col.notNull())
         .addColumn('province', 'varchar(50)', (col) => col.notNull())
         .addColumn('deleted_at', 'timestamptz')
         .execute();

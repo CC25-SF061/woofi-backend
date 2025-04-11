@@ -156,7 +156,7 @@ export class AdminController {
                     'destination.detail',
                     'destination.location',
                     'destination.province',
-
+                    'destination.category',
                     'user.username',
                     'user.email',
                     eb
@@ -734,6 +734,105 @@ export class AdminController {
             return h.response({
                 success: true,
                 message: 'success creating notification',
+            });
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getNotifications(request, h) {
+        try {
+            const db = getDatabase();
+            const { credentials } = request.auth;
+
+            let notification = db
+                .selectFrom('notification_admin as na')
+                .leftJoin(
+                    (eb) =>
+                        eb
+                            .selectFrom('user')
+                            .where('user.id', '=', credentials.id)
+                            .leftJoin(
+                                'notification_admin_read as nda',
+                                'nda.admin_id',
+                                'user.id'
+                            )
+
+                            .select('nda.notification_id')
+                            .as('read'),
+                    (join) => join.onRef('read.notification_id', '=', 'na.id')
+                )
+                .select((eb) => [
+                    'na.id',
+                    'na.detail',
+                    'na.created_at',
+                    'na.from',
+                    eb
+                        .case()
+                        .when('read.notification_id', 'is', null)
+                        .then(false)
+                        .else(true)
+                        .end()
+                        .as('is_read'),
+                ])
+                .where('na.expired_at', '>', new Date())
+                .orderBy('na.created_at', 'desc')
+                .orderBy(sql`read.notification_id nulls first`);
+
+            notification = await notification.execute();
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'success getting notification',
+                        data: notification,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async markNotificationAsRead(request, h) {
+        try {
+            const db = getDatabase();
+            const { payload } = request;
+            const { credentials } = request.auth;
+
+            if (payload.notificationIds.length === 0) {
+                return h.response({
+                    success: true,
+                    message: 'success mark notifications as read',
+                });
+            }
+            await db
+                .insertInto('notification_admin_read')
+                .values(
+                    payload.notificationIds.map((value) => ({
+                        admin_id: credentials.id,
+                        notification_id: value,
+                    }))
+                )
+                .onConflict((con) => con.doNothing())
+                .execute();
+
+            return h.response({
+                success: true,
+                message: 'success mark notifications as read',
             });
         } catch (e) {
             console.log(e);

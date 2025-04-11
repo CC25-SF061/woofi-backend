@@ -348,6 +348,7 @@ export class ProfileController {
                     'destination.name',
                     'destination.province',
                     'destination.location',
+                    'destination.category',
                     eb.fn
                         .avg('rd.score')
                         .over((ob) => ob.partitionBy('destination.id'))

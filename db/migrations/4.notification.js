@@ -14,7 +14,7 @@ export async function up(db) {
             col.notNull().defaultTo(false)
         )
         .addColumn('from', 'varchar(50)', (col) => col.notNull())
-        .addColumn('created_at', 'timestamp', (col) =>
+        .addColumn('created_at', 'timestamptz', (col) =>
             col.notNull().defaultTo(sql`now()`)
         )
         .execute();
@@ -22,9 +22,10 @@ export async function up(db) {
         .createTable('notification_admin')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
         .addColumn('detail', 'text', (col) => col.notNull())
-        .addColumn('created_at', 'timestamp', (col) =>
+        .addColumn('created_at', 'timestamptz', (col) =>
             col.notNull().defaultTo(sql`now()`)
         )
+        .addColumn('expired_at', 'timestamptz', (col) => col.notNull())
         .addColumn('from', 'varchar(50)', (col) => col.notNull())
         .execute();
     await db.schema
@@ -36,6 +37,7 @@ export async function up(db) {
         .addColumn('notification_id', 'bigint', (col) =>
             col.references('notification_admin.id').notNull()
         )
+        .addUniqueConstraint('unique_read', ['admin_id', 'notification_id'])
         .execute();
 }
 

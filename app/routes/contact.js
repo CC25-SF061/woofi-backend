@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import { ContactController } from '../controllers/ContactController.js';
-import { reason } from '../../core/ContactConstant.js';
 import { invalidField } from '../util/errorHandler.js';
 import { isAdmin } from '../middleware/auth.js';
 
@@ -32,9 +31,15 @@ export default [
                     reason: Joi.string().required().messages({
                         'any.required': 'reason is required',
                     }),
-                    type: Joi.string(),
-                    reply_id: Joi.number(),
-                }).options({ abortEarly: false, stripUnknown: true }),
+                    type: Joi.string().allow(null),
+                    reply_id: Joi.number().allow(null),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: {
+                        wrap: { label: false },
+                    },
+                }),
                 failAction: invalidField,
             },
             response: {

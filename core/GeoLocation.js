@@ -197,3 +197,18 @@ export function getProvince() {
         },
     ];
 }
+
+export function getCategory() {
+    return [
+        'Peak',
+        'Mountain',
+        'Forest',
+        'Beach',
+        'Waterfall',
+        'Lake',
+        'Museum',
+        'Recreational Park',
+        'Tourist Village',
+        'Others',
+    ];
+}

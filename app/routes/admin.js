@@ -366,7 +366,7 @@ export default [
         method: ['POST'],
         path: '/api/admin/user/{userId}/demote',
         options: {
-            tags: ['api', 'admin', 'contact'],
+            tags: ['api', 'admin', 'user'],
             auth: {
                 strategy: 'accessToken',
             },
@@ -381,5 +381,52 @@ export default [
             // pre: [{ method: isAdmin }],
         },
         handler: controller.demoteToUser.bind(controller),
+    },
+    {
+        method: ['GET'],
+        path: '/api/admin/notifications',
+        options: {
+            tags: ['api', 'admin', 'notification'],
+            auth: {
+                strategy: 'accessToken',
+            },
+
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.getNotifications.bind(controller),
+    },
+    {
+        method: ['POST'],
+        path: '/api/admin/mark-notifications',
+        options: {
+            tags: ['api', 'admin', 'notification'],
+            auth: {
+                strategy: 'accessToken',
+            },
+
+            validate: {
+                payload: Joi.object({
+                    notificationIds: Joi.array().items(Joi.number()).required(),
+                }),
+
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.markNotificationAsRead.bind(controller),
     },
 ];
