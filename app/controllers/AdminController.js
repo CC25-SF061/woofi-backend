@@ -209,7 +209,6 @@ export class AdminController {
         try {
             const { postId } = request.params;
             const db = getDatabase();
-            console.log(postId);
             const destination = await db
                 .selectFrom('destination')
                 .where('id', '=', postId)
@@ -341,7 +340,7 @@ export class AdminController {
                                             '=',
                                             createStringRole('banned')
                                         )
-                                        .then(1)
+                                        .then(3)
                                         .else(2)
                                         .end()
                                         .as('role_priority2'),
@@ -654,7 +653,7 @@ export class AdminController {
                 .selectAll()
                 .executeTakeFirst();
             if (!contact) {
-                return notFound();
+                return notFound(h);
             }
             const reply = await db
                 .insertInto('contact_reply')
@@ -691,6 +690,102 @@ export class AdminController {
                 success: true,
                 message: 'success send contact',
             });
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getDetailReply(request, h) {
+        try {
+            const db = getDatabase();
+            const { params } = request;
+
+            const reply = await db
+                .selectFrom('contact_reply as cr')
+                .where('cr.id', '=', params.replyId)
+                .select(['cr.message', 'cr.id', 'cr.contact_id'])
+                .executeTakeFirst();
+            if (!reply) {
+                return notFound(h);
+            }
+
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'success send contact',
+                        data: reply,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getDetailContact(request, h) {
+        try {
+            const db = getDatabase();
+            const { params } = request;
+            console.log(params);
+            let contact = await db
+                .selectFrom((eb) =>
+                    eb
+                        .selectFrom('contact as c')
+                        .leftJoin('user as u', 'u.id', 'c.user_id')
+
+                        .leftJoin(
+                            'contact_reply as cr',
+                            'cr.contact_id',
+                            'c.id'
+                        )
+                        .select((eb) => [
+                            'c.id',
+                            'c.reply_id',
+                            'c.email',
+                            'c.name',
+                            'c.message',
+                            'c.reason',
+                            'u.profile_image',
+                            eb
+                                .case()
+                                .when('cr.id', 'is', null)
+                                .then(false)
+                                .else(true)
+                                .end()
+                                .as('replied'),
+                        ])
+                        .distinct()
+                        .as('result')
+                )
+                .where('result.id', '=', params.contactId)
+                .selectAll()
+                .executeTakeFirst();
+            if (!contact) {
+                return notFound(h);
+            }
+
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'success send contact',
+                        data: contact,
+                    })
+                )
+                .type('application/json');
         } catch (e) {
             console.log(e);
             return Boom.internal();

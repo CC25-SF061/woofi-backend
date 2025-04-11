@@ -303,6 +303,59 @@ export default [
         handler: controller.reply.bind(controller),
     },
     {
+        method: ['GET'],
+        path: '/api/admin/contact/{replyId}/reply',
+        options: {
+            tags: ['api', 'admin', 'contact'],
+            auth: {
+                strategy: 'accessToken',
+            },
+            validate: {
+                params: Joi.object({
+                    replyId: Joi.number().required(),
+                }),
+
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.getDetailReply.bind(controller),
+    },
+
+    {
+        method: ['GET'],
+        path: '/api/admin/contact/{contactId}',
+        options: {
+            tags: ['api', 'admin', 'contact'],
+            auth: {
+                strategy: 'accessToken',
+            },
+            validate: {
+                params: Joi.object({
+                    contactId: Joi.number().required(),
+                }),
+
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    message: Joi.string(),
+                    success: Joi.boolean(),
+                }),
+            },
+            // pre: [{ method: isAdmin }],
+        },
+        handler: controller.getDetailContact.bind(controller),
+    },
+    {
         method: ['POST'],
         path: '/api/admin/user/{userId}/unban',
         options: {

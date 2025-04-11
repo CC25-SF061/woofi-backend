@@ -119,12 +119,12 @@ export class DestinationController {
                 .leftJoin('wishlist as w', (join) =>
                     join
                         .onRef('w.destination_id', '=', 'destination.id')
-                        .on('w.user_id', '=', credentials.id)
+                        .on('w.user_id', '=', credentials?.id)
                 )
                 .leftJoin('rating_destination as rd2', (join) =>
                     join
                         .onRef('rd2.destination_id', '=', 'destination.id')
-                        .on('rd2.user_id', '=', credentials.id)
+                        .on('rd2.user_id', '=', credentials?.id)
                 )
                 .leftJoin('user', 'user.id', 'destination.user_id')
                 .select(({ eb }) => [
@@ -156,6 +156,23 @@ export class DestinationController {
                 ])
                 .where('destination.id', '=', postId)
                 .executeTakeFirst();
+
+            if (credentials?.id) {
+                await db
+                    .insertInto('destination_search')
+                    .values({
+                        user_id: credentials.id,
+                        name: destination.name,
+                        count: 1,
+                    })
+                    .onConflict((oc) =>
+                        oc.constraint('destination_unique').doUpdateSet({
+                            count: sql`"destination_search"."count" + EXCLUDED."count"`,
+                        })
+                    )
+                    .execute();
+            }
+
             if (!destination) {
                 return h
                     .response({

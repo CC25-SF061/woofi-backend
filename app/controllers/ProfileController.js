@@ -413,6 +413,9 @@ export class ProfileController {
                         gender: payload.gender,
                         user_id: credentials.id,
                     })
+                    .onConflict((oc) =>
+                        oc.constraint('unique_personal_data').doNothing()
+                    )
                     .execute(),
                 db
                     .insertInto('personal_interest')
@@ -422,7 +425,9 @@ export class ProfileController {
                             interest: interest,
                         }))
                     )
-                    .onConflict((con) => con.doNothing())
+                    .onConflict((oc) =>
+                        oc.constraint('unique_interest').doNothing()
+                    )
                     .execute(),
             ]);
 
