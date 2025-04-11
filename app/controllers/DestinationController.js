@@ -54,17 +54,34 @@ export class DestinationController {
                 .executeTakeFirst();
 
             upload(pathImage, payload.image);
-            await enforcer.addPolicies([
-                [
-                    createStringUser(credentials.id),
-                    createStringResource(resource.DESTINATION, destination.id),
-                    permission.EDIT,
-                ],
-                [
-                    createStringUser(credentials.id),
-                    createStringResource(resource.DESTINATION, destination.id),
-                    permission.DELETE,
-                ],
+            await Promise.all([
+                db
+                    .insertInto('notification_user')
+                    .values({
+                        expired_at: new Date(Date.now() + 1000 * 60 * 60 * 24),
+                        detail: `You have created a new destination ${payload.name}`,
+                        from: 'System',
+                        user_id: credentials.id,
+                    })
+                    .execute(),
+                enforcer.addPolicies([
+                    [
+                        createStringUser(credentials.id),
+                        createStringResource(
+                            resource.DESTINATION,
+                            destination.id
+                        ),
+                        permission.EDIT,
+                    ],
+                    [
+                        createStringUser(credentials.id),
+                        createStringResource(
+                            resource.DESTINATION,
+                            destination.id
+                        ),
+                        permission.DELETE,
+                    ],
+                ]),
             ]);
             return h.response({
                 success: true,

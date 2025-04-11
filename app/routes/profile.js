@@ -262,4 +262,78 @@ export default [
             },
         },
     },
+
+    {
+        method: ['POST'],
+        path: '/api/user/interest',
+        options: {
+            tags: ['api', 'user'],
+            auth: 'accessToken',
+            handler: controller.personalData.bind(controller),
+            validate: {
+                payload: Joi.object({
+                    gender: Joi.string()
+                        .required()
+                        .valid('male', 'female')
+                        .messages({
+                            'any.only': 'Invalid gender',
+                        }),
+                    birth_date: Joi.date().required(),
+                    interests: Joi.array()
+                        .min(1)
+                        .items(
+                            Joi.string()
+                                .valid(
+                                    ...[
+                                        'Peak',
+                                        'Mountain',
+                                        'Forest',
+                                        'Beach',
+                                        'Waterfall',
+                                        'Lake',
+                                        'Museum',
+                                        'Recreational Park',
+                                        'Tourist Village',
+                                        'Others',
+                                    ]
+                                )
+                                .messages({
+                                    'any.only': 'Invalid interest',
+                                })
+                        )
+                        .required(),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                failAction: invalidField,
+            },
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
+        },
+    },
+
+    {
+        method: ['GET'],
+        path: '/api/user/profile/notifications',
+        options: {
+            tags: ['api', 'user'],
+            auth: 'accessToken',
+            handler: controller.getNotifications.bind(controller),
+
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
+        },
+    },
 ];

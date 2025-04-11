@@ -8,6 +8,7 @@ import { createPath, upload } from '../../core/FileUpload.js';
 import mime from 'mime';
 import bcrypt from 'bcrypt';
 import { transport } from '../../core/Mailer.js';
+import { createStringUser, getEnforcer } from '../../core/rbac/Casbin.js';
 
 export class ProfileController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -22,6 +23,7 @@ export class ProfileController {
      * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
      */
     async getProfile(request, h) {
+        const enforcer = getEnforcer();
         const { credentials } = request.auth;
         const db = this.db;
 
@@ -35,6 +37,7 @@ export class ProfileController {
                 'name',
                 'username',
                 'profile_image',
+                'is_new_user',
             ])
             .executeTakeFirst();
         JSON.stringify(
@@ -61,6 +64,12 @@ export class ProfileController {
                 email: user.email,
                 name: user.name,
                 isVerified: user.is_verified,
+                isAdmin: enforcer.enforce(
+                    createStringUser(user.id),
+                    '*',
+                    'admin'
+                ),
+                isNewUser: user.is_new_user,
             },
         });
     }
@@ -370,6 +379,86 @@ export class ProfileController {
                         success: true,
                         message: 'Success retrieve destination',
                         data: destination,
+                    })
+                )
+                .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async personalData(request, h) {
+        try {
+            const db = this.db;
+            const { payload } = request;
+            const { credentials } = request.auth;
+            await Promise.all([
+                db
+                    .updateTable('user')
+                    .where('user.id', '=', credentials.id)
+                    .set({
+                        is_new_user: false,
+                    })
+                    .execute(),
+                db
+                    .insertInto('personal_data')
+                    .values({
+                        birth_date: payload.birth_date,
+                        gender: payload.gender,
+                        user_id: credentials.id,
+                    })
+                    .execute(),
+                db
+                    .insertInto('personal_interest')
+                    .values(
+                        payload.interests.map((interest) => ({
+                            user_id: credentials.id,
+                            interest: interest,
+                        }))
+                    )
+                    .onConflict((con) => con.doNothing())
+                    .execute(),
+            ]);
+
+            return h.response({
+                success: true,
+                message: 'Success create personal data',
+            });
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async getNotifications(request, h) {
+        try {
+            const db = this.db;
+            const { credentials } = request.auth;
+
+            const notifications = await db
+                .selectFrom('notification_user')
+                .where('user_id', '=', credentials.id)
+                .orderBy('created_at desc')
+                .orderBy('is_read')
+                .select(['created_at', 'detail', 'is_read', 'id', 'user_id'])
+                .execute();
+            return h
+                .response(
+                    JSONToString({
+                        success: true,
+                        message: 'Success create personal data',
+                        data: notifications,
                     })
                 )
                 .type('application/json');

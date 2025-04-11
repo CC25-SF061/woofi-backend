@@ -67,11 +67,9 @@ export class AdminController {
     async getDestinationAnalytic(request, h) {
         try {
             const { year: dateYear } = request.query;
-            const year = dateYear
-                ? dateYear.getFullYear()
-                : new Date().getFullYear();
+            const year = dateYear || new Date().getFullYear();
             const db = getDatabase();
-            let resource = await db
+            let resource = db
                 .selectFrom('destination')
                 .where('created_at', '>=', new Date(`${year}-01-01T00:00:00Z`))
                 .where('created_at', '<=', new Date(`${year}-12-31T23:59:59Z`))
@@ -80,8 +78,8 @@ export class AdminController {
                     eb.fn.count('id').as('count'),
                 ])
                 .groupBy('month')
-                .orderBy('month', 'asc')
-                .execute();
+                .orderBy('month', 'asc');
+            resource = await resource.execute();
             return h
                 .response(
                     JSONToString({
@@ -105,9 +103,7 @@ export class AdminController {
     async getUserAnalytic(request, h) {
         try {
             const { year: dateYear } = request.query;
-            const year = dateYear
-                ? dateYear.getFullYear()
-                : new Date().getFullYear();
+            const year = dateYear || new Date().getFullYear();
             const db = getDatabase();
             let resource = await db
                 .selectFrom('user')

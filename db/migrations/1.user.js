@@ -35,6 +35,7 @@ export async function up(db) {
             col.references('user.id').notNull()
         )
         .addColumn('birth_date', 'timestamptz')
+        .addUniqueConstraint('unique_personal_data', ['user_id'])
         .execute();
 
     await db.schema
@@ -44,6 +45,7 @@ export async function up(db) {
             col.notNull().references('user.id')
         )
         .addColumn('interest', 'varchar(50)', (col) => col.notNull())
+        .addUniqueConstraint('unique_interest', ['user_id', 'interest'])
         .execute();
     await db.schema
         .createTable('destination_search')

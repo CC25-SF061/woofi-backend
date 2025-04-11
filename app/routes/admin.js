@@ -39,7 +39,7 @@ export default [
             },
             validate: {
                 query: Joi.object({
-                    year: Joi.date(),
+                    year: Joi.number(),
                 }).options({
                     abortEarly: false,
                     stripUnknown: true,
@@ -74,7 +74,7 @@ export default [
             },
             validate: {
                 query: Joi.object({
-                    year: Joi.date(),
+                    year: Joi.number(),
                 }).options({
                     abortEarly: false,
                     stripUnknown: true,

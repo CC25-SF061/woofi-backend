@@ -17,6 +17,7 @@ export async function up(db) {
         .addColumn('created_at', 'timestamptz', (col) =>
             col.notNull().defaultTo(sql`now()`)
         )
+        .addColumn('expired_at', 'timestamptz')
         .execute();
     await db.schema
         .createTable('notification_admin')
