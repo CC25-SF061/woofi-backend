@@ -451,7 +451,14 @@ export class ProfileController {
                 .where('user_id', '=', credentials.id)
                 .orderBy('created_at desc')
                 .orderBy('is_read')
-                .select(['created_at', 'detail', 'is_read', 'id', 'user_id'])
+                .select([
+                    'created_at',
+                    'detail',
+                    'is_read',
+                    'id',
+                    'user_id',
+                    'from',
+                ])
                 .execute();
             return h
                 .response(
@@ -462,6 +469,37 @@ export class ProfileController {
                     })
                 )
                 .type('application/json');
+        } catch (e) {
+            console.log(e);
+            return Boom.internal();
+        }
+    }
+
+    /**
+     * @param {import("@hapi/hapi").Request} request
+     * @param {import("@hapi/hapi").ResponseToolkit} h
+     * @return {import("@hapi/hapi").Lifecycle.ReturnValue}
+     */
+    async updateNotificationRead(request, h) {
+        try {
+            const db = this.db;
+            const { notificationIds } = request.payload;
+            if (notificationIds.length === 0) {
+                return h.response({
+                    success: true,
+                    message: 'success mark notifications as read',
+                });
+            }
+
+            await db
+                .updateTable('notification_user')
+                .set({ is_read: true })
+                .where('notification_user.id', 'in', notificationIds)
+                .execute();
+            return h.response({
+                success: true,
+                message: 'Notifications marked as read',
+            });
         } catch (e) {
             console.log(e);
             return Boom.internal();

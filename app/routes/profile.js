@@ -323,10 +323,36 @@ export default [
         method: ['GET'],
         path: '/api/user/profile/notifications',
         options: {
-            tags: ['api', 'user'],
+            tags: ['api', 'user', 'profile'],
             auth: 'accessToken',
             handler: controller.getNotifications.bind(controller),
 
+            response: {
+                failAction: 'log',
+                schema: Joi.object({
+                    success: Joi.boolean(),
+                    message: Joi.string(),
+                }),
+            },
+        },
+    },
+    {
+        method: ['PATCH'],
+        path: '/api/user/profile/mark-notification',
+        options: {
+            tags: ['api', 'user', 'profile'],
+            auth: 'accessToken',
+            handler: controller.updateNotificationRead.bind(controller),
+            validate: {
+                payload: Joi.object({
+                    notificationIds: Joi.array().items(Joi.number()).required(),
+                }).options({
+                    abortEarly: false,
+                    stripUnknown: true,
+                    errors: { wrap: { label: false } },
+                }),
+                failAction: invalidField,
+            },
             response: {
                 failAction: 'log',
                 schema: Joi.object({

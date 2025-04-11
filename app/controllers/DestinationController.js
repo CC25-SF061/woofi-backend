@@ -406,14 +406,25 @@ export class DestinationController {
         try {
             const { params } = request;
             const db = this.db;
-            await db
+            const { credentials } = request.auth;
+            const destination = await db
                 .updateTable('destination')
                 .set({
                     deleted_at: new Date(),
                 })
+                .returning('name')
                 .where('destination.id', '=', params.postId)
                 .executeTakeFirst();
 
+            await db
+                .insertInto('notification_user')
+                .values({
+                    detail: `Destination ${destination.name} has been deleted.`,
+                    from: 'System',
+                    user_id: credentials.id,
+                    expired_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                })
+                .execute();
             return h.response().code(204);
         } catch (e) {
             console.log(e);
