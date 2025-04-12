@@ -153,6 +153,7 @@ export class DestinationController {
                     'user.name as writer',
                     'destination.category',
                     'destination.province',
+                    'destination.user_id',
                 ])
                 .where('destination.id', '=', postId)
                 .executeTakeFirst();

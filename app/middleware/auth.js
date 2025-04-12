@@ -24,6 +24,7 @@ export async function isAdmin(request, h) {
         permission.ADMIN
     );
 
+    console.log(hasRole, credentials.id);
     if (!hasRole) {
         return forbidden(h, 'User is not admin', {
             errCode: ErrorConstant.ERR_NOT_ADMIN,

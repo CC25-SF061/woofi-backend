@@ -210,7 +210,7 @@ export default [
         options: {
             tags: ['api', 'destination'],
             auth: {
-                mode: 'try',
+                mode: 'optional',
                 strategy: 'accessToken',
             },
             validate: {

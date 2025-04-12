@@ -13,6 +13,7 @@ import destination from './app/routes/destination.js';
 import wishlist from './app/routes/wishlist.js';
 import profile from './app/routes/profile.js';
 import admin from './app/routes/admin.js';
+import user from './app/routes/user.js';
 
 const server = hapi.server({
     host: '0.0.0.0',
@@ -77,6 +78,7 @@ server.route(
         wishlist,
         profile,
         admin,
+        user,
         [
             {
                 method: ['get'],

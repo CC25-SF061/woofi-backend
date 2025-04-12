@@ -7,6 +7,6 @@ import {
 
 const enforcer = getEnforcer();
 
-await enforcer.addRoleForUser(createStringUser('3'), createStringRole('admin'));
+// await enforcer.addRoleForUser(createStringUser('3'), createStringRole('admin'));
 
-console.log(await enforcer.enforce(createStringUser('3'), '*', 'admin'));
+console.log(await enforcer.enforce(createStringUser('2'), '*', 'admin'));

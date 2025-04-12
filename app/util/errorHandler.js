@@ -47,7 +47,6 @@ export function badRequest(h, message, payload, header, body) {
         },
         ...body,
     });
-
     return h.response(badRequest).code(badRequest.statusCode);
 }
 

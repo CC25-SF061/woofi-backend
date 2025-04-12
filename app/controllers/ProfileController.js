@@ -64,7 +64,7 @@ export class ProfileController {
                 email: user.email,
                 name: user.name,
                 isVerified: user.is_verified,
-                isAdmin: enforcer.enforce(
+                isAdmin: await enforcer.enforce(
                     createStringUser(user.id),
                     '*',
                     'admin'
