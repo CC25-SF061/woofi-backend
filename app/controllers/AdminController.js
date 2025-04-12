@@ -305,7 +305,7 @@ export class AdminController {
                                             '=',
                                             createStringRole('admin')
                                         )
-                                        .then(2)
+                                        .then(3)
                                         .when(
                                             'r.v1',
                                             '=',
@@ -317,7 +317,7 @@ export class AdminController {
                                             '=',
                                             createStringRole('banned')
                                         )
-                                        .then(3)
+                                        .then(2)
                                         .else(4)
                                         .end()
                                         .as('role_priority'),
