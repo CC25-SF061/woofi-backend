@@ -707,14 +707,17 @@ export class AdminController {
                     .returning(['id'])
                     .executeTakeFirst(),
                 contact?.user_id
-                    ? db.insertInto('notification_user').values({
-                          expired_at: new Date(
-                              Date.now() + 24 * 60 * 60 * 1000
-                          ),
-                          detail: 'You have a new message from Admin',
-                          from: 'Admin',
-                          user_id: contact.user_id,
-                      })
+                    ? db
+                          .insertInto('notification_user')
+                          .values({
+                              expired_at: new Date(
+                                  Date.now() + 24 * 60 * 60 * 1000
+                              ),
+                              detail: 'You have a new message from Admin',
+                              from: 'Admin',
+                              user_id: contact.user_id,
+                          })
+                          .execute()
                     : Promise.resolve(),
             ]);
 
