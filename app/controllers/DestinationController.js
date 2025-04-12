@@ -267,6 +267,13 @@ export class DestinationController {
                     `${query.name.toLowerCase()}%`
                 );
             }
+            if (query.category) {
+                destination = destination.where(
+                    'result.category',
+                    '=',
+                    query.category
+                );
+            }
             if (filter.HIGHEST_RATING) {
                 destination = destination.orderBy(
                     'result.rating',
@@ -286,6 +293,7 @@ export class DestinationController {
                     credentials?.id
                 );
             }
+
             const limit = 30;
             destination = await destination
                 .offset(query.page * limit)

@@ -182,8 +182,8 @@ export class AdminController {
             }
 
             resource = await resource
-                .limit(limit)
-                .offset(page * limit)
+                // .limit(limit)
+                // .offset(page * limit)
                 .execute();
             return h
                 .response(
@@ -305,19 +305,19 @@ export class AdminController {
                                             '=',
                                             createStringRole('admin')
                                         )
-                                        .then(2)
+                                        .then(1)
                                         .when(
                                             'r.v1',
                                             '=',
                                             createStringRole('super_admin')
                                         )
-                                        .then(1)
+                                        .then(0)
                                         .when(
                                             'r.v1',
                                             '=',
                                             createStringRole('banned')
                                         )
-                                        .then(0)
+                                        .then(1)
                                         .else(3)
                                         .end()
                                         .as('role_priority'),
@@ -348,16 +348,27 @@ export class AdminController {
                                     'u.username',
                                     'u.email',
                                     'u.profile_image',
+                                    sql`ROW_NUMBER() OVER (PARTITION BY u.id )`.as(
+                                        'row_number'
+                                    ),
                                 ])
                                 .orderBy('role_priority')
                                 .as('result')
                         )
-                        .distinctOn('result.id')
-                        .selectAll()
+                        .where('result.row_number', '=', 1)
+                        .select([
+                            'result.id',
+                            'result.profile_image',
+                            'result.role',
+                            'result.username',
+                            'result.email',
+                        ])
+                        .orderBy('result.role_priority2')
+
                         .as('result')
                 )
-                .selectAll()
-                .orderBy('result.role_priority2');
+                .selectAll();
+
             if (q) {
                 resource = resource.where(({ or, eb }) =>
                     or([
@@ -370,8 +381,8 @@ export class AdminController {
                 resource = resource.where('result.role', '=', role);
             }
             resource = await resource
-                .limit(limit)
-                .offset(page * limit)
+                // .limit(limit)
+                // .offset(page * limit)
                 .execute();
             return h
                 .response(
@@ -496,10 +507,13 @@ export class AdminController {
             });
         }
 
-        await enforcer.addRoleForUser(
-            createStringUser(userId),
-            createStringRole('banned')
-        );
+        await Promise.all([
+            enforcer.addRoleForUser(
+                createStringUser(userId),
+                createStringRole('banned')
+            ),
+            db.deleteFrom('token').where('user_id', '=', userId).execute(),
+        ]);
 
         transporter.sendMail({
             to: user.email,

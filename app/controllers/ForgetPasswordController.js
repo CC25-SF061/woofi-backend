@@ -172,8 +172,9 @@ export class ForgetPasswordController {
                 .selectFrom('forget_password')
                 .innerJoin('user', 'user.id', 'forget_password.user_id')
                 .where('forget_password.hash', '=', payload?.hash)
-                .select(['expired_at', 'user_id', 'otp'])
+                .select(['expired_at', 'user_id', 'otp', 'email'])
                 .executeTakeFirst();
+            const transporter = transport();
             if (
                 !resetPasswordOTP ||
                 resetPasswordOTP.otp.toString() !== payload.otp ||
@@ -183,6 +184,13 @@ export class ForgetPasswordController {
                     errCode: errorConstant.ERR_INVALID_OTP,
                 });
             }
+
+            transporter.sendMail({
+                from: '"Woofi" <no-reply@woofi.com>',
+                to: resetPasswordOTP.email,
+                text: `Your password has been reseted.`,
+                subject: 'Reset password',
+            });
 
             const user = await db
                 .updateTable('user')
@@ -203,10 +211,20 @@ export class ForgetPasswordController {
                 ])
                 .executeTakeFirst();
 
-            await db
-                .deleteFrom('forget_password')
-                .where('user_id', '=', user.id)
-                .execute();
+            await Promise.all([
+                db
+                    .insertInto('notification_user')
+                    .values({
+                        detail: 'Your password has been reseted',
+                        expired_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                        user_id: resetPasswordOTP.user_id,
+                    })
+                    .execute(),
+                db
+                    .deleteFrom('forget_password')
+                    .where('user_id', '=', user.id)
+                    .execute(),
+            ]);
 
             return h
                 .response({

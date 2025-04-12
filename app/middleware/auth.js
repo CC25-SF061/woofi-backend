@@ -101,6 +101,7 @@ export async function isBanned(id) {
  */
 export async function isBannedRequest(request, h) {
     const { credentials } = request.auth;
+
     const banned = await isBanned(credentials.id);
     if (banned) {
         return Boom.unauthorized('Account is suspended');

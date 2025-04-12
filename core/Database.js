@@ -2,23 +2,22 @@ import { Kysely, PostgresDialect } from 'kysely';
 import pg from 'pg';
 
 const { Pool } = pg;
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-});
+let pool;
 /**
  * @type {Kysely<import("kysely-codegen").DB>}
  */
-const dialect = new Kysely({
-    dialect: new PostgresDialect({
-        pool,
-    }),
-});
+let dialect;
 
 /**
  *
  * @returns {typeof pool}
  */
 export function getPool() {
+    if (!pool) {
+        pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+        });
+    }
     return pool;
 }
 /**
@@ -26,5 +25,13 @@ export function getPool() {
  * @returns {typeof dialect}
  */
 export function getDatabase() {
+    if (!dialect) {
+        dialect = new Kysely({
+            dialect: new PostgresDialect({
+                pool: getPool(),
+            }),
+        });
+    }
+
     return dialect;
 }

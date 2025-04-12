@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { invalidField } from '../util/errorHandler.js';
 import { WishlistController } from '../controllers/WishlistController.js';
+import { isBannedRequest } from '../middleware/auth.js';
 
 const controller = new WishlistController();
 /**
@@ -48,6 +49,7 @@ export default [
                     success: Joi.boolean(),
                 }),
             },
+            pre: [{ method: isBannedRequest }],
         },
         handler: controller.deletewishlist.bind(controller),
     },

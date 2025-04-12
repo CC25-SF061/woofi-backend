@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { ProfileController } from '../controllers/ProfileController.js';
 import { invalidField } from '../util/errorHandler.js';
+import { isBannedRequest } from '../middleware/auth.js';
 const controller = new ProfileController();
 /**
  * @type {import("@hapi/hapi").ServerRoute[]}
@@ -80,6 +81,7 @@ export default [
                 }),
             },
             handler: controller.editEmail.bind(controller),
+            pre: [{ method: isBannedRequest }],
         },
     },
     {
@@ -114,6 +116,7 @@ export default [
                 }),
             },
             handler: controller.editPassword.bind(controller),
+            pre: [{ method: isBannedRequest }],
         },
     },
     {
@@ -146,6 +149,7 @@ export default [
                     message: Joi.string(),
                 }),
             },
+            pre: [{ method: isBannedRequest }],
         },
     },
     {
@@ -172,6 +176,7 @@ export default [
                     message: Joi.string(),
                 }),
             },
+            pre: [{ method: isBannedRequest }],
         },
     },
     {
@@ -232,6 +237,8 @@ export default [
                     data: Joi.object({ image: Joi.string() }),
                 }),
             },
+
+            pre: [{ method: isBannedRequest }],
         },
     },
     {

@@ -13,6 +13,7 @@ import {
     generateAccessToken,
     generateRefreshToken,
 } from '../util/generateAuthToken.js';
+import { isBanned } from '../middleware/auth.js';
 
 export class AuthController {
     constructor() {}
@@ -139,6 +140,12 @@ export class AuthController {
                     errCode: errorConstant.ERR_INVALID_LOGIN,
                 });
             }
+            const ban = await isBanned(user?.id.toString());
+            if (ban) {
+                return badRequest(h, 'Account is suspended', {
+                    errCode: errorConstant.ERR_ACCOUNT_SUSPENDED,
+                });
+            }
             const refreshToken = generateRefreshToken(user.id.toString());
             const accessToken = generateAccessToken(user.id.toString());
             await db
@@ -189,6 +196,7 @@ export class AuthController {
                 return Boom.badData('Invalid token structure');
             }
 
+            const isBan = isBanned(tokenData.id);
             const db = getDatabase();
             const token = await db
                 .selectFrom('token')
@@ -198,7 +206,11 @@ export class AuthController {
 
                 .executeTakeFirst();
 
-            if (!token || token.expired_at.getTime() < Date.now()) {
+            if (
+                !token ||
+                token.expired_at.getTime() < Date.now() ||
+                (await isBan)
+            ) {
                 return badRequest(h, 'Invalid token', {
                     errCode: errorConstant.ERR_INVALID_TOKEN,
                 });
@@ -358,6 +370,12 @@ export class AuthController {
                 });
             }
 
+            const isBan = await isBanned(user?.id.toString());
+            if (isBan) {
+                return badRequest(h, 'Account is suspended', {
+                    errCode: errorConstant.ERR_ACCOUNT_SUSPENDED,
+                });
+            }
             const accessToken = generateAccessToken(user.id.toString());
             const refreshToken = generateRefreshToken(user.id.toString());
             await db

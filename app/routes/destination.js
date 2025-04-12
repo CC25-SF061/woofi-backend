@@ -4,6 +4,7 @@ import { invalidField } from '../util/errorHandler.js';
 import {
     canDeleteDestination,
     canEditDestination,
+    isBannedRequest,
 } from '../middleware/auth.js';
 import { getCategory, getProvince } from '../../core/GeoLocation.js';
 const controller = new DestinationController();
@@ -85,6 +86,7 @@ export default [
                     }),
                 }),
             },
+            pre: [{ method: isBannedRequest }],
         },
 
         handler: controller.addPost.bind(controller),
@@ -156,6 +158,7 @@ export default [
                     success: Joi.boolean(),
                 }),
             },
+            pre: [{ method: isBannedRequest }],
         },
 
         handler: controller.editDestination.bind(controller),
@@ -222,6 +225,7 @@ export default [
                     filter: Joi.alternatives()
                         .try(Joi.array().items(Joi.string()), Joi.string())
                         .optional(),
+                    category: Joi.string(),
                 }),
                 failAction: invalidField,
             },
@@ -278,6 +282,7 @@ export default [
                     }),
                 }),
             },
+            pre: [{ method: isBannedRequest }],
         },
 
         handler: controller.addRating.bind(controller),
