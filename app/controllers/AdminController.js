@@ -690,19 +690,33 @@ export class AdminController {
             const contact = await db
                 .selectFrom('contact')
                 .where('id', '=', params.contactId)
+                // .leftJoin('user', 'user.id', 'contact.user_id')
+                // .leftJoin('user', 'user.id', 'contact.user_id')
                 .selectAll()
                 .executeTakeFirst();
             if (!contact) {
                 return notFound(h);
             }
-            const reply = await db
-                .insertInto('contact_reply')
-                .values({
-                    contact_id: params.contactId,
-                    message: payload.message,
-                })
-                .returning(['id'])
-                .executeTakeFirst();
+            const [reply] = await Promise.all([
+                db
+                    .insertInto('contact_reply')
+                    .values({
+                        contact_id: params.contactId,
+                        message: payload.message,
+                    })
+                    .returning(['id'])
+                    .executeTakeFirst(),
+                contact?.user_id
+                    ? db.insertInto('notification_user').values({
+                          expired_at: new Date(
+                              Date.now() + 24 * 60 * 60 * 1000
+                          ),
+                          detail: 'You have a new message from Admin',
+                          from: 'Admin',
+                          user_id: contact.user_id,
+                      })
+                    : Promise.resolve(),
+            ]);
 
             const transporter = transport();
 
