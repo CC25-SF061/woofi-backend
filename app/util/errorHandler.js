@@ -79,10 +79,15 @@ export function forbidden(h, message, payload, header, body) {
 
 export function notFound(h) {
     return h
-        .response({
-            ...Boom.notFound().output,
-            errCode: errorConstant.ERR_NOT_FOUND,
-        })
+        .response(
+            Object.assign(Boom.notFound().output, {
+                success: false,
+                message: 'Not Found',
+                payload: {
+                    errCode: errorConstant.ERR_NOT_FOUND,
+                },
+            })
+        )
         .code(404);
 }
 /**

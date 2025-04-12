@@ -305,20 +305,20 @@ export class AdminController {
                                             '=',
                                             createStringRole('admin')
                                         )
-                                        .then(1)
+                                        .then(2)
                                         .when(
                                             'r.v1',
                                             '=',
                                             createStringRole('super_admin')
                                         )
-                                        .then(0)
+                                        .then(1)
                                         .when(
                                             'r.v1',
                                             '=',
                                             createStringRole('banned')
                                         )
-                                        .then(1)
-                                        .else(3)
+                                        .then(3)
+                                        .else(4)
                                         .end()
                                         .as('role_priority'),
                                     eb
@@ -328,45 +328,49 @@ export class AdminController {
                                             '=',
                                             createStringRole('admin')
                                         )
-                                        .then(1)
+                                        .then(2)
                                         .when(
                                             'r.v1',
                                             '=',
                                             createStringRole('super_admin')
                                         )
-                                        .then(0)
+                                        .then(1)
                                         .when(
                                             'r.v1',
                                             '=',
                                             createStringRole('banned')
                                         )
-                                        .then(3)
-                                        .else(2)
+                                        .then(4)
+                                        .else(3)
                                         .end()
                                         .as('role_priority2'),
                                     'u.id',
                                     'u.username',
                                     'u.email',
                                     'u.profile_image',
-                                    sql`ROW_NUMBER() OVER (PARTITION BY u.id )`.as(
-                                        'row_number'
-                                    ),
                                 ])
-                                .orderBy('role_priority')
+                                // .orderBy('role_priority')
                                 .as('result')
                         )
-                        .where('result.row_number', '=', 1)
+                        .selectAll()
                         .select([
-                            'result.id',
-                            'result.profile_image',
-                            'result.role',
-                            'result.username',
-                            'result.email',
+                            sql`ROW_NUMBER() OVER (PARTITION BY result.id ORDER BY result.role_priority)`.as(
+                                'row_number'
+                            ),
                         ])
-                        .orderBy('result.role_priority2')
 
                         .as('result')
                 )
+                .select([
+                    'result.id',
+                    'result.profile_image',
+                    'result.role',
+                    'result.username',
+                    'result.email',
+                ])
+                .where('result.row_number', '=', 1)
+                .orderBy('result.role_priority2')
+
                 .selectAll();
 
             if (q) {
@@ -427,10 +431,21 @@ export class AdminController {
                 errCode: ErrorConstant.ERR_USER_IS_SUPER_ADMIN,
             }).takeover();
         }
-        await enforcer.addRoleForUser(
-            createStringUser(userId),
-            createStringRole('admin')
-        );
+        await Promise.all([
+            db
+                .insertInto('notification_user')
+                .values({
+                    expired_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                    detail: 'You have been promotoed to admin',
+                    from: 'Admin',
+                    user_id: userId,
+                })
+                .execute(),
+            enforcer.addRoleForUser(
+                createStringUser(userId),
+                createStringRole('admin')
+            ),
+        ]);
 
         return h.response({
             success: true,
@@ -466,10 +481,21 @@ export class AdminController {
                 errCode: ErrorConstant.ERR_USER_IS_SUPER_ADMIN,
             }).takeover();
         }
-        await enforcer.deleteRoleForUser(
-            createStringUser(userId),
-            createStringRole('admin')
-        );
+        await Promise.all([
+            db
+                .insertInto('notification_user')
+                .values({
+                    expired_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                    detail: 'You have been demoted to user',
+                    from: 'Admin',
+                    user_id: userId,
+                })
+                .execute(),
+            enforcer.deleteRoleForUser(
+                createStringUser(userId),
+                createStringRole('admin')
+            ),
+        ]);
 
         return h.response({
             success: true,

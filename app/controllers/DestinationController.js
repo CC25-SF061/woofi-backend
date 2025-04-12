@@ -12,6 +12,7 @@ import {
 } from '../../core/rbac/Casbin.js';
 import { permission, resource } from '../../core/RoleConstant.js';
 import { mapFilter } from '../../core/DestinationFilter.js';
+import { notFound } from '../util/errorHandler.js';
 
 export class DestinationController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -157,7 +158,9 @@ export class DestinationController {
                 ])
                 .where('destination.id', '=', postId)
                 .executeTakeFirst();
-
+            if (!destination) {
+                return notFound(h);
+            }
             if (credentials?.id) {
                 await db
                     .insertInto('destination_search')
@@ -174,14 +177,6 @@ export class DestinationController {
                     .execute();
             }
 
-            if (!destination) {
-                return h
-                    .response({
-                        ...Boom.notFound().output,
-                        errCode: ErrorConstant.ERR_NOT_FOUND,
-                    })
-                    .code(404);
-            }
             return h
                 .response(
                     JSONToString({
@@ -332,12 +327,7 @@ export class DestinationController {
                 .selectAll()
                 .executeTakeFirst();
             if (!destination) {
-                return h
-                    .response({
-                        ...Boom.notFound().output,
-                        errCode: ErrorConstant.ERR_NOT_FOUND,
-                    })
-                    .code(404);
+                return notFound(h);
             }
             await db
                 .insertInto('rating_destination')

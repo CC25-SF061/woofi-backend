@@ -54,6 +54,11 @@ export class ProfileController {
                 return val;
             }
         );
+        console.log(
+            user,
+            await enforcer.enforce(createStringUser(user.id), '*', 'admin')
+        );
+
         return h.response({
             success: true,
             message: 'Success getting profile',

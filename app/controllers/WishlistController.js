@@ -1,5 +1,5 @@
 import { getDatabase } from '../../core/Database.js';
-import Boom from '@hapi/boom';
+import Boom, { notFound } from '@hapi/boom';
 import ErrorConstant from '../../core/ErrorConstant.js';
 import { badRequest } from '../util/errorHandler.js';
 export class WishlistController {
@@ -33,12 +33,7 @@ export class WishlistController {
                     .executeTakeFirst(),
             ]);
             if (!post) {
-                return h
-                    .response({
-                        ...Boom.notFound('Destination not found').output,
-                        errCode: ErrorConstant.ERR_NOT_FOUND,
-                    })
-                    .code(404);
+                return notFound(h);
             }
             if (wishlist) {
                 return badRequest(h, 'wishlist already exist', {
@@ -89,12 +84,7 @@ export class WishlistController {
                 .where('destination.deleted_at', 'is', null)
                 .executeTakeFirst();
             if (!wishlist) {
-                return h
-                    .response({
-                        ...Boom.notFound('wishlist not found').output,
-                        errCode: ErrorConstant.ERR_NOT_FOUND,
-                    })
-                    .code(404);
+                return notFound(h);
             }
 
             await db

@@ -1,7 +1,7 @@
 import { getDatabase } from '../../core/Database.js';
 import Boom from '@hapi/boom';
 import ErrorConstant from '../../core/ErrorConstant.js';
-import { badRequest } from '../util/errorHandler.js';
+import { badRequest, notFound } from '../util/errorHandler.js';
 import { JSONToString } from '../util/json.js';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { sql } from 'kysely';
@@ -82,13 +82,11 @@ export class UserController {
                             )
                             .selectAll()
                     ).as('destinations'),
-
-                    // 'd.id as destination_id',
-                    // 'd.name as destination_name',
-                    // 'd.image as destination_image',
-                    // 'd.detail as destination_detail',
                 ])
                 .executeTakeFirst();
+            if (!user) {
+                return notFound(h);
+            }
             return h
                 .response(
                     JSONToString({
