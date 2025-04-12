@@ -511,6 +511,7 @@ export class AdminController {
     async banUser(request, h) {
         const { userId } = request.params;
         const { payload } = request;
+        const { credentials } = request.auth;
         const db = getDatabase();
         const user = await db
             .selectFrom('user')
@@ -532,7 +533,11 @@ export class AdminController {
                 errCode: ErrorConstant.ERR_USER_IS_SUPER_ADMIN,
             });
         }
-
+        const userAdmin = await db
+            .selectFrom('user')
+            .where('id', '=', credentials.id)
+            .select(['id', 'username'])
+            .executeTakeFirst();
         await Promise.all([
             enforcer.addRoleForUser(
                 createStringUser(userId),
@@ -543,9 +548,9 @@ export class AdminController {
 
         transporter.sendMail({
             to: user.email,
-            subject: 'You have been banned',
+            subject: 'You have been banned by admin ',
             from: '"Woofi" <no-reply@woofi.com',
-            html: `Your account has been suspended. Reason : ${payload.reason}`,
+            html: `Your account has been suspended. Reason : ${payload.reason} by ${userAdmin.username}`,
         });
         return h.response({
             success: true,
