@@ -38,7 +38,7 @@ jobs:
                          echo ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}
                          docker rm woofi || true
                          docker pull ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}
-                         docker run -d -name woofi -p 80:8070 \
+                         docker run -d --name woofi -p 80:8070 \
                          -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
                          -e FRONT_END_CONTACT_URL="${{ secrets.FRONT_END_CONTACT_URL }}" \
                          -e APP_KEY="${{ secrets.APP_KEY }}" \
