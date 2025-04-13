@@ -34,11 +34,12 @@ jobs:
                   username: ${{ secrets.EC2_USERNAME }}
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script: |
-                      docker stop woofi || true
+                      docker stop woofi-backend || true
                          echo ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}
-                         docker rm woofi || true
+                         docker rm woofi-backend || true
                          docker pull ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}
-                         docker run -d --name woofi -p 80:8070 \
+                         docker run -d --name woofi-backend \
+                          --network=woofi \
                           -v ${HOME}/certs:/user/src/certs \
                           -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
                           -e FRONT_END_CONTACT_URL="${{ secrets.FRONT_END_CONTACT_URL }}" \

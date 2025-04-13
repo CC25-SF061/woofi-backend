@@ -14,21 +14,10 @@ import wishlist from './app/routes/wishlist.js';
 import profile from './app/routes/profile.js';
 import admin from './app/routes/admin.js';
 import user from './app/routes/user.js';
-import fs from 'fs';
 
-const tls =
-    process.env.APP_ENV === 'development'
-        ? {}
-        : {
-              tls: {
-                  key: fs.readFileSync('./certs/key.pem'),
-                  cert: fs.readFileSync('./certs/origin.pem'),
-              },
-          };
 const server = hapi.server({
     host: '0.0.0.0',
     port: 8070,
-    ...tls,
     routes: {
         cors: {
             credentials: true,
