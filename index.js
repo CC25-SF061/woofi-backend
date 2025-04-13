@@ -22,7 +22,9 @@ const server = hapi.server({
     routes: {
         cors: {
             credentials: true,
-            origin: ['*'],
+            origin: process.env.ALLOWED_ORIGIN
+                ? process.env.ALLOWED_ORIGIN.split(',')
+                : ['*'],
             // headers: ['*'],
             // exposedHeaders: ['set-cookie'],
         },

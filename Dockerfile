@@ -1,4 +1,5 @@
 FROM node:23-alpine3.20
+EXPOSE 8070
 WORKDIR /user/src/app
 COPY package.json .
 COPY package-lock.json .

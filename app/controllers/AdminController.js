@@ -801,7 +801,6 @@ export class AdminController {
         try {
             const db = getDatabase();
             const { params } = request;
-            console.log(params);
             let contact = await db
                 .selectFrom((eb) =>
                     eb
