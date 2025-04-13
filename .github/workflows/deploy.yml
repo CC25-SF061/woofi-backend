@@ -38,27 +38,27 @@ jobs:
                          echo ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}
                          docker rm woofi || true
                          docker pull ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}
-                         docker run -d -name woofi -p 80:8070
-                         -e DATABASE_URL="${{ secrets.DATABASE_URL }}"
-                         -e FRONT_END_CONTACT_URL="${{ secrets.FRONT_END_CONTACT_URL }}"
-                         -e APP_KEY="${{ secrets.APP_KEY }}"
-                         -e ACCESS_TOKEN_SECRET="${{ secrets.ACCESS_TOKEN_SECRET }}"
-                         -e REFRESH_TOKEN_SECRET="${{ secrets.REFRESH_TOKEN_SECRET }}"
-                         -e APP_ENV="${{ secrets.APP_ENV }}"
-                         -e APP_URL="${{ secrets.APP_URL }}"
-                         -e ALLOWED_ORIGIN="${{ secrets.ALLOWED_ORIGIN }}"
-                         -e GOOGLE_WEB_CLIENT_ID="${{ secrets.GOOGLE_WEB_CLIENT_ID }}"
-                         -e GOOGLE_WEB_SECRET="${{ secrets.GOOGLE_WEB_SECRET }}"
-                         -e BCRYPT_HASH_ROUND="${{ secrets.BCRYPT_HASH_ROUND }}"
-                         -e SMTP_HOST="${{ secrets.SMTP_HOST }}"
-                         -e SMTP_PORT="${{ secrets.SMTP_PORT }}"
-                         -e SMTP_USER="${{ secrets.SMTP_USER }}"
-                         -e SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}"
-                         -e FILE_UPLOAD_ENDPOINT="${{ secrets.FILE_UPLOAD_ENDPOINT }}"
-                         -e FILE_UPLOAD_ACCESS_KEY="${{ secrets.FILE_UPLOAD_ACCESS_KEY }}"
-                         -e FILE_UPLOAD_SECRET_KEY="${{ secrets.FILE_UPLOAD_SECRET_KEY }}"
-                         -e FILE_UPLOAD_PUBLIC_DOMAIN="${{ secrets.FILE_UPLOAD_PUBLIC_DOMAIN }}"
-                         -e FILE_UPLOAD_BUCKET="${{ secrets.FILE_UPLOAD_BUCKET }}"
-                         -e ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}"
-                         -e ADMIN_EMAIL="${{ secrets.ADMIN_EMAIL }}"
+                         docker run -d -name woofi -p 80:8070 \
+                         -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+                         -e FRONT_END_CONTACT_URL="${{ secrets.FRONT_END_CONTACT_URL }}" \
+                         -e APP_KEY="${{ secrets.APP_KEY }}" \
+                         -e ACCESS_TOKEN_SECRET="${{ secrets.ACCESS_TOKEN_SECRET }}" \
+                         -e REFRESH_TOKEN_SECRET="${{ secrets.REFRESH_TOKEN_SECRET }}" \
+                         -e APP_ENV="${{ secrets.APP_ENV }}" \
+                         -e APP_URL="${{ secrets.APP_URL }}" \
+                         -e ALLOWED_ORIGIN="${{ secrets.ALLOWED_ORIGIN }}" \
+                         -e GOOGLE_WEB_CLIENT_ID="${{ secrets.GOOGLE_WEB_CLIENT_ID }}" \
+                         -e GOOGLE_WEB_SECRET="${{ secrets.GOOGLE_WEB_SECRET }}" \
+                         -e BCRYPT_HASH_ROUND="${{ secrets.BCRYPT_HASH_ROUND }}" \ 
+                         -e SMTP_HOST="${{ secrets.SMTP_HOST }}" \
+                         -e SMTP_PORT="${{ secrets.SMTP_PORT }}" \
+                         -e SMTP_USER="${{ secrets.SMTP_USER }}" \
+                         -e SMTP_PASSWORD="${{ secrets.SMTP_PASSWORD }}" \
+                         -e FILE_UPLOAD_ENDPOINT="${{ secrets.FILE_UPLOAD_ENDPOINT }}" \
+                         -e FILE_UPLOAD_ACCESS_KEY="${{ secrets.FILE_UPLOAD_ACCESS_KEY }}" \
+                         -e FILE_UPLOAD_SECRET_KEY="${{ secrets.FILE_UPLOAD_SECRET_KEY }}" \
+                         -e FILE_UPLOAD_PUBLIC_DOMAIN="${{ secrets.FILE_UPLOAD_PUBLIC_DOMAIN }}" \
+                         -e FILE_UPLOAD_BUCKET="${{ secrets.FILE_UPLOAD_BUCKET }}" \
+                         -e ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}" \
+                         -e ADMIN_EMAIL="${{ secrets.ADMIN_EMAIL }}" \
                          ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}
