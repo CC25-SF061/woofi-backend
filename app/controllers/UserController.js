@@ -79,6 +79,7 @@ export class UserController {
                                     ])
                                     .distinct()
                                     .where('destination.user_id', '=', userId)
+                                    .as('result')
                             )
                             .selectAll()
                     ).as('destinations'),

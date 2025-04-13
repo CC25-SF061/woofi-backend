@@ -395,6 +395,7 @@ export class DestinationController {
                     'destination.province',
                     'destination.detail',
                     'destination.image',
+                    'destination.category',
                 ])
                 .executeTakeFirst();
 
