@@ -8,7 +8,7 @@
     "build": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "schema-import": "kysely-codegen",
-    "migrate": "node scripts/migration.js",
+    "migrate": "node scripts/migration.js && node scripts/procedure.js",
     "migrate:down": "node scripts/migration.js down",
     "migrate:reset": "npm run migrate:down && npm run migrate",
     "seed": "node scripts/seeder.js",

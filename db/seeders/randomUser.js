@@ -78,6 +78,7 @@ function getRandomArbitrary(min, max) {
  * @returns {Promise<void>}
  */
 export async function seed(db) {
+    return;
     // if (process.env.APP_ENV === 'production') {
     //     return;
     // }

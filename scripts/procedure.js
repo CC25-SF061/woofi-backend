@@ -6,8 +6,11 @@ const modules = await new FileModulesProvider(
     'db/procedures/**/*.js'
 ).getMigrations();
 const db = getDatabase();
+const targetName = process.argv[2] || 'all';
+
 for (const moduleName in modules) {
-    await modules[moduleName].create(db);
+    if (targetName === 'all' || moduleName === targetName)
+        await modules[moduleName].create(db);
 }
 
 process.exit(0);

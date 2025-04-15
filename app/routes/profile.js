@@ -285,11 +285,15 @@ export default [
                         .messages({
                             'any.only': 'Invalid gender',
                         }),
-                    birth_date: Joi.date().required(),
+                    birth_date: Joi.date()
+                        .required()
+                        .less('now')
+                        .label('birth date'),
                     interests: Joi.array()
                         .min(1)
                         .items(
                             Joi.string()
+
                                 .valid(
                                     ...[
                                         'Peak',

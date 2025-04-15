@@ -1,0 +1,450 @@
+[
+  {
+    "destination_name": "Lake Toba",
+    "link_image": "./image/Lake Toba.jpeg",
+    "description": "Lake Toba is the largest volcanic lake in the world, located in North Sumatra, Indonesia. It was formed by a supervolcanic eruption approximately 74,000 years ago, one of the most powerful eruptions ever known. Stretching about 100 kilometers long and 30 kilometers wide, Lake Toba offers breathtaking natural scenery surrounded by lush green mountains, cool air, and a peaceful atmosphere. At the center of the lake lies Samosir Island, a volcanic island that is a major attraction for travelers.\n\nBeyond its natural beauty, Lake Toba is rich in cultural and historical significance. Samosir Island is home to the Batak Toba people, known for their unique traditions, including traditional Bolon houses, Tor-Tor dances, and intricate wood carvings and handwoven textiles. Visitors can explore traditional villages such as Tomok and Ambarita to learn more about local customs and daily life. Historical landmarks like ancient Batak royal tombs and stone courts provide insight into the indigenous justice system of the past.\n\nToday, Lake Toba is one of Indonesia's top priority tourist destinations, actively being developed to attract both domestic and international visitors. Tourism facilities such as hotels, restaurants, and transportation are being improved to enhance the visitor experience. Despite these developments, Lake Toba has preserved its natural charm and authenticity, making it an ideal place to relax, enjoy nature, and immerse oneself in the rich local culture. For nature and culture enthusiasts alike, Lake Toba is truly a must-visit destination.",
+    "province": {
+      "name": "Sumatera Utara",
+      "lat": 2.1153547,
+      "long": 99.5450974
+    },
+    "category": {
+      "name": "Lake"
+    },
+    "location": "Kabupaten Samosir"
+  },
+  {
+    "destination_name": "Kuta Beach",
+    "link_image": "./image/beach Kuta.jpeg",
+    "description": "Kuta Beach is one of the most iconic and visited beaches in Bali, Indonesia. Known for its wide stretch of soft white sand and rolling waves, it has long been a favorite destination for both local and international tourists. Once a quiet fishing village, Kuta has transformed into a vibrant beach town with lively nightlife, bustling shops, and a wide range of accommodations that cater to all types of travelers.\n\nOne of the main highlights of Kuta Beach is its breathtaking sunsets. Each evening, the horizon turns into a canvas of orange, pink, and purple as the sun dips into the Indian Ocean, creating a magical atmosphere that attracts photographers and beachgoers alike. Surfers, especially beginners, also flock to Kuta because of its consistent waves and abundance of surf schools that offer affordable lessons along the beach.\n\nBeyond its natural beauty, Kuta Beach offers endless entertainment and recreational activities. From beachside cafes and bars to shopping centers like Beachwalk Mall, visitors can enjoy both relaxation and excitement. Its central location also makes it a convenient base for exploring other parts of Bali, such as Seminyak, Legian, and Uluwatu. Whether you're looking to surf, socialize, or simply soak up the sun, Kuta Beach is a must-visit destination that captures the dynamic spirit of Bali.",
+    "province": {
+      "name": "Bali",
+      "lat": -8.3405389,
+      "long": 115.0919509
+    },
+    "category": {
+      "name": "Beach"
+    },
+    "location": "Kuta, Badung"
+  },
+  {
+    "destination_name": "Bromo Mountain",
+    "link_image": "./image/Mountain Bromo.jpeg",
+    "description": "Mount Bromo is an active volcano and one of the most iconic natural landmarks in East Java, Indonesia. Standing at 2,329 meters above sea level, it is part of the Tengger massif and lies within the vast Bromo Tengger Semeru National Park. The volcano is renowned for its otherworldly landscape—a dramatic sea of volcanic sand, surrounding steep craters, and a constant plume of smoke rising from the caldera. Despite its status as an active volcano, Mount Bromo continues to attract thousands of visitors each year, drawn by its raw beauty and mystical atmosphere.\n\nOne of the most unforgettable experiences at Mount Bromo is watching the sunrise from the viewpoint on Mount Penanjakan. In the early morning hours, tourists gather to witness the breathtaking panorama as the sun slowly rises over the horizon, casting golden light over the smoking crater, the surrounding mountains, and the clouds below. This surreal moment, often described as a once-in-a-lifetime experience, has made Mount Bromo a favorite among photographers and nature lovers from around the world.\n\nIn addition to its natural allure, the area around Mount Bromo is home to the Tenggerese people, who preserve unique customs and spiritual traditions. One of the most well-known ceremonies is the Yadnya Kasada festival, where offerings are thrown into the volcano to honor the mountain gods. Whether you’re seeking adventure, cultural insight, or serene moments in nature, Mount Bromo offers a compelling mix of all three—making it a must-visit destination for anyone exploring Java.",
+    "province": {
+      "name": "Jawa Timur",
+      "lat": -7.5360639,
+      "long": 112.2384017
+    },
+    "category": {
+      "name": "Mountain"
+    },
+    "location": "Probolinggo"
+  },
+  {
+    "destination_name": "Parangtritis Beach",
+    "link_image": "./image/beach Parangtritis.jpeg",
+    "description": "Parangtritis Beach is a legendary coastal destination located in Yogyakarta, Indonesia. It is famous not only for its sweeping black sand and powerful waves but also for its deep connection to Javanese mythology and mysticism. Nestled along the southern coast, Parangtritis serves as a place of spiritual significance for many locals, who believe it is closely tied to the realm of Nyi Roro Kidul, the mythical Queen of the Southern Sea.\n\nBeyond its mystical allure, Parangtritis Beach offers a spectacular natural setting that attracts travelers from all over the country. The beach is well known for its dramatic sunsets, where the sky is painted with hues of orange and red as the sun dips into the Indian Ocean. Visitors can enjoy a range of activities such as horseback riding along the shoreline, ATV rides across the dunes, or simply relaxing while listening to the crashing waves.\n\nParangtritis is also home to nearby attractions like the Parangkusumo Sand Dunes and Gua Langse, both of which add to the area’s charm and cultural richness. With its unique combination of spiritual depth, natural beauty, and cultural heritage, Parangtritis Beach is more than just a coastal getaway—it’s a destination where myth and nature harmoniously meet. It's a must-visit spot for those looking to explore the enchanting soul of Yogyakarta.",
+    "province": {
+      "name": "Yogyakarta",
+      "lat": -7.7955798,
+      "long": 110.3694896
+    },
+    "category": {
+      "name": "Beach"
+    },
+    "location": "Bantul"
+  },
+  {
+    "destination_name": "Taman Mini Indonesia Indah",
+    "link_image": "./image/recreational Baluran.jpeg",
+    "description": "Taman Mini Indonesia Indah, often abbreviated as TMII, is a cultural theme park located in East Jakarta, Indonesia. Designed to showcase the rich cultural diversity of the Indonesian archipelago, TMII features pavilions representing each of the country’s provinces, complete with traditional houses, costumes, dances, and historical artifacts. Established in 1975, the park serves as an educational and recreational destination where visitors can experience the spirit of Indonesia in a single location.\n\nThe park spans over 150 hectares and includes a variety of attractions, from museums and cultural performances to a beautiful lake with miniature islands shaped like the Indonesian archipelago. Visitors can explore museums dedicated to science, technology, transport, and more, as well as enjoy gardens, a cable car ride, and a theater showcasing Indonesian films and cultural shows. The iconic Keong Mas (Golden Snail) Theater is one of TMII’s architectural highlights.\n\nTaman Mini is more than just a tourist attraction—it plays a vital role in promoting national unity and appreciation for Indonesia's vast cultural wealth. With recent revitalization efforts, the park has been modernized while retaining its cultural essence, making it more accessible and engaging for a new generation of visitors. Whether you’re a local or a tourist, TMII offers a fascinating journey through the heart and soul of Indonesia’s diverse heritage.",
+    "province": {
+      "name": "Jakarta",
+      "lat": -6.2087634,
+      "long": 106.845599
+    },
+    "category": {
+      "name": "Recreational Park"
+    },
+    "location": "Jakarta Timur"
+  },
+  {
+    "destination_name": "Dieng Plateau",
+    "link_image": "./image/mountain dieng.jpg",
+    "description": "Dieng Plateau is a stunning highland region located in Central Java, Indonesia, known for its breathtaking scenery, geothermal activity, and cultural significance. Perched at an altitude of over 2,000 meters above sea level, Dieng offers a cool and refreshing climate, making it a popular escape from the tropical heat of the lowlands. The name 'Dieng' is derived from the Sanskrit words 'Di' and 'Hyang,' meaning 'Abode of the Gods,' reflecting the area's mystical and spiritual ambiance.\n\nOne of the main attractions of the Dieng Plateau is its collection of volcanic craters, such as Sikidang and Sileri, which emit bubbling mud and sulfurous steam. These natural wonders give visitors a glimpse into the region’s active geothermal landscape. The plateau is also home to a number of ancient Hindu temples dating back to the 8th century, believed to be among the oldest in Java. The Arjuna Temple complex, with its classic architecture and misty surroundings, provides a window into Indonesia’s spiritual and architectural past.\n\nIn addition to its geological and historical attractions, Dieng is known for its unique cultural traditions and annual festivals, such as the Dieng Culture Festival. This event features traditional ceremonies, music performances, and the ritual cutting of dreadlocks from local children believed to possess special spiritual energy. Whether you're drawn by its natural beauty, cultural depth, or serene mountain vibes, Dieng Plateau offers a memorable and enriching travel experience.",
+    "province": {
+      "name": "Jawa Tengah",
+      "lat": -7.150975,
+      "long": 110.1402594
+    },
+    "category": {
+      "name": "Mountain"
+    },
+    "location": "Wonosobo"
+  },
+  {
+    "destination_name": "Pink Beach",
+    "link_image": "./image/Pink Beach.jpeg",
+    "description": "Pink Beach, locally known as Pantai Merah, is one of the rarest natural wonders in Indonesia, located in East Lombok. What makes this beach truly unique is its striking pink sand, a result of white sand mixing with red coral fragments carried in by the waves. Surrounded by turquoise waters and rugged hills, Pink Beach offers a surreal and serene atmosphere, making it a favorite destination for nature lovers and photographers seeking an extraordinary coastal view.\n\nThe calm and crystal-clear waters of Pink Beach are perfect for snorkeling and swimming. Beneath the surface, visitors can explore vibrant coral reefs teeming with colorful fish and marine life. The beach is also relatively untouched and less crowded compared to other popular destinations in Lombok, allowing for a peaceful and intimate escape. Reaching Pink Beach requires a bit of effort—via boat or off-road journey—but the stunning views and tranquil environment make the trip well worth it.\n\nAside from its natural beauty, Pink Beach is a great spot to relax, enjoy a beachside picnic, or watch the sunset in a quiet, pristine setting. The surrounding hills offer light trekking opportunities with panoramic views of the coastline. For those seeking a hidden gem with a rare natural charm, Pink Beach in East Lombok delivers a truly unforgettable experience, far from the hustle and bustle of mainstream tourism.",
+    "province": {
+      "name": "Nusa Tenggara Barat",
+      "lat": -8.652933,
+      "long": 117.361649
+    },
+    "category": {
+      "name": "Beach"
+    },
+    "location": "Lombok Barat"
+  },
+  {
+    "destination_name": "Baluran National Park",
+    "link_image": "./image/recreational Baluran.jpeg",
+    "description": "Baluran National Park, often referred to as the 'Africa van Java,' is a unique conservation area located in East Java, Indonesia. The park is renowned for its vast savannah landscapes, which resemble the African savannahs, and is home to a variety of wildlife that roams freely across the plains. Spanning over 25,000 hectares, Baluran is one of the most significant natural reserves in Java, offering a diverse ecosystem ranging from dense tropical forests to dry savannahs and coastal wetlands.\n\nThe park is a haven for wildlife enthusiasts, as it hosts a wide range of species, including the endangered Javanese bull (wild cattle), blackbucks, and various species of deer. In addition to these mammals, Baluran is home to a rich variety of bird species, reptiles, and marine life along its coastline. Visitors can embark on a safari-style experience, exploring the savannah on foot or by vehicle, to spot wildlife and enjoy the park’s dramatic landscapes.\n\nBaluran National Park also offers spectacular views, especially from the Bekol Viewing Tower, which overlooks the expansive savannah and Mount Baluran. The park is a popular destination for nature lovers, photographers, and those seeking an adventure in a pristine and less-explored environment. Whether you're exploring the rugged wilderness, hiking through its trails, or simply observing the diverse flora and fauna, Baluran offers a rare and memorable glimpse of Indonesia's natural beauty.",
+    "province": {
+      "name": "Jawa Timur",
+      "lat": -7.5360639,
+      "long": 112.2384017
+    },
+    "category": {
+      "name": "Recreational Park"
+    },
+    "location": "Situbondo"
+  },
+  {
+    "destination_name": "Madakaripura Waterfall",
+    "link_image": "./image/waterfall madakaripura.jpeg",
+    "description": "Madakaripura Waterfall is a stunning hidden gem located within the Bromo Tengger Semeru National Park in East Java, Indonesia. Surrounded by lush green cliffs, this magnificent waterfall cascades down from a height of approximately 200 meters, creating a breathtaking sight that leaves visitors in awe. The waterfall is often considered one of the most beautiful in Java, offering an immersive natural experience that makes it a must-visit for adventure seekers and nature enthusiasts.\n\nTo reach Madakaripura Waterfall, visitors embark on a scenic trek through a narrow gorge, crossing rivers and walking along well-maintained pathways. The journey itself is an adventure, with towering cliffs on either side, adding to the sense of wonder as you approach the waterfall. Once at the base, you can feel the mist from the waterfall and enjoy the cool, refreshing air as you stand in the shadow of this towering natural wonder.\n\nMadakaripura Waterfall is also steeped in local legend. It is said to be the final meditation site of Gajah Mada, a famous military leader in ancient Java, adding a spiritual layer to its allure. Despite its hidden location and the slightly challenging trek, the beauty of Madakaripura Waterfall makes it well worth the visit, offering a peaceful and serene escape into nature.",
+    "province": {
+      "name": "Jawa Timur",
+      "lat": -7.5360639,
+      "long": 112.2384017
+    },
+    "category": {
+      "name": "Waterfall"
+    },
+    "location": "Probolinggo"
+  },
+  {
+    "destination_name": "Tanjung Tinggi Beach",
+    "link_image": "./image/beachtanjungtinggi.jpg",
+    "description": "Tanjung Tinggi Beach, located on the island of Belitung in Indonesia, is a picturesque and tranquil coastal destination famous for its unique granite rock formations. The beach gained widespread recognition after being featured in the popular Indonesian movie 'Laskar Pelangi.' The pristine white sand, crystal-clear waters, and the striking arrangement of massive granite boulders create an unforgettable landscape that draws visitors from around the world.\n\nBeyond its stunning visual appeal, Tanjung Tinggi Beach is an excellent spot for a variety of outdoor activities. The calm waters are perfect for swimming, snorkeling, and kayaking, allowing visitors to explore the vibrant marine life just offshore. The iconic boulders also provide fantastic photo opportunities, with some large rocks offering panoramic views of the surrounding coastline and the island of Belitung.\n\nThe beach is not only a haven for nature lovers but also a place for relaxation and reflection. Whether you're soaking up the sun, enjoying the serene atmosphere, or exploring the rock formations, Tanjung Tinggi Beach offers a peaceful retreat away from the hustle and bustle of everyday life. For fans of 'Laskar Pelangi,' visiting this beach also offers a chance to step into the setting of one of Indonesia’s most beloved films.",
+    "province": {
+      "name": "Kepulauan Bangka Belitung",
+      "lat": -2.7410513,
+      "long": 106.4405872
+    },
+    "category": {
+      "name": "Beach"
+    },
+    "location": "Belitung"
+  },
+  {
+    "destination_name": "Penglipuran Village",
+    "link_image": "./image/village penglipuran.jpeg",
+    "description": "Penglipuran Village is a traditional Balinese village located in the Bangli Regency of Bali, Indonesia, known for its well-preserved culture, unique architecture, and stunning natural surroundings. The village stands out for its orderly layout, with neatly arranged traditional houses, pathways, and lush gardens. Penglipuran is recognized as one of the cleanest villages in Bali, with local residents taking great pride in maintaining their surroundings and upholding centuries-old traditions.\n\nVisitors to Penglipuran Village can explore its beautiful streets lined with traditional Balinese homes made of bamboo and thatch, each with its own front yard, offering a glimpse into rural Balinese life. The village is also home to a stunning bamboo forest, where visitors can walk through the serene landscape and enjoy the tranquil atmosphere. The village’s commitment to preserving its heritage and maintaining sustainable living practices provides a unique opportunity to experience authentic Balinese culture.\n\nIn addition to its cultural and architectural beauty, Penglipuran Village offers visitors the chance to learn about traditional Balinese customs and rituals, which are still practiced by the locals today. Whether you're strolling through the village, admiring the architecture, or enjoying the warm hospitality of the residents, Penglipuran offers a peaceful and immersive cultural experience that showcases the heart and soul of Bali.",
+    "province": {
+      "name": "Bali",
+      "lat": -8.3405389,
+      "long": 115.0919509
+    },
+    "category": {
+      "name": "Tourist Village"
+    },
+    "location": "Bangli"
+  },
+  {
+    "destination_name": "Mount Rinjani",
+    "link_image": "./image/mountain Rinjani.jpeg",
+    "description": "Mount Rinjani is an active volcano located on the island of Lombok, Indonesia, and is the second-highest volcano in the country, standing at 3,726 meters above sea level. The majestic peak is a popular destination for trekkers and adventurers, offering a challenging but rewarding climb. The volcano's crater lake, Segara Anak, is one of the most iconic features of Rinjani, with its striking turquoise waters surrounded by steep cliffs. The mountain is not only a natural wonder but also holds spiritual significance for the local Sasak people.\n\nTrekking to the summit of Mount Rinjani is a once-in-a-lifetime experience for many, as it offers breathtaking panoramic views of the surrounding landscape, including the island of Bali on clear days. The journey takes several days, with hikers passing through lush forests, grassy slopes, and volcanic terrain. Along the way, trekkers are treated to stunning views of the crater lake, where many choose to camp overnight, allowing for a peaceful and unforgettable experience amidst nature's beauty.\n\nIn addition to its natural allure, Mount Rinjani is also an important cultural site. The local people believe that the mountain is sacred, and it is a place of pilgrimage for many. Rinjani's rugged terrain, combined with its cultural and spiritual significance, makes it a unique destination for those seeking adventure, reflection, and a deeper connection to nature. Whether you're a seasoned trekker or a nature enthusiast, Mount Rinjani offers an unforgettable journey into the heart of Indonesia's volcanic landscape.",
+    "province": {
+      "name": "Nusa Tenggara Barat",
+      "lat": -8.652933,
+      "long": 117.361649
+    },
+    "category": {
+      "name": "Mountain"
+    },
+    "location": "Lombok"
+  },
+  {
+    "destination_name": "Hutan Pinus Mangunan",
+    "link_image": "./image/forest mangunan.jpeg",
+    "description": "Hutan Pinus Mangunan is a serene and picturesque pine forest located in the Bantul Regency of Yogyakarta, Indonesia. Known for its cool, fresh air and tranquil atmosphere, the forest offers a perfect escape from the hustle and bustle of city life. The towering pine trees create a peaceful canopy, and the forest floor is covered in soft pine needles, adding to the sense of serenity. Hutan Pinus Mangunan has become a favorite spot for nature lovers, photographers, and anyone seeking a moment of peace in nature.\n\nAside from its calming ambiance, Hutan Pinus Mangunan also offers stunning views of the surrounding landscape. Situated on a hill, the forest provides panoramic vistas of the surrounding valleys, rivers, and distant mountains. At sunrise and sunset, the misty view from the forest is particularly magical, with the golden light filtering through the pine trees. Visitors can enjoy a scenic walk along the trails, breathe in the fresh air, and take in the breathtaking views of Yogyakarta’s natural beauty.\n\nThe forest is also a great place for outdoor activities, including hiking, picnicking, and camping. There are several photo spots around the area, where visitors can capture the beauty of the forest and its surroundings. Whether you're looking to relax, enjoy a hike, or simply admire nature, Hutan Pinus Mangunan offers a peaceful retreat that showcases the calming beauty of Yogyakarta's forests.",
+    "province": {
+      "name": "Yogyakarta",
+      "lat": -7.7955798,
+      "long": 110.3694896
+    },
+    "category": {
+      "name": "Forest"
+    },
+    "location": "Dlingo, Bantul"
+  },
+  {
+    "destination_name": "Kelimutu Lake",
+    "link_image": "./image/kalimutu lake.jpeg",
+    "description": "Kelimutu Lake, located on the island of Flores in Indonesia, is a unique and fascinating destination known for its tri-colored crater lakes. The three lakes, located at the summit of Mount Kelimutu, change colors periodically due to the varying chemical composition of the water. These striking colors range from turquoise to red to brown, creating a mesmerizing and surreal sight for visitors. The phenomenon of the changing colors adds an element of mystery and intrigue to the already stunning landscape.\n\nTo reach the lakes, visitors must embark on a trek up the mountain, which offers spectacular views of the surrounding terrain. The sunrise at Kelimutu is particularly famous, with early risers able to witness the vibrant colors of the lakes illuminated by the soft morning light. The surrounding area is peaceful and relatively untouched, providing a serene atmosphere for contemplation and reflection.\n\nKelimutu Lake is not only a natural wonder but also holds cultural and spiritual significance for the local people. The lakes are believed to be the resting place of the souls of the deceased, according to local legends. This deep connection to the land and its history adds a spiritual layer to the experience of visiting Kelimutu. Whether you're drawn by the beauty of the landscape, the scientific intrigue behind the color changes, or the cultural significance of the site, Kelimutu Lake offers a memorable and enriching experience.",
+    "province": {
+      "name": "Nusa Tenggara Timur",
+      "lat": -8.657382,
+      "long": 121.079369
+    },
+    "category": {
+      "name": "Lake"
+    },
+    "location": "Ende"
+  },
+  {
+    "destination_name": "Merese Hill",
+    "link_image": "./image/peak merese.jpeg",
+    "description": "Merese Hill is a stunning hill located on the southern coast of Lombok, Indonesia, offering panoramic views of the Indian Ocean and the surrounding landscapes. Known for its natural beauty, Merese Hill is a popular spot for those seeking a peaceful retreat amidst nature. The hill is covered with lush grass and dotted with rocky outcrops, creating a picturesque setting that is perfect for hiking, photography, and simply enjoying the beauty of the area.\n\nOne of the main draws of Merese Hill is the breathtaking sunrise view it offers. Early risers can witness the sun rising over the ocean, casting vibrant colors across the sky and illuminating the surrounding hills and beaches. The view from the top of the hill is simply mesmerizing, with expansive vistas of turquoise waters, white sandy beaches, and rolling green hills stretching as far as the eye can see.\n\nIn addition to its stunning views, Merese Hill is a great spot for a peaceful walk or picnic. The hill’s relatively easy access and tranquil atmosphere make it a favorite destination for nature lovers and travelers looking to escape the more crowded areas of Lombok. Whether you're hiking up for the view or just relaxing in the cool breeze, Merese Hill offers a perfect combination of natural beauty and serenity.",
+    "province": {
+      "name": "Nusa Tenggara Barat",
+      "lat": -8.652933,
+      "long": 117.361649
+    },
+    "category": {
+      "name": "Peak"
+    },
+    "location": "Lombok Tengah"
+  },
+  {
+    "destination_name": "Museum Angkut",
+    "link_image": "./image/museum angkut.jpeg",
+    "description": "Museum Angkut is an interactive transportation museum located in Batu, East Java, Indonesia. The museum is known for its impressive collection of historical vehicles from around the world, ranging from classic cars and motorcycles to vintage airplanes and trains. The museum offers a unique experience for visitors to explore the evolution of transportation and its impact on society. Each exhibit is carefully curated, providing a glimpse into the history and development of vehicles across different time periods and cultures.\n\nOne of the main highlights of Museum Angkut is its themed areas, which are designed to immerse visitors in different historical eras and global settings. The museum is divided into various sections, including displays of vehicles from the United States, Europe, and Asia, as well as exhibitions showcasing iconic cars from Hollywood films. Visitors can stroll through the different zones, admire the meticulously restored vehicles, and learn about the technological advancements that shaped the world of transportation.\n\nIn addition to its extensive collection of vehicles, Museum Angkut also offers interactive displays and activities for visitors of all ages. Children and adults alike can enjoy the hands-on exhibits, which allow them to engage with the history of transportation in a fun and educational way. Whether you're a car enthusiast, a history buff, or just looking for a unique cultural experience, Museum Angkut provides a fascinating journey through the world of vehicles and transportation.",
+    "province": {
+      "name": "Jawa Timur",
+      "lat": -7.5360639,
+      "long": 112.2384017
+    },
+    "category": {
+      "name": "Museum"
+    },
+    "location": "Batu"
+  },
+  {
+    "destination_name": "Monas (National Monument)",
+    "link_image": "./image/others Monas.jpeg",
+    "description": "Monas (National Monument) is one of the most iconic landmarks in Indonesia, located in the heart of Jakarta. The monument stands tall at 132 meters and symbolizes the nation's independence struggle, commemorating Indonesia's fight for freedom from colonial rule. Completed in 1975, Monas has since become a symbol of national pride and unity, drawing visitors from both within the country and abroad. The monument's design is a fusion of traditional Indonesian and modern architectural styles, making it a unique and recognizable landmark in the city.\n\nVisitors to Monas can take an elevator to the top of the monument, where they are treated to panoramic views of Jakarta's skyline. On clear days, the observation deck offers a stunning vista of the bustling city, with landmarks such as the National Museum and Merdeka Square visible in the distance. The area around the monument is also home to a beautiful park, where people gather to relax, exercise, and enjoy the lush greenery. The park is a popular spot for families, joggers, and tourists looking to take in the atmosphere of Jakarta.\n\nIn addition to its historical and cultural significance, Monas also features a museum at its base, which showcases Indonesia's struggle for independence and the nation's journey to becoming a sovereign state. The museum displays historical artifacts, dioramas, and multimedia exhibits that tell the story of Indonesia's fight for freedom. Whether you're interested in history, architecture, or simply want to enjoy the view, Monas is a must-visit destination that offers a deeper understanding of Indonesia's past and its ongoing journey.",
+    "province": {
+      "name": "DKI Jakarta",
+      "lat": -6.2087634,
+      "long": 106.845599
+    },
+    "category": {
+      "name": "Others"
+    },
+    "location": "Gambir, Jakarta Tengah, DKI Jakarta"
+  },
+  {
+    "destination_name": "Satay Building",
+    "link_image": "./image/others gedung sate.jpeg",
+    "description": "The Satay Building (Gedung Sate) is a historical building located in Bandung, West Java, Indonesia. Known for its distinctive Dutch colonial architecture, the building serves as the governor's office of West Java. Built in 1920, the Satay Building is an iconic structure that blends European colonial influences with Indonesian elements, making it a prominent example of early 20th-century architecture in the region. The building’s most notable feature is its rooftop decoration, which resembles skewered satay, a traditional Indonesian dish, hence the name ‘Gedung Sate’.\n\nBeyond its architectural beauty, the Satay Building holds historical significance as it was once the headquarters of the Dutch East Indies government and later became the office of the provincial governor after Indonesia's independence. The building's surroundings include a well-maintained park and public squares, which make it a popular spot for locals and tourists alike to visit and enjoy the peaceful atmosphere. Visitors often admire the building's elegant design, which includes a combination of traditional Javanese and European elements.\n\nWhile the Satay Building is not open for public tours inside, visitors can still appreciate its grandeur from the outside and explore the surrounding area. The building is located in the heart of Bandung, making it a convenient stop for those exploring the city. As one of Bandung's most recognizable landmarks, Satay Building is a must-visit destination for those interested in history, architecture, and the cultural heritage of Indonesia.",
+    "province": {
+      "name": "Jawa Barat",
+      "lat": -6.889167,
+      "long": 107.64047
+    },
+    "category": {
+      "name": "Others"
+    },
+    "location": "Bandung"
+  },
+  {
+    "destination_name": "Bridge Ampera",
+    "link_image": "./image/others Ampera Bridge.jpeg",
+    "description": "The Ampera Bridge is a historical vertical-lift bridge located in Palembang, South Sumatra, Indonesia. Spanning the Musi River, the bridge is one of the most iconic landmarks of the city and a symbol of its development. Completed in 1965, the Ampera Bridge was originally designed to allow ships to pass through by lifting its middle section. Today, the bridge stands as a testament to the engineering and architectural achievements of its time, with its distinctive red color and twin towers making it a recognizable feature of Palembang's skyline.\n\nThe bridge is not only a functional piece of infrastructure but also a popular tourist attraction, offering stunning views of the Musi River and the surrounding cityscape. Visitors can enjoy a leisurely walk along the riverbanks, taking in the beauty of the bridge from various vantage points. At night, the Ampera Bridge is illuminated, creating a striking visual effect that enhances the city’s nighttime charm.\n\nIn addition to its architectural and scenic value, the Ampera Bridge holds significant cultural importance for the people of Palembang. It has witnessed the growth and transformation of the city over the years and remains a symbol of Palembang’s identity and progress. Whether you're crossing it by car or simply admiring it from the riverbanks, the Ampera Bridge is a must-visit landmark for anyone exploring the city.",
+    "province": {
+      "name": "Sumatra Selatan",
+      "lat": -3.3194374,
+      "long": 104.9147137
+    },
+    "category": {
+      "name": "Others"
+    },
+    "location": "Palembang"
+  },
+  {
+    "destination_name": "Way Kambas",
+    "link_image": "./image/forest way kambas.jpeg",
+    "description": "Way Kambas is one of the oldest national parks in Indonesia, located in the Lampung Province of Sumatra. Established in 1985, it is known for its rich biodiversity, lush lowland forest ecosystem, and significant conservation efforts. The park covers an area of around 1,300 square kilometers and is home to a wide range of flora and fauna, including rare species such as the Sumatran tiger, rhinoceros, and the endangered Sumatran elephant. The park's primary focus is on elephant conservation, with a dedicated Elephant Training Center that helps train and rehabilitate elephants for conservation and ecological management purposes.\n\nWay Kambas is not only a conservation area but also a popular eco-tourism destination. Visitors can take guided tours through the park, exploring the dense forests and witnessing the wildlife up close. The park offers an opportunity to see the famous Sumatran elephants in their natural habitat, and tourists can also participate in activities such as elephant riding, river cruises, and wildlife watching. The peaceful atmosphere and natural beauty make Way Kambas an ideal location for nature lovers and those interested in wildlife conservation.\n\nIn addition to its elephant conservation programs, Way Kambas is a vital sanctuary for preserving Indonesia's tropical rainforests and the diverse species that depend on them. The park plays a crucial role in safeguarding the region's biodiversity, protecting endangered species, and providing research opportunities for scientists. Whether you're interested in wildlife, conservation, or simply enjoying the beauty of nature, Way Kambas offers an unforgettable experience for visitors.",
+    "province": {
+      "name": "Lampung",
+      "lat": -4.5585849,
+      "long": 105.4068079
+    },
+    "category": {
+      "name": "Forest"
+    },
+    "location": "Lampung Timur"
+  },
+  {
+    "destination_name": "Bukit Barisan Selatan",
+    "link_image": "./image/forest barisan selatan.jpeg",
+    "description": "Bukit Barisan Selatan (Southern Barisan Hill) is a UNESCO World Heritage Site located in the western part of Sumatra, Indonesia. Known for its lush rainforest, this national park spans over 3,500 square kilometers and is one of the most biodiverse regions in Southeast Asia. The park is a critical habitat for endangered species, including the Sumatran tiger, rhinoceros, and elephants, making it an essential area for wildlife conservation. Bukit Barisan Selatan also plays a vital role in the preservation of Indonesia's tropical rainforests and is home to numerous plant species that are vital to the region's ecosystem.\n\nVisitors to Bukit Barisan Selatan can explore the park’s diverse landscapes, which include dense forests, rugged mountains, and pristine rivers. The park is a haven for nature lovers, offering opportunities for hiking, wildlife watching, and bird watching. The dense forest provides shelter to a wide range of wildlife, and it is not uncommon to see rare animals in their natural habitat. The park also boasts several waterfalls and scenic viewpoints that add to its appeal as a nature destination.\n\nIn addition to its ecological significance, Bukit Barisan Selatan is a place of great cultural importance for the local communities. The park is located near several indigenous villages, and the residents are involved in conservation efforts to protect the area’s natural resources. Whether you're interested in exploring its rich biodiversity, trekking through its wild terrain, or supporting conservation efforts, Bukit Barisan Selatan offers a unique and unforgettable experience for eco-tourism enthusiasts.",
+    "province": {
+      "name": "Sumatera Selatan",
+      "lat": -3.3194374,
+      "long": 104.9147137
+    },
+    "category": {
+      "name": "Forest"
+    },
+    "location": "Pesisir Barat"
+  },
+  {
+    "destination_name": "Tinjomoyo",
+    "link_image": "./image/forest tinjomoyo.jpeg",
+    "description": "Tinjomoyo is a charming forest park located in Semarang, Central Java, Indonesia. The park offers a refreshing escape from the hustle and bustle of city life, providing a serene natural atmosphere that is perfect for relaxation. Known for its lush greenery, Tinjomoyo is an ideal spot for nature lovers and those seeking tranquility. The park features well-maintained walking trails that wind through the forest, allowing visitors to enjoy the beauty of the surrounding flora and fauna while getting some fresh air.\n\nIn addition to its peaceful environment, Tinjomoyo offers a variety of outdoor adventure activities for visitors of all ages. The park is popular for activities such as hiking, mountain biking, and camping, providing ample opportunities for adventure enthusiasts to explore the area. There are also several spots within the park where visitors can enjoy picnics, making it a perfect place for family outings and group activities. The park's location, with its cool and pleasant climate, adds to the overall appeal of Tinjomoyo as a nature-based recreational destination.\n\nTinjomoyo is not only a natural haven but also a great spot for photography and appreciating the beauty of Semarang's landscape. The park is also a popular spot for local residents who enjoy spending time outdoors in a peaceful setting. Whether you're looking to hike through the forest, relax by the river, or simply enjoy a quiet day in nature, Tinjomoyo provides a perfect blend of outdoor adventure and relaxation in a stunning natural setting.",
+    "province": {
+      "name": "Jawa Tengah",
+      "lat": -7.150975,
+      "long": 110.1402594
+    },
+    "category": {
+      "name": "Forest"
+    },
+    "location": "Semarang"
+  },
+  {
+    "destination_name": "Desa Sade",
+    "link_image": "./image/village desa sade.jpeg",
+    "description": "Desa Sade is a traditional Sasak village located in the central part of Lombok, Indonesia. The village offers visitors a unique glimpse into the rich cultural heritage of the Sasak people, one of the indigenous ethnic groups of Lombok. Known for its distinctive architecture and weaving traditions, Desa Sade is a living example of how the Sasak people have preserved their traditions and way of life over centuries. The village's traditional houses are made of natural materials such as bamboo, straw, and clay, reflecting the simplicity and harmony with nature that defines Sasak culture.\n\nOne of the main attractions of Desa Sade is its traditional weaving industry. The village is famous for its ikat weaving, where skilled artisans create intricate patterns and colorful textiles that are highly valued both locally and internationally. Visitors to Desa Sade can watch the weavers at work, learning about the techniques and processes involved in creating these beautiful textiles. The weaving tradition in Desa Sade has been passed down through generations, and it remains a vital part of the village's cultural identity.\n\nIn addition to its weaving heritage, Desa Sade offers a peaceful and immersive experience into rural life in Lombok. Visitors can take guided tours through the village, interact with the friendly locals, and learn about the Sasak people's customs, beliefs, and daily routines. The village is also surrounded by beautiful natural scenery, including rice fields and hills, making it a perfect spot for cultural exploration and photography. Whether you're interested in local traditions, crafts, or simply experiencing life in a traditional village, Desa Sade offers a memorable and enriching experience.",
+    "province": {
+      "name": "Nusa Tenggara Barat",
+      "lat": -8.652933,
+      "long": 117.361649
+    },
+    "category": {
+      "name": "Tourist Village"
+    },
+    "location": "Lombok Tengah"
+  },
+  {
+    "destination_name": "Desa Wisata Nglanggeran",
+    "link_image": "./image/village Nglanggeran.jpeg",
+    "description": "Desa Wisata Nglanggeran is a charming village located at the foot of an ancient volcanic mountain in Yogyakarta, Indonesia. Known for its stunning natural beauty, the village offers a unique eco-tourism experience for visitors who want to immerse themselves in nature while learning about local culture. Surrounded by lush green hills, rice fields, and ancient volcanic rock formations, Nglanggeran is a perfect destination for nature lovers, hikers, and those looking to escape the hustle and bustle of city life.\n\nThe village is famous for its eco-tourism initiatives, including homestays where visitors can experience traditional village life and interact with the friendly locals. Nglanggeran is also home to a variety of outdoor activities such as hiking to the top of the ancient volcano, where visitors are rewarded with panoramic views of the surrounding landscape, including the nearby Nglanggeran Reservoir. The village is also a great place for bird watching, trekking, and enjoying the tranquility of nature.\n\nIn addition to its natural beauty, Desa Wisata Nglanggeran offers a glimpse into the local culture and traditions of the people of Yogyakarta. Visitors can learn about traditional farming practices, explore local handicrafts, and enjoy fresh, organic food grown in the village. Whether you're looking to hike up a volcanic mountain, relax in a homestay, or simply enjoy the peaceful countryside, Nglanggeran provides a memorable and enriching experience for eco-tourists and adventure seekers alike.",
+    "province": {
+      "name": "Yogyakarta",
+      "lat": -7.7955798,
+      "long": 110.3694896
+    },
+    "category": {
+      "name": "Tourist Village"
+    },
+    "location": "Gunungkidul"
+  },
+  {
+    "destination_name": "Desa Trunyan",
+    "link_image": "./image/village trunyan.jpeg",
+    "description": "Desa Trunyan is a traditional Balinese village located on the eastern shore of Lake Batur in Bali, Indonesia. Known for its unique burial traditions, the village has fascinated visitors for its distinct cultural practices. Unlike other places in Bali, where the deceased are typically buried or cremated, the people of Trunyan follow a centuries-old tradition of placing corpses under a sacred tree known as the ‘Bali’ tree. The corpses are placed on the ground, exposed to the elements, and left to decompose naturally, a practice that reflects the village's spiritual beliefs about the cycle of life and death.\n\nThe ‘Bali’ tree, also known as the ‘tree of life,’ is central to this burial ritual. The tree is believed to have mystical properties that prevent the decomposition process from emitting any unpleasant odor, which is why the bodies are left uncovered. This practice, which is rooted in the village’s ancestral traditions, is considered sacred and is part of the local belief system that emphasizes the importance of returning the body to nature. Visitors to the village can witness this unique tradition and learn more about the spiritual and cultural significance behind it.\n\nIn addition to its burial traditions, Desa Trunyan is a serene and picturesque village, surrounded by the stunning beauty of Lake Batur and the mountains of Bali. Visitors can take boat rides across the lake to reach the village and explore its traditional Balinese architecture, daily life, and local customs. Trunyan offers a unique cultural experience for those interested in learning about Balinese traditions and spirituality. It is a peaceful place that invites reflection on the cycle of life and death and the relationship between humans and nature.",
+    "province": {
+      "name": "Bali",
+      "lat": -8.3405389,
+      "long": 115.0919509
+    },
+    "category": {
+      "name": "Tourist Village"
+    },
+    "location": "Kintamani, Bangli"
+  },
+  {
+    "destination_name": "Desa Wae Rebo",
+    "link_image": "./image/village wae rebo.jpeg",
+    "description": "Desa Wae Rebo is a remote and scenic traditional Manggarai village located in the highlands of Flores Island, Indonesia. Nestled at an altitude of 1,200 meters above sea level, Wae Rebo is known for its unique architecture and breathtaking natural surroundings. The village is home to the traditional Mbaru Niang houses, which are cone-shaped and made from bamboo and thatch. These houses are designed to blend seamlessly with the lush, mountainous landscape, offering an authentic glimpse into the traditional way of life of the Manggarai people.\n\nThe village is located in a remote area, accessible only by a challenging hike through dense forests and steep terrain, making it an ideal destination for adventure seekers and nature lovers. The trek to Wae Rebo takes around 3 to 4 hours, offering stunning views of the surrounding hills and valleys. Upon arrival, visitors are welcomed by the villagers, who maintain their age-old customs and culture. The hospitality and warmth of the locals make Wae Rebo a unique place to experience the traditions of Flores in their purest form.\n\nIn addition to its cultural significance, Desa Wae Rebo offers visitors an opportunity to connect with nature in an extraordinary setting. The village is surrounded by lush forests, rivers, and mist-covered mountains, creating a peaceful and tranquil atmosphere. The cool climate, along with the village's isolation, makes it a perfect escape for those looking to disconnect from modern life and immerse themselves in the beauty of Flores. Whether you're interested in hiking, photography, or simply experiencing traditional village life, Desa Wae Rebo provides a memorable and enriching experience.",
+    "province": {
+      "name": "Nusa Tenggara Timur",
+      "lat": -8.657382,
+      "long": 121.079369
+    },
+    "category": {
+      "name": "Tourist Village"
+    },
+    "location": "Manggarai, Flores"
+  },
+  {
+    "destination_name": "Museum Nasional Indonesia",
+    "link_image": "./image/museum Indonesia.jpeg",
+    "description": "Museum Nasional Indonesia, also known as the National Museum of Indonesia, is one of the oldest and most important museums in Southeast Asia. Located in the heart of Jakarta, the museum serves as a comprehensive repository of Indonesia's rich historical and cultural heritage. Established in 1778, the museum features an extensive collection of artifacts, including ancient relics, traditional crafts, and art pieces from all over the Indonesian archipelago, making it an essential destination for those looking to learn about the diverse cultures and history of the nation.\n\nThe museum is divided into several sections, each dedicated to different aspects of Indonesia’s heritage. Visitors can explore exhibits related to prehistoric times, the classical kingdoms of Indonesia, traditional clothing and crafts, and even colonial history. The museum is home to many rare and valuable objects, including the famous 2,000-year-old stone statues of the Hindu-Buddhist period and the large collection of traditional Indonesian weapons, jewelry, and textiles. The displays offer a fascinating journey through Indonesia’s past, showcasing the diverse cultures and civilizations that have shaped the nation.\n\nIn addition to its permanent exhibits, the museum also hosts temporary exhibitions, educational programs, and cultural events. The building itself is an architectural landmark, combining colonial-era design with modern amenities to provide an engaging and immersive experience for visitors. Whether you're a history enthusiast, art lover, or simply curious about Indonesia's diverse heritage, Museum Nasional Indonesia offers a unique and enriching experience that brings the country's past to life.",
+    "province": {
+      "name": "Jakarta",
+      "lat": -6.2087634,
+      "long": 106.845599
+    },
+    "category": {
+      "name": "Museum"
+    },
+    "location": "Gambir, Jakarta Pusat"
+  },
+  {
+    "destination_name": "Museum Tsunami Aceh",
+    "link_image": "./image/museum tsunami aceh.jpeg",
+    "description": "The Museum Tsunami Aceh is a memorial and educational center located in Banda Aceh, Indonesia. It was built to remember and honor the victims of the 2004 Indian Ocean tsunami, one of the deadliest natural disasters in modern history. The museum serves as both a tribute to those who lost their lives and a place for visitors to learn about the devastation caused by the tsunami and the resilience of the people of Aceh in the aftermath. Designed by Indonesian architect Ridwan Kamil, the museum's striking architecture symbolizes the waves of the tsunami and the strength of the survivors.\n\nInside the museum, visitors will find a variety of exhibits that provide an in-depth look at the disaster, including photographs, personal stories, and artifacts from the affected areas. The museum also educates the public about tsunami preparedness and the importance of disaster mitigation. A key feature of the museum is its interactive displays, which allow visitors to gain a better understanding of the tsunami’s impact and the efforts taken to rebuild Aceh. The museum plays a crucial role in raising awareness about natural disasters and disaster risk reduction.\n\nBeyond its educational purpose, the Museum Tsunami Aceh is a place for reflection and remembrance. The site includes a memorial garden with names of the victims, as well as a giant, upright ship that was carried inland by the tsunami's waves, serving as a powerful symbol of the destructive force of the disaster. The museum’s tranquil and somber atmosphere offers visitors a chance to reflect on the lives lost and the enduring spirit of the Acehnese people. The museum stands as a testament to human resilience and the importance of community solidarity in times of crisis.",
+    "province": {
+      "name": "Aceh",
+      "lat": 4.695135,
+      "long": 96.749397
+    },
+    "category": {
+      "name": "Museum"
+    },
+    "location": "Banda Aceh"
+  },
+  {
+    "destination_name": "Museum Batik Danar Hadi",
+    "link_image": "./image/museum Batik Danar Hadi.jpeg",
+    "description": "Museum Batik Danar Hadi is a prominent museum located in Solo, Indonesia, dedicated to the art and history of batik, one of Indonesia's most cherished cultural traditions. The museum showcases an extensive collection of batik fabrics, each representing the rich and diverse styles of batik from different regions across Indonesia. The museum is not only a place to admire beautiful textiles but also serves as an educational center, offering visitors an in-depth look at the techniques, history, and cultural significance of batik art.\n\nOne of the highlights of the museum is its impressive collection of antique batik pieces, some dating back over a century. These rare items provide insight into the evolution of batik design, as well as the changing styles and motifs that have emerged over time. In addition to its historical collection, the museum also offers a variety of exhibits that focus on the batik-making process. Visitors can learn about the intricate methods used to create batik, from the application of wax to the dyeing process, and see live demonstrations by skilled artisans.\n\nThe museum also serves as a hub for promoting and preserving batik culture. It regularly hosts workshops, cultural events, and exhibitions that celebrate batik craftsmanship and encourage the younger generation to engage with this traditional art form. Whether you're a textile enthusiast, a lover of Indonesian culture, or simply curious about batik, Museum Batik Danar Hadi provides a unique opportunity to explore this beautiful and intricate art form in greater detail.",
+    "province": {
+      "name": "Jawa Tengah",
+      "lat": -7.150975,
+      "long": 110.1402594
+    },
+    "category": {
+      "name": "Museum"
+    },
+    "location": "Surakarta"
+  },
+  {
+    "destination_name": "Air Terjun Coban Rondo",
+    "link_image": "./image/waterfall Coban Rondo.jpeg",
+    "description": "Air Terjun Coban Rondo, also known as Coban Rondo Waterfall, is one of the most popular natural attractions in East Java, Indonesia. Located in the region of Malang, the waterfall is renowned for its scenic beauty, surrounded by lush pine forests and rolling hills. The waterfall stands at approximately 84 meters high, creating a stunning sight as the water cascades down into the rocky pool below. The cool, misty atmosphere and the serene surroundings make it a perfect destination for nature lovers and adventure seekers alike.\n\nIn addition to its natural beauty, Coban Rondo Waterfall is an ideal spot for relaxation and picnics. The area around the waterfall is equipped with facilities for visitors to enjoy a peaceful day surrounded by nature. The pine forest provides a refreshing scent of fresh air, while the sound of the waterfall creates a calming ambiance. Visitors can take a leisurely walk along the well-maintained trails or relax by the water, making it a popular spot for families and groups looking for a tranquil retreat.\n\nFor those looking for adventure, Coban Rondo also offers various activities such as hiking, exploring the nearby forest, and visiting the flower garden that lies close to the waterfall. The site is also home to a variety of wildlife, adding to the natural charm of the location. Whether you're here to enjoy a peaceful day in nature or embark on a short hike, Coban Rondo Waterfall is an excellent destination that offers both relaxation and outdoor fun.",
+    "province": {
+      "name": "Jawa Timur",
+      "lat": -7.5360639,
+      "long": 112.2384017
+    },
+    "category": {
+      "name": "Waterfall"
+    },
+    "location": "Malang"
+  },
+  {
+    "destination_name": "Raja Ampat",
+    "link_image": "./image/Raja Ampat.jpeg",
+    "description": "Raja Ampat, located off the northwest tip of Bird’s Head Peninsula in West Papua, Indonesia, is a tropical paradise renowned for its extraordinary marine biodiversity. Comprising over 1,500 small islands, cays, and shoals, this archipelago is home to some of the richest coral reef ecosystems on Earth. Its crystal-clear waters, vibrant coral gardens, and diverse marine species attract divers and nature enthusiasts from all over the world.\n\nBeyond its underwater beauty, Raja Ampat also offers breathtaking landscapes above sea level. Towering limestone cliffs, lush rainforests, and secluded white sand beaches create an idyllic setting for eco-tourism. Visitors can explore hidden lagoons, kayak through mangroves, and hike to panoramic viewpoints that overlook the stunning island formations. The tranquility and natural charm of Raja Ampat make it a haven for those seeking an escape from modern life.\n\nCulturally, Raja Ampat is inhabited by indigenous Papuan communities who have preserved their traditional ways of life. Visitors have the opportunity to experience local customs, music, and craftsmanship, providing a deeper understanding of the region’s heritage. Sustainable tourism initiatives are actively promoted to protect both the environment and local culture, ensuring that the beauty of Raja Ampat remains unspoiled for generations to come.",
+    "province": {
+      "name": "Papua Barat Daya",
+      "lat": -0.765369,
+      "long": 131.580059
+    },
+    "category": {
+      "name": "Lake"
+    },
+    "location": "barat bagian Kepala Burung (Vogelkoop), Kabupaten Raja Ampat"
+  },
+  {
+    "destination_name": "Komodo Island",
+    "link_image": "./image/komodo island.jpeg",
+    "description": "Komodo Island, part of Indonesia’s Lesser Sunda chain of islands, is famous as the natural habitat of the world’s largest lizard—the Komodo dragon. This UNESCO World Heritage Site is located within Komodo National Park and offers visitors a rare chance to observe these prehistoric creatures in their natural environment. With its rugged hills, savannah landscapes, and striking coastline, the island is as captivating on land as it is in the surrounding sea.\n\nIn addition to its wildlife, Komodo Island boasts some of the most beautiful marine environments in the world. The surrounding waters are teeming with vibrant coral reefs, manta rays, sea turtles, and a wide variety of tropical fish, making it a top destination for diving and snorkeling. Popular dive sites such as Batu Bolong and Manta Point are renowned for their rich biodiversity and clear visibility.\n\nCulturally, the island is home to a small community of local people who have lived in harmony with their environment for generations. Their traditions and way of life offer visitors a glimpse into the island’s rich heritage. Tourism on Komodo Island is managed with a focus on conservation and sustainability to preserve both the unique wildlife and the pristine natural beauty that define this extraordinary destination.",
+    "province": {
+      "name": "Nusa Tenggara Timur",
+      "lat": -8.657382,
+      "long": 121.079369
+    },
+    "category": {
+      "name": "Recreational Park"
+    },
+    "location": "Kecamatan Komodo, Kabupaten Manggarai Barat"
+  }
+]

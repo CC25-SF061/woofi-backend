@@ -26,7 +26,6 @@ export class ProfileController {
         const enforcer = getEnforcer();
         const { credentials } = request.auth;
         const db = this.db;
-
         const user = await db
             .selectFrom('user')
             .where('user.id', '=', credentials.id)

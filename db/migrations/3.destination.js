@@ -9,7 +9,7 @@ export async function up(db) {
         .createTable('destination')
         .addColumn('id', 'bigserial', (col) => col.primaryKey())
         .addColumn('detail', 'text', (col) => col.notNull())
-        .addColumn('name', 'varchar(50)', (col) => col.notNull())
+        .addColumn('name', 'varchar(100)', (col) => col.notNull())
         .addColumn('image', 'varchar(255)', (col) => col.notNull())
         .addColumn('location', 'varchar(100)', (col) => col.notNull())
         .addColumn('user_id', 'bigint', (col) => col.references('user.id'))
