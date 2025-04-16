@@ -54,7 +54,7 @@ node index.js
 ## API
 
 start the backend and see the [/documentation](http://localhost:8070) route
-or [this](https://backend.woofi.id)
+or [this](https://backend.woofi.web.id/documentation)
 
 ## Commands
 
