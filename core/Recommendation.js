@@ -11,7 +11,9 @@ export async function getRecommendation(
     { page = 0, province, name, category }
 ) {
     const db = getDatabase();
-
+    if (!userId) {
+        return [];
+    }
     const user = await db
         .selectFrom('user as u')
         .leftJoin('personal_data', 'personal_data.user_id', 'u.id')

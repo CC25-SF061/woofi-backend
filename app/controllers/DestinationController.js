@@ -298,7 +298,7 @@ export class DestinationController {
                 .limit(30)
                 .execute();
             if (!query.filter) {
-                const response = await getRecommendation(credentials.id, {
+                const response = await getRecommendation(credentials?.id, {
                     page: query.page,
                     province: query.province,
                     name: query.name,
