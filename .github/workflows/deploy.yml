@@ -63,4 +63,5 @@ jobs:
                           -e FILE_UPLOAD_BUCKET="${{ secrets.FILE_UPLOAD_BUCKET }}" \
                           -e ADMIN_PASSWORD="${{ secrets.ADMIN_PASSWORD }}" \
                           -e ADMIN_EMAIL="${{ secrets.ADMIN_EMAIL }}" \
+                          -e ML_URL="${{ secrets.ML_URL }}" \
                            ${{ vars.DOCKERHUB_USERNAME }}/woofi:${{ github.sha }}

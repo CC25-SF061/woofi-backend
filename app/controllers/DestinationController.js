@@ -13,6 +13,8 @@ import {
 import { permission, resource } from '../../core/RoleConstant.js';
 import { mapFilter } from '../../core/DestinationFilter.js';
 import { notFound } from '../util/errorHandler.js';
+import axios from 'axios';
+import { getRecommendation } from '../../core/Recommendation.js';
 
 export class DestinationController {
     /**@type {ReturnType<typeof getDatabase>} */
@@ -295,6 +297,15 @@ export class DestinationController {
                 .offset(query.page * limit)
                 .limit(30)
                 .execute();
+            if (!query.filter) {
+                const response = await getRecommendation(credentials.id, {
+                    page: query.page,
+                    province: query.province,
+                    name: query.name,
+                    category: query.category,
+                });
+                destination = [...response, ...(destination ?? [])];
+            }
             return h
                 .response(
                     JSONToString({
